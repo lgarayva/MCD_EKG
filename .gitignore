@@ -1,0 +1,19 @@
+# Ignorar archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar dependencias
+node_modules/
+venv/
+__pycache__/
+Datos-Leonel-PTBXL/
+
+# Ignorar archivos de compilación
+*.log
+*.out
+*.class
+
+# Ignorar configuraciones personales
+.env
+.idea/
+.vscode/
