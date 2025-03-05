@@ -623,3 +623,19 @@ def genera_df_jumps_signals(mi_dict, sttc_mi_dict, sttc_dict, other_dict):
     df["std"] = df[['MI', 'STTC MI', 'STTC', 'OTHER']].std(axis=1)
 
     return df
+
+def get_seasonal_trend(df_signal, metric = "mean", period = 100):
+    labels = df_signal.keys()
+    df_dict_seasonal = {
+        label : 
+            # [
+                np.mean(
+                    get_list_jumps(
+                        get_peaks_seasonal(
+                            seasonal_decompose(
+                                pd.Series(
+                                    get_estadisticas(df_signal[label])[metric]),
+                                        period = period).seasonal)))
+                                    # ]
+        for label in labels}
+    return df_dict_seasonal
