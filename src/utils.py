@@ -533,3 +533,44 @@ def eval_coint(serie1, serie2, alpha = 0.05):
     return 1 if p_value < alpha else 0
     
 #{key: value for key, value in iterable if condition}
+
+def plot_acf_pact_analysis(df, label, metric : str = "mean", apply_diff = False, method = None, clase = "", **kwargs):
+    
+    if apply_diff:
+        df_series = df[label].diff().dropna()
+    else: 
+        df_series = df[label]
+    agg_acf = get_estadisticas(df_series.apply(acf, **kwargs))[metric]
+    agg_pacf = get_estadisticas(df_series.apply(pacf, method=method, **kwargs))[metric]
+    acf_agg = get_estadisticas(df_series).apply(acf, **kwargs)[metric]
+    pacf_agg = get_estadisticas(df_series).apply(pacf, method=method, **kwargs)[metric]
+
+    lags = np.arange(agg_acf.shape[0])
+
+    fig, axs = plt.subplots(2, 2, figsize=(10, 8)) 
+
+    fig.suptitle(f"ACT y FACT {clase} {label}")
+
+    axs[0,0].stem(lags, agg_acf)
+    axs[0,0].set_xlabel("Lag")
+    axs[0,0].set_ylabel(label)
+    axs[0,0].set_title(f"Agregado ACF {metric}'s {label}")
+
+    axs[0,1].stem(lags, agg_pacf)
+    axs[0,1].set_xlabel("Lag")
+    axs[0,1].set_ylabel(label)
+    axs[0,1].set_title(f"Agregado PACF {metric}'s {label}")
+
+    axs[1,0].stem(lags, acf_agg)
+    axs[1,0].set_xlabel("Lag")
+    axs[1,0].set_ylabel(label)
+    axs[1,0].set_title(f"ACF {metric}'s {label}")
+
+    axs[1,1].stem(lags, pacf_agg)
+    axs[1,1].set_xlabel("Lag")
+    axs[1,1].set_ylabel(label)
+    axs[1,1].set_title(f"PACF {metric}'s {label}")
+
+    plt.tight_layout()
+    plt.show()
+
