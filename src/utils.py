@@ -574,3 +574,18 @@ def plot_acf_pact_analysis(df, label, metric : str = "mean", apply_diff = False,
     plt.tight_layout()
     plt.show()
 
+def get_peaks_seasonal(df_seasonal, n_std = 2):
+
+    up = find_peaks(df_seasonal, height=df_seasonal.std()*n_std)[0]
+    low = find_peaks(-1*df_seasonal, height=df_seasonal.std()*n_std)[0]
+    up_low = list(up)+list(low)
+    up_low.sort()
+    
+
+    return up_low
+
+def get_list_jumps(up_low):
+    diferencias = [up_low[i+1] - up_low[i] for i in range(len(up_low)-1)]
+    # print("promedio")
+    # print(np.mean(diferencias))
+    return diferencias
