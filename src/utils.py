@@ -589,3 +589,37 @@ def get_list_jumps(up_low):
     # print("promedio")
     # print(np.mean(diferencias))
     return diferencias
+
+
+def get_jumps_signal(df_signal, metric = "mean", period = 100):
+    labels = df_signal.keys()
+    df_dict_seasonal = {
+        label : 
+            # [
+                np.mean(
+                    get_list_jumps(
+                        get_peaks_seasonal(
+                            seasonal_decompose(
+                                pd.Series(
+                                    get_estadisticas(df_signal[label])[metric]),
+                                        period = period).seasonal)))
+                                    # ]
+        for label in labels}
+    return df_dict_seasonal
+    # return pd.DataFrame(df_dict_seasonal)
+
+def genera_df_jumps_signals(mi_dict, sttc_mi_dict, sttc_dict, other_dict):
+    
+    df_mi = pd.DataFrame(list(mi_dict.items()), columns=['Señal', 'MI'])
+    df_sttc_mi = pd.DataFrame(list(sttc_mi_dict.items()), columns=['Señal', 'STTC MI'])
+    df_sttc = pd.DataFrame(list(sttc_dict.items()), columns=['Señal', 'STTC'])
+    df_other = pd.DataFrame(list(other_dict.items()), columns=['Señal', 'OTHER'])
+
+    df = pd.merge(df_mi, df_sttc_mi, on='Señal')
+    df = pd.merge(df, df_sttc, on='Señal')
+    df = pd.merge(df, df_other, on='Señal')
+
+    df["promedio"] = df[['MI', 'STTC MI', 'STTC', 'OTHER']].mean(axis=1)
+    df["std"] = df[['MI', 'STTC MI', 'STTC', 'OTHER']].std(axis=1)
+
+    return df
