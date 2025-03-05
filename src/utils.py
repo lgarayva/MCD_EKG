@@ -103,6 +103,21 @@ def get_df_label(dict_series : dict, label : str = "II", **kwargs) -> pd.DataFra
     
     return df
 
+def get_dict_labels(dict_series : dict, signals : list, **kwargs) -> dict:
+
+    df_dict = {label: pd.DataFrame({
+        pacient : dict_series[pacient][label]
+        for pacient in dict_series.keys()
+        })
+    for label in signals
+        }
+    
+    return df_dict
+
+def plot_scale_gray(df):
+    df.plot(color="gray", alpha=0.1, legend=False)
+    plt.show()
+
 def get_estadisticas(df : pd.DataFrame, **kargs) -> pd.DataFrame:
     """Dado un DataFrame la función entrega un dataframe con las estadísticas por fila.
 
