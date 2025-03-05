@@ -639,3 +639,48 @@ def get_seasonal_trend(df_signal, metric = "mean", period = 100):
                                     # ]
         for label in labels}
     return df_dict_seasonal
+
+def plot_seasonal_analysis(df_mi_signals,
+                           df_sttc_mi_signals,
+                           df_sttc_signals,
+                           df_other_signals,
+                            label, metric : str = "mean", period = 100, clase = "", aug_figsize = 1,**kwargs):
+    
+
+    df_mi_seasonal = seasonal_decompose(
+                    pd.Series(
+                        get_estadisticas(df_mi_signals[label])[metric]),
+                            period = period).seasonal
+    df_sttc_mi_seasonal = seasonal_decompose(
+                    pd.Series(
+                        get_estadisticas(df_sttc_mi_signals[label])[metric]),
+                            period = period).seasonal
+    df_sttc_seasonal = seasonal_decompose(
+                    pd.Series(
+                        get_estadisticas(df_sttc_signals[label])[metric]),
+                            period = period).seasonal
+    df_other_seasonal = seasonal_decompose(
+                    pd.Series(
+                        get_estadisticas(df_other_signals[label])[metric]),
+                            period = period).seasonal
+
+
+    fig, axs = plt.subplots(2, 2, figsize=(aug_figsize*10, aug_figsize*8)) 
+
+    fig.suptitle(f"Seasonal Trends {label}")
+
+    axs[0,0].plot(df_mi_seasonal)
+    axs[0,0].set_title(f"Seasonal trend {clase} {label}")
+
+    axs[0,1].plot(df_sttc_mi_seasonal)
+    axs[0,1].set_title(f"Seasonal trend {clase} {label}")
+
+    axs[1,0].plot(df_sttc_seasonal)
+    axs[1,0].set_title(f"Seasonal trend {clase} {label}")
+
+    axs[1,1].plot(df_other_seasonal)
+    axs[1,1].set_title(f"Seasonal trend {clase} {label}")
+
+    plt.tight_layout()
+    plt.show()
+
