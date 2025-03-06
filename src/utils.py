@@ -515,11 +515,18 @@ def prueba_ljung_box_labels(df_dict, signals):
 
     return plb
 
-def prueba_dickey_fuller(df_dict, signals):
-    pdf = pd.DataFrame({label :[ 1 if (adfuller(df_dict[pacient][label])[1]) < 0.05 else 0
-        for pacient in df_dict.keys()]
-    for label in signals
-    }).mean()
+def prueba_dickey_fuller(df_dict, signals, apply_diff = False):
+
+    if apply_diff:
+        pdf = pd.DataFrame({label :[ 1 if (adfuller(df_dict[pacient][label].diff().dropna())[1]) < 0.05 else 0
+            for pacient in df_dict.keys()]
+        for label in signals
+        }).mean()
+    else:
+        pdf = pd.DataFrame({label :[ 1 if (adfuller(df_dict[pacient][label])[1]) < 0.05 else 0
+            for pacient in df_dict.keys()]
+        for label in signals
+        }).mean()
 
     return pdf
 
@@ -549,12 +556,19 @@ def eval_coint(serie1, serie2, alpha = 0.05):
     
 #{key: value for key, value in iterable if condition}
 
-def plot_acf_pact_analysis(df, label, metric : str = "mean", apply_diff = False, method = None, clase = "", **kwargs):
+def plot_acf_pact_analysis(df, label, metric : str = "mean", apply_diff = False, method = None, clase = "", intervalo_confianza = False, **kwargs):
     
     if apply_diff:
         df_series = df[label].diff().dropna()
     else: 
         df_series = df[label]
+    
+    if intervalo_confianza:
+        N = df[label].shape[0]
+        ic = 1.96/math.sqrt(N)
+    else:
+        ic = 0
+    
     agg_acf = get_estadisticas(df_series.apply(acf, **kwargs))[metric]
     agg_pacf = get_estadisticas(df_series.apply(pacf, method=method, **kwargs))[metric]
     acf_agg = get_estadisticas(df_series).apply(acf, **kwargs)[metric]
@@ -570,21 +584,29 @@ def plot_acf_pact_analysis(df, label, metric : str = "mean", apply_diff = False,
     axs[0,0].set_xlabel("Lag")
     axs[0,0].set_ylabel(label)
     axs[0,0].set_title(f"Agregado ACF {metric}'s {label}")
+    axs[0,0].axhline(ic, color='red', linestyle='--')
+    axs[0,0].axhline(-1*ic, color='red', linestyle='--')
 
     axs[0,1].stem(lags, agg_pacf)
     axs[0,1].set_xlabel("Lag")
     axs[0,1].set_ylabel(label)
     axs[0,1].set_title(f"Agregado PACF {metric}'s {label}")
+    axs[0,1].axhline(ic, color='red', linestyle='--')
+    axs[0,1].axhline(-1*ic, color='red', linestyle='--')
 
     axs[1,0].stem(lags, acf_agg)
     axs[1,0].set_xlabel("Lag")
     axs[1,0].set_ylabel(label)
     axs[1,0].set_title(f"ACF {metric}'s {label}")
+    axs[1,0].axhline(ic, color='red', linestyle='--')
+    axs[1,0].axhline(-1*ic, color='red', linestyle='--')
 
     axs[1,1].stem(lags, pacf_agg)
     axs[1,1].set_xlabel("Lag")
     axs[1,1].set_ylabel(label)
     axs[1,1].set_title(f"PACF {metric}'s {label}")
+    axs[1,1].axhline(ic, color='red', linestyle='--')
+    axs[1,1].axhline(-1*ic, color='red', linestyle='--')
 
     plt.tight_layout()
     plt.show()
