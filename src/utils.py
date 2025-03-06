@@ -681,7 +681,7 @@ def plot_seasonal_analysis(df_mi_signals,
                            df_sttc_mi_signals,
                            df_sttc_signals,
                            df_other_signals,
-                            label, metric : str = "mean", period = 100, clase = "", aug_figsize = 1,**kwargs):
+                            label, metric : str = "mean", period = 100, aug_figsize = 1,**kwargs):
     
 
     df_mi_seasonal = seasonal_decompose(
@@ -707,16 +707,16 @@ def plot_seasonal_analysis(df_mi_signals,
     fig.suptitle(f"Seasonal Trends {label}")
 
     axs[0,0].plot(df_mi_seasonal)
-    axs[0,0].set_title(f"Seasonal trend {clase} {label}")
+    axs[0,0].set_title(f"Seasonal trend MI {label}")
 
     axs[0,1].plot(df_sttc_mi_seasonal)
-    axs[0,1].set_title(f"Seasonal trend {clase} {label}")
+    axs[0,1].set_title(f"Seasonal trend STTC MI {label}")
 
     axs[1,0].plot(df_sttc_seasonal)
-    axs[1,0].set_title(f"Seasonal trend {clase} {label}")
+    axs[1,0].set_title(f"Seasonal trend STTC {label}")
 
     axs[1,1].plot(df_other_seasonal)
-    axs[1,1].set_title(f"Seasonal trend {clase} {label}")
+    axs[1,1].set_title(f"Seasonal trend OTHER {label}")
 
     plt.tight_layout()
     plt.show()
