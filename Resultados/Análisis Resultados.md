@@ -14,7 +14,7 @@ Cada conjunto de gráficas muestran los siguientes gráficos:
 * PACF mean's: autocorrelograma de las autocorrelaciones de los promedios de las series.
 * ACF mean'sautocorrelograma de las autocorrelaciones parciales de los promedios de las series.
 
-[Ir a Análisis autocorrelaciones y autocorrelaciones parcial](../notebooks/01_analisis_autocorrelaciones.ipynb#análisis-autocorrelaciones-y-autocorrelaciones-parcial)
+[Ir a Análisis autocorrelaciones y autocorrelaciones parcial](../notebooks/01_analisis_autocorrelaciones.ipynb#3d1)
 
 De la primera serie de gráficas podemos observar que en general las autocorrelaciones no decrecen a cero, mientras que las autocorrelaciones parciales tienen una tendencia decreciente a cero, lo que nos podría indicar la existe de raíces unitarios o que la serie es no estacionaria.
 
@@ -60,7 +60,7 @@ De la prueba aplicando una diferencia podemos ver que más del 99% de las series
 
 ### Análisis de autocorrelaciones y autocorrelaciones parciales series diferenciadas
 
-[Ir a Análisis autocorrelaciones y autocorrelaciones parcial con diferencias](../notebooks/01_analisis_autocorrelaciones.ipynb#análisis-autocorrelaciones-y-autocorrelaciones-parcial-con-diferencias)
+[Ir a Análisis autocorrelaciones y autocorrelaciones parcial con diferencias](../notebooks/01_analisis_autocorrelaciones.ipynb#3d3)
 
 En general, podemos obervar que las primeras `q` autocorrelaciones son distintas de cero, mientras que las autocorrelaciones parciales tienen una sucesión infinita a cero. Con esto podemos ver que al aplicar una diferencia se corrige el problema de no estacionaridad.
 
