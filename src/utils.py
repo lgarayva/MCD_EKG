@@ -103,6 +103,21 @@ def get_df_label(dict_series : dict, label : str = "II", **kwargs) -> pd.DataFra
     
     return df
 
+def get_dict_labels(dict_series : dict, signals : list, **kwargs) -> dict:
+
+    df_dict = {label: pd.DataFrame({
+        pacient : dict_series[pacient][label]
+        for pacient in dict_series.keys()
+        })
+    for label in signals
+        }
+    
+    return df_dict
+
+def plot_scale_gray(df):
+    df.plot(color="gray", alpha=0.1, legend=False)
+    plt.show()
+
 def get_estadisticas(df : pd.DataFrame, **kargs) -> pd.DataFrame:
     """Dado un DataFrame la función entrega un dataframe con las estadísticas por fila.
 
@@ -500,11 +515,18 @@ def prueba_ljung_box_labels(df_dict, signals):
 
     return plb
 
-def prueba_dickey_fuller(df_dict, signals):
-    pdf = pd.DataFrame({label :[ 1 if (adfuller(df_dict[pacient][label])[1]) < 0.05 else 0
-        for pacient in df_dict.keys()]
-    for label in signals
-    }).mean()
+def prueba_dickey_fuller(df_dict, signals, apply_diff = False):
+
+    if apply_diff:
+        pdf = pd.DataFrame({label :[ 1 if (adfuller(df_dict[pacient][label].diff().dropna())[1]) < 0.05 else 0
+            for pacient in df_dict.keys()]
+        for label in signals
+        }).mean()
+    else:
+        pdf = pd.DataFrame({label :[ 1 if (adfuller(df_dict[pacient][label])[1]) < 0.05 else 0
+            for pacient in df_dict.keys()]
+        for label in signals
+        }).mean()
 
     return pdf
 
@@ -533,3 +555,169 @@ def eval_coint(serie1, serie2, alpha = 0.05):
     return 1 if p_value < alpha else 0
     
 #{key: value for key, value in iterable if condition}
+
+def plot_acf_pact_analysis(df, label, metric : str = "mean", apply_diff = False, method = None, clase = "", intervalo_confianza = False, **kwargs):
+    
+    if apply_diff:
+        df_series = df[label].diff().dropna()
+    else: 
+        df_series = df[label]
+    
+    if intervalo_confianza:
+        N = df[label].shape[0]
+        ic = 1.96/math.sqrt(N)
+    else:
+        ic = 0
+    
+    agg_acf = get_estadisticas(df_series.apply(acf, **kwargs))[metric]
+    agg_pacf = get_estadisticas(df_series.apply(pacf, method=method, **kwargs))[metric]
+    acf_agg = get_estadisticas(df_series).apply(acf, **kwargs)[metric]
+    pacf_agg = get_estadisticas(df_series).apply(pacf, method=method, **kwargs)[metric]
+
+    lags = np.arange(agg_acf.shape[0])
+
+    fig, axs = plt.subplots(2, 2, figsize=(10, 8)) 
+
+    fig.suptitle(f"ACT y FACT {clase} {label}")
+
+    axs[0,0].stem(lags, agg_acf)
+    axs[0,0].set_xlabel("Lag")
+    axs[0,0].set_ylabel(label)
+    axs[0,0].set_title(f"Agregado ACF {metric}'s {label}")
+    axs[0,0].axhline(ic, color='red', linestyle='--')
+    axs[0,0].axhline(-1*ic, color='red', linestyle='--')
+
+    axs[0,1].stem(lags, agg_pacf)
+    axs[0,1].set_xlabel("Lag")
+    axs[0,1].set_ylabel(label)
+    axs[0,1].set_title(f"Agregado PACF {metric}'s {label}")
+    axs[0,1].axhline(ic, color='red', linestyle='--')
+    axs[0,1].axhline(-1*ic, color='red', linestyle='--')
+
+    axs[1,0].stem(lags, acf_agg)
+    axs[1,0].set_xlabel("Lag")
+    axs[1,0].set_ylabel(label)
+    axs[1,0].set_title(f"ACF {metric}'s {label}")
+    axs[1,0].axhline(ic, color='red', linestyle='--')
+    axs[1,0].axhline(-1*ic, color='red', linestyle='--')
+
+    axs[1,1].stem(lags, pacf_agg)
+    axs[1,1].set_xlabel("Lag")
+    axs[1,1].set_ylabel(label)
+    axs[1,1].set_title(f"PACF {metric}'s {label}")
+    axs[1,1].axhline(ic, color='red', linestyle='--')
+    axs[1,1].axhline(-1*ic, color='red', linestyle='--')
+
+    plt.tight_layout()
+    plt.show()
+
+def get_peaks_seasonal(df_seasonal, n_std = 2):
+
+    up = find_peaks(df_seasonal, height=df_seasonal.std()*n_std)[0]
+    low = find_peaks(-1*df_seasonal, height=df_seasonal.std()*n_std)[0]
+    up_low = list(up)+list(low)
+    up_low.sort()
+    
+
+    return up_low
+
+def get_list_jumps(up_low):
+    diferencias = [up_low[i+1] - up_low[i] for i in range(len(up_low)-1)]
+    # print("promedio")
+    # print(np.mean(diferencias))
+    return diferencias
+
+
+def get_jumps_signal(df_signal, metric = "mean", period = 100):
+    labels = df_signal.keys()
+    df_dict_seasonal = {
+        label : 
+            # [
+                np.mean(
+                    get_list_jumps(
+                        get_peaks_seasonal(
+                            seasonal_decompose(
+                                pd.Series(
+                                    get_estadisticas(df_signal[label])[metric]),
+                                        period = period).seasonal)))
+                                    # ]
+        for label in labels}
+    return df_dict_seasonal
+    # return pd.DataFrame(df_dict_seasonal)
+
+def genera_df_jumps_signals(mi_dict, sttc_mi_dict, sttc_dict, other_dict):
+    
+    df_mi = pd.DataFrame(list(mi_dict.items()), columns=['Señal', 'MI'])
+    df_sttc_mi = pd.DataFrame(list(sttc_mi_dict.items()), columns=['Señal', 'STTC MI'])
+    df_sttc = pd.DataFrame(list(sttc_dict.items()), columns=['Señal', 'STTC'])
+    df_other = pd.DataFrame(list(other_dict.items()), columns=['Señal', 'OTHER'])
+
+    df = pd.merge(df_mi, df_sttc_mi, on='Señal')
+    df = pd.merge(df, df_sttc, on='Señal')
+    df = pd.merge(df, df_other, on='Señal')
+
+    df["promedio"] = df[['MI', 'STTC MI', 'STTC', 'OTHER']].mean(axis=1)
+    df["std"] = df[['MI', 'STTC MI', 'STTC', 'OTHER']].std(axis=1)
+
+    return df
+
+def get_seasonal_trend(df_signal, metric = "mean", period = 100):
+    labels = df_signal.keys()
+    df_dict_seasonal = {
+        label : 
+            # [
+                np.mean(
+                    get_list_jumps(
+                        get_peaks_seasonal(
+                            seasonal_decompose(
+                                pd.Series(
+                                    get_estadisticas(df_signal[label])[metric]),
+                                        period = period).seasonal)))
+                                    # ]
+        for label in labels}
+    return df_dict_seasonal
+
+def plot_seasonal_analysis(df_mi_signals,
+                           df_sttc_mi_signals,
+                           df_sttc_signals,
+                           df_other_signals,
+                            label, metric : str = "mean", period = 100, aug_figsize = 1,**kwargs):
+    
+
+    df_mi_seasonal = seasonal_decompose(
+                    pd.Series(
+                        get_estadisticas(df_mi_signals[label])[metric]),
+                            period = period).seasonal
+    df_sttc_mi_seasonal = seasonal_decompose(
+                    pd.Series(
+                        get_estadisticas(df_sttc_mi_signals[label])[metric]),
+                            period = period).seasonal
+    df_sttc_seasonal = seasonal_decompose(
+                    pd.Series(
+                        get_estadisticas(df_sttc_signals[label])[metric]),
+                            period = period).seasonal
+    df_other_seasonal = seasonal_decompose(
+                    pd.Series(
+                        get_estadisticas(df_other_signals[label])[metric]),
+                            period = period).seasonal
+
+
+    fig, axs = plt.subplots(2, 2, figsize=(aug_figsize*10, aug_figsize*8)) 
+
+    fig.suptitle(f"Seasonal Trends {label}")
+
+    axs[0,0].plot(df_mi_seasonal)
+    axs[0,0].set_title(f"Seasonal trend MI {label}")
+
+    axs[0,1].plot(df_sttc_mi_seasonal)
+    axs[0,1].set_title(f"Seasonal trend STTC MI {label}")
+
+    axs[1,0].plot(df_sttc_seasonal)
+    axs[1,0].set_title(f"Seasonal trend STTC {label}")
+
+    axs[1,1].plot(df_other_seasonal)
+    axs[1,1].set_title(f"Seasonal trend OTHER {label}")
+
+    plt.tight_layout()
+    plt.show()
+
