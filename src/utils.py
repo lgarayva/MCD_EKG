@@ -414,11 +414,15 @@ def dict_apply_function(dict_df, col, funct, **kargs):
     )
     return df_func
 
-def dict_apply_smooth(dict_df, cols, **kargs):
-
-    dict_smooth_df = {
-        i: dict_df[i][cols].apply(smooth_serie, **kargs).dropna()
-        for i in dict_df.keys()}
+def dict_apply_smooth(dict_df, cols, dict_window = None, **kargs):
+    if dict_window:
+        dict_smooth_df = {
+    i: dict_df[i][cols].apply(lambda col: smooth_serie(col, window_size=dict_window[col.name], **kargs)).dropna()
+    for i in dict_df.keys()}
+    else:
+        dict_smooth_df = {
+            i: dict_df[i][cols].apply(smooth_serie, **kargs).dropna()
+            for i in dict_df.keys()}
     return dict_smooth_df
 
 def get_estadistica_dict(df_dict, signals):
