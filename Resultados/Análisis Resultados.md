@@ -5,16 +5,16 @@
 
 #### Análisis de autocorrelaciones y autocorrelaciones parciales series originales
 
-En esta sección se analizó la autocorrelación y la autocorrelación porcial. Del análisis de analizó el promedio de las autocorrelaciones y las autocorrelaciones parciales, esto con el objetivo de analizar si existía algún patrón en las distintas autocorrelaciones y autocorrelaciones parciales, con el objetivo de identificar algún retrazo significativo. Además, se analizó el promedio de las series y cómo se compartaron la autocorrelación y la autocorrelación parcial.
+En esta sección se analizó la autocorrelación y la autocorrelación parcial. En el análisis se analizó el promedio de las autocorrelaciones y las autocorrelaciones parciales, esto con el objetivo de analizar si existía algún patrón en las distintas autocorrelaciones y autocorrelaciones parciales, con el objetivo de identificar algún retraso significativo. Además, se analizó el promedio de las series y cómo se compararon la autocorrelación y la autocorrelación parcial.
 
 Cada conjunto de gráficas muestran los siguientes gráficos:
 
-* Agregado ACF mean's: autocorrelograma de los promedios de las autocorrelaciones de las series.
-* Agregado PACF mean'sautocorrelograma de los promedios de las autocorrelaciones parciales de las series.
-* PACF mean's: autocorrelograma de las autocorrelaciones de los promedios de las series.
-* ACF mean'sautocorrelograma de las autocorrelaciones parciales de los promedios de las series.
+* Agregado ACF means: autocorrelograma de los promedios de las autocorrelaciones de las series.
+* Agregado PACF means: autocorrelograma de los promedios de las autocorrelaciones parciales de las series.
+* PACF means: autocorrelograma de las autocorrelaciones de los promedios de las series.
+* ACF means: sautocorrelograma de las autocorrelaciones parciales de los promedios de las series.
 
-[Ir a Análisis autocorrelaciones y autocorrelaciones parcial](../notebooks/01_analisis_autocorrelaciones.ipynb#3d1)
+[Ir a Análisis autocorrelaciones y autocorrelaciones parciales](../notebooks/01_analisis_autocorrelaciones.ipynb#3d1)
 
 De la primera serie de gráficas podemos observar que en general las autocorrelaciones no decrecen a cero, mientras que las autocorrelaciones parciales tienen una tendencia decreciente a cero, lo que nos podría indicar la existe de raíces unitarios o que la serie es no estacionaria.
 
@@ -37,7 +37,7 @@ De la primera serie de gráficas podemos observar que en general las autocorrela
 | AVF     | 0.785    |  0.84     | 0.733333 | 0.733333 |
 | I       | 0.891667 |  0.9      | 0.888333 | 0.906667 |
 
-De la prueba podemos ver que la mayoría de las series no presentan una raíz unitaria, sin embargo existe una presencia no estacionaria.
+De la prueba podemos ver que la mayoría de las series no presentan una raíz unitaria, sin embargo existe una señal de no estacionariedad.
 
 #### Resultados posterior a aplicar una diferencia
 
@@ -60,17 +60,17 @@ De la prueba aplicando una diferencia podemos ver que más del 99% de las series
 
 #### Análisis de autocorrelaciones y autocorrelaciones parciales series diferenciadas
 
-[Ir a Análisis autocorrelaciones y autocorrelaciones parcial con diferencias](../notebooks/01_analisis_autocorrelaciones.ipynb#3d3)
+[Ir a Análisis autocorrelaciones y autocorrelaciones parciales con diferencias](../notebooks/01_analisis_autocorrelaciones.ipynb#3d3)
 
-En general, podemos obervar que las primeras `q` autocorrelaciones son distintas de cero, mientras que las autocorrelaciones parciales tienen una sucesión infinita a cero. Con esto podemos ver que al aplicar una diferencia se corrige el problema de no estacionaridad.
+En general, podemos observar que las primeras `q` autocorrelaciones son distintas de cero, mientras que las autocorrelaciones parciales tienen una sucesión infinita a cero. Con esto podemos ver que al aplicar una diferencia se corrige el problema de no estacionariedad.
 
 ### Análisis de descomposición de series
 
-Para el análisis de descomposición de series se tomó en cuenta únicamente el componente estacional, con el objetivo de encontrar tendencias de estación. Para esta evaluación de tomó un periodo como el conjunto de `100` observaciones. 
+Para el análisis de descomposición de series se tomó en cuenta únicamente el componente estacional, con el objetivo de encontrar tendencias de estación. Para esta evaluación se tomó un período como el conjunto de `100` observaciones. 
 
-Para cada clase y cada señal tomamos el promedio de todos los pacientes, una vez que obtuvimos esto descomponemos la serie y nos quedamos con el componente estacional. 
+Para cada clase y cada señal tomamos el promedio de todos los pacientes, una vez que obtuvimos esto descomponemos la serie y se extrajo el componente estacional. 
 
-A partir del componente estacional obtenemos los máxmimos y mínimos con el objetivo de encontrar picos que se repitan en la serie para poder realizar un suavizamiento en la serie.
+A partir del componente estacional obtenemos los máximos y mínimos con el objetivo de encontrar picos que se repitan en la serie para poder realizar un suavizamiento en la serie.
 
 
 |    | Señal   |       MI |   STTC MI |     STTC |    OTHER |   promedio |      std |
@@ -88,4 +88,4 @@ A partir del componente estacional obtenemos los máxmimos y mínimos con el obj
 | 10 | AVF     |  32.069  |   50.2632 |  32.9655 |  48.3684 |    40.9165 |  9.73633 |
 | 11 | I       |  32.9655 |   31.5517 |  33.6897 |  34.2143 |    33.1053 |  1.15534 |
 
-De la tabla podemos observar que hay una notable diferencia en los saltos del componente estaciona, con este análisis una de las posibles soluciones es tomar una sola ventana de suavizamiento por señal o inlcuso una ventana de suavizamiento por señal y por clase.
+De la tabla podemos observar que hay una notable diferencia en los saltos del componente estacional. Con este análisis, una de las posibles soluciones es tomar una sola ventana de suavizamiento por señal o incluso una ventana de suavizamiento por señal y por clase.
