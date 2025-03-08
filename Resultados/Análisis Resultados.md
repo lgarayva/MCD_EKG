@@ -89,3 +89,13 @@ A partir del componente estacional obtenemos los máximos y mínimos con el obje
 | 11 | I       |  32.9655 |   31.5517 |  33.6897 |  34.2143 |    33.1053 |  1.15534 |
 
 De la tabla podemos observar que hay una notable diferencia en los saltos del componente estacional. Con este análisis, una de las posibles soluciones es tomar una sola ventana de suavizamiento por señal o incluso una ventana de suavizamiento por señal y por clase.
+
+## 02
+
+### Análisis Cross Correlation
+
+[Ir a Análisis Cross Correlation](../notebooks/02_analisis_cc.ipynb#3)
+
+De las gráficas originales podemos notar que existe un comportamiento notable en los retrazos `[-75, 0, 75]`, además de que en algunas señales podemos observar una acumulación en picos en el rango `(-75,75)`.
+
+#### Análisis de autocorrelaciones y autocorrelaciones parciales series originales
