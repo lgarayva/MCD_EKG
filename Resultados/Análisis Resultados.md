@@ -98,4 +98,6 @@ De la tabla podemos observar que hay una notable diferencia en los saltos del co
 
 De las gráficas originales podemos notar que existe un comportamiento notable en los retrazos `[-75, 0, 75]`, además de que en algunas señales podemos observar una acumulación en picos en el rango `(-75,75)`.
 
-#### Análisis de autocorrelaciones y autocorrelaciones parciales series originales
+#### Análisis de cross-correlation con ventana (window) particular
+
+[Ir a Análisis de cross-correlation con ventana (window) particular ](../notebooks/02_analisis_cc.ipynb#3d3)
