@@ -11,6 +11,6 @@ cara_anterior = ["V4", "V3"]
 cara_interior = ["II", "III", "AVF"]
 cara_sepal = ["V1", "V2"]
 
-window_jason = "window_class.json"
+window_jason = "output/window_class.json"
 
 
