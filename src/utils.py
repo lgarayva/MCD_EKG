@@ -414,11 +414,15 @@ def dict_apply_function(dict_df, col, funct, **kargs):
     )
     return df_func
 
-def dict_apply_smooth(dict_df, cols, **kargs):
-
-    dict_smooth_df = {
-        i: dict_df[i][cols].apply(smooth_serie, **kargs).dropna()
-        for i in dict_df.keys()}
+def dict_apply_smooth(dict_df, cols, dict_window = None, **kargs):
+    if dict_window:
+        dict_smooth_df = {
+    i: dict_df[i][cols].apply(lambda col: smooth_serie(col, window_size=dict_window[col.name], **kargs)).dropna()
+    for i in dict_df.keys()}
+    else:
+        dict_smooth_df = {
+            i: dict_df[i][cols].apply(smooth_serie, **kargs).dropna()
+            for i in dict_df.keys()}
     return dict_smooth_df
 
 def get_estadistica_dict(df_dict, signals):
@@ -488,8 +492,7 @@ def plot_signal_stats(df_mi_stats, df_sttc_mi_stats, df_sttc_stats, df_other_sta
         if with_std:
             df_sttc_mi_stats[i]["top_std"].plot(ax=axs[0, 1], color="red", alpha=0.5, legend=False)
             df_sttc_mi_stats[i]["buttom_std"].plot(ax=axs[0, 1], color="red", alpha=0.5, legend=False)
-        axs[0, 0].set_title(f"Señal {i}. \nClase MI {suavizamiento} \n({stat})")
-        axs[0, 1].set_title(f"Señal {i}. \nClase STTC MI \n({stat})")
+        axs[0, 1].set_title(f"Señal {i}. \nClase STTC MI {suavizamiento} \n({stat})")
 
         df_sttc_stats[i][stat].plot(ax=axs[1, 0], color="navy", alpha=1, legend=False)
         if with_std:
@@ -721,3 +724,69 @@ def plot_seasonal_analysis(df_mi_signals,
     plt.tight_layout()
     plt.show()
 
+
+
+def apply_plot_ccf_faces(df_mi, df_sttc_mi, df_sttc, df_other, 
+                   list_signals, **kwargs):
+    
+    df_mi_ccf = genera_dict_comb_ccf(df_mi, list_signals)
+    df_sttc_mi_ccf = genera_dict_comb_ccf(df_sttc_mi, list_signals)
+    df_sttc_ccf = genera_dict_comb_ccf(df_sttc, list_signals)
+    df_other_ccf = genera_dict_comb_ccf(df_other, list_signals)
+    
+
+    plot_ccf_faces(df_mi_ccf, df_sttc_mi_ccf, df_sttc_ccf, df_other_ccf, 
+                   list_signals, **kwargs)
+    
+def apply_plot_ccf_faces_stats(df_mi,
+                        df_sttc_mi,
+                        df_sttc,
+                        df_other,
+                   list_signals,
+                   status = True,
+                   series = True,
+                   x_lags = [],
+                   con_suavizamiento = None):
+    
+    df_mi_ccf = genera_dict_comb_ccf(df_mi, list_signals)
+    df_sttc_mi_ccf = genera_dict_comb_ccf(df_sttc_mi, list_signals)
+    df_sttc_ccf = genera_dict_comb_ccf(df_sttc, list_signals)
+    df_other_ccf = genera_dict_comb_ccf(df_other, list_signals)
+    
+    plot_ccf_faces_stats(df_mi_ccf,
+                        df_sttc_mi_ccf,
+                        df_sttc_ccf,
+                        df_other_ccf,
+                   list_signals,
+                   status = status,
+                   series = series,
+                   x_lags = x_lags,
+                   con_suavizamiento = con_suavizamiento)
+    
+def apply_plot_signal_stats(df_mi, df_sttc_mi, df_sttc, df_other,
+      list_signals, con_suavizamiento = None, dict_window = None, window_size = None, **kwargs):
+     
+     # window_size = kwargs.get("window_size")
+     
+     if con_suavizamiento or dict_window or window_size:
+          if window_size:
+               df_mi = dict_apply_smooth(df_mi, list_signals, window_size = window_size)
+               df_sttc_mi = dict_apply_smooth(df_sttc_mi, list_signals, window_size = window_size)
+               df_sttc = dict_apply_smooth(df_sttc, list_signals, window_size = window_size)
+               df_other = dict_apply_smooth(df_other, list_signals, window_size = window_size)
+          else:
+               df_mi = dict_apply_smooth(df_mi, list_signals, dict_window = dict_window)
+               df_sttc_mi = dict_apply_smooth(df_sttc_mi, list_signals, dict_window = dict_window)
+               df_sttc = dict_apply_smooth(df_sttc, list_signals, dict_window = dict_window)
+               df_other = dict_apply_smooth(df_other, list_signals, dict_window = dict_window)
+
+          con_suavizamiento = True
+    
+     df_mi_stats = get_estadistica_dict(df_mi, list_signals)
+     df_sttc_mi_stats = get_estadistica_dict(df_sttc_mi, list_signals)
+     df_sttc_stats = get_estadistica_dict(df_sttc, list_signals)
+     df_other_stats = get_estadistica_dict(df_other, list_signals)
+          
+     plot_signal_stats(df_mi_stats, df_sttc_mi_stats, df_sttc_stats, df_other_stats,
+               list_signals, con_suavizamiento = con_suavizamiento, **kwargs)
+    
