@@ -29,7 +29,7 @@ def lectura_carpetas_dict(data_path : str) -> dict:
         dict: Diccionario con las carpetas como claves y, dentro de cada una, otro diccionario
               con los archivos CSV y sus correspondientes DataFrames.
     """
-    
+
     carpetas = [entrada.name for entrada in os.scandir(data_path) if entrada.is_dir()]
     dict_archivos = {}
 
@@ -705,40 +705,6 @@ def get_estadistica_label_dict(df_dict : dict, signals : list) -> dict:
         for label in signals
     }
     return df_stats
-
-def del_get_estadistica_label_dict(df_dict : dict, signals : list) -> dict:
-    """
-    Calcula estadísticas descriptivas para múltiples señales en un diccionario de DataFrames, 
-        organizadas por etiquetas.
-
-    Args:
-        df_dict (dict): Un diccionario donde las claves son nombres de señales y los valores 
-            son diccionarios con identificadores de pacientes y sus series temporales.
-        signals (list): Una lista de nombres de señales para las cuales se calcularán las estadísticas.
-
-    Returns:
-        dict: Un diccionario donde las claves son los nombres de las señales y los valores 
-            son DataFrames con las estadísticas calculadas (media, mínimo, máximo, desviación estándar, 
-            límite superior e inferior de la desviación estándar).
-    """
-
-    dict_label_stats = {}
-    for i in signals:
-        pd_mean = df_dict[i].mean(axis=1)
-        pd_min = df_dict[i].min(axis=1)
-        pd_max = df_dict[i].max(axis=1)
-        pd_std = df_dict[i].std(axis=1)
-        pd_top_std = pd_mean + pd_std
-        pd_buttom_std = pd_mean - pd_std
-
-        dict_label_stats[i] = pd.DataFrame({"mean" : pd_mean,
-                                        "std": pd_std,
-                                        "min" : pd_min,
-                                        "max" : pd_max,
-                                        "top_std" : pd_top_std,
-                                        "buttom_std": pd_buttom_std})
-
-    return dict_label_stats
 
 def plot_signal_stats(df_mi_stats : dict, df_sttc_mi_stats : dict, df_sttc_stats : dict, df_other_stats : dict,
           list_signals : list,
