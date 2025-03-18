@@ -16,7 +16,6 @@ from statsmodels.tsa.statespace.sarimax import SARIMAX
 import matplotlib.pyplot as plt
 
 import math
-# from config import data_folder
 
 def lectura_carpetas_dict(data_path : str) -> dict:
 
@@ -55,8 +54,9 @@ def lectura_carpetas_dict(data_path : str) -> dict:
 
 def get_acf_pacf(dict_series : dict, label : str = "II", **kwargs) -> tuple[pd.DataFrame, pd.DataFrame]:
 
-    """La función tiene como objetivo dado un diccionario de series obtener la autocorrelación y la
-        autocorrelación parcial de la serie dado una clase.
+    """
+    La función tiene como objetivo dado un diccionario de series obtener la autocorrelación y la
+    autocorrelación parcial de la serie dado una clase.
 
     Args:
         dict_series (dict): diccionario con las distintas series a analizar
@@ -82,8 +82,9 @@ def get_acf_pacf(dict_series : dict, label : str = "II", **kwargs) -> tuple[pd.D
 
 def get_df_label(dict_series : dict, label : str = "II", **kwargs) -> pd.DataFrame:
 
-    """La función tiene como objetivo dado un diccionario de series generar un dataframe
-        con una clase dada.
+    """
+    La función tiene como objetivo dado un diccionario de series generar un dataframe
+    con una clase dada.
 
     Args:
         dict_series (dict): diccionario con las distintas series a analizar
@@ -105,6 +106,20 @@ def get_df_label(dict_series : dict, label : str = "II", **kwargs) -> pd.DataFra
 
 def get_dict_labels(dict_series : dict, signals : list, **kwargs) -> dict:
 
+    """
+    Genera un diccionario de DataFrames a partir de un diccionario de series y una lista de señales.
+
+    Args:
+        dict_series (dict): Un diccionario donde las claves son identificadores de pacientes 
+        y los valores son diccionarios con etiquetas de señales.
+        signals (list): Una lista de etiquetas de señales que se desean extraer.
+        **kwargs: Argumentos adicionales opcionales.
+
+    Returns:
+        dict: Un diccionario donde las claves son las etiquetas de señales y los valores son 
+        DataFrames con los datos correspondientes a cada paciente.
+    """
+
     df_dict = {label: pd.DataFrame({
         pacient : dict_series[pacient][label]
         for pacient in dict_series.keys()
@@ -115,11 +130,21 @@ def get_dict_labels(dict_series : dict, signals : list, **kwargs) -> dict:
     return df_dict
 
 def plot_scale_gray(df):
+    """
+    Grafica un DataFrame en escala de grises.
+
+    Args:
+        df (DataFrame): El DataFrame que se desea graficar.
+
+    Returns:
+        None
+    """
     df.plot(color="gray", alpha=0.1, legend=False)
     plt.show()
 
 def get_estadisticas(df : pd.DataFrame, **kargs) -> pd.DataFrame:
-    """Dado un DataFrame la función entrega un dataframe con las estadísticas por fila.
+    """
+    Dado un DataFrame la función entrega un dataframe con las estadísticas por fila.
 
     Args:
         df (pd.DataFrame): DataFrame con las series a analizar.
@@ -138,6 +163,19 @@ def get_estadisticas(df : pd.DataFrame, **kargs) -> pd.DataFrame:
 
 def plot_acf_pact_df(df : pd.DataFrame, metric : str = "mean" ,label : str = "ACP", N : int = 1000):
 
+    """
+    Grafica la función de autocorrelación (ACF) de un DataFrame.
+
+    Args:
+        df (DataFrame): El DataFrame que contiene los datos a graficar.
+        metric (str): La métrica a utilizar para calcular la autocorrelación. Por defecto es "mean".
+        label (str): La etiqueta para el eje y de la gráfica. Por defecto es "ACP".
+        N (int): El tamaño de la muestra para calcular el intervalo de confianza. Por defecto es 1000.
+
+    Returns:
+        None
+    """
+
     lags = np.arange(df.shape[0])
     autocorr_values = df[metric]
     intervalo_confianza = 1.96/math.sqrt(N)
@@ -150,6 +188,16 @@ def plot_acf_pact_df(df : pd.DataFrame, metric : str = "mean" ,label : str = "AC
     plt.show()
 
 def plot_acf_residuals(series : pd.Series):
+
+    """
+    Grafica la función de autocorrelación (ACF) de los residuos de una serie temporal.
+
+    Args:
+        series (pd.Series): La serie temporal que contiene los residuos a graficar.
+
+    Returns:
+        None
+    """
     label = "ACF Residuals"
     N = series.shape[0]
     lags = np.arange(N)
@@ -162,7 +210,19 @@ def plot_acf_residuals(series : pd.Series):
     plt.ylabel(label)
     plt.show()
 
-def CCF_lags(x, y, max_lag=20):
+def CCF_lags(x : pd.Series | np.ndarray, y : pd.Series | np.ndarray, max_lag : int =20):
+    """
+    Calcula la función de correlación cruzada (CCF) entre dos series temporales para una cantidad
+        máxima de desfases (lags).
+
+    Args:
+        x (pd.Series o np.ndarray): La primera serie temporal.
+        y (pd.Series o np.ndarray): La segunda serie temporal.
+        max_lag (int): El número máximo de desfases (lags) a calcular. Por defecto es 20.
+
+    Returns:
+        pd.DataFrame: Un DataFrame con los valores de la CCF y los desfases correspondientes.
+    """
     n = np.max([x.shape[0], y.shape[0]])
     lags = np.arange(-max_lag, max_lag + 1)
     ccf_values = [np.corrcoef(x[max(0, -lag):n - max(0, lag)], 
@@ -171,6 +231,18 @@ def CCF_lags(x, y, max_lag=20):
     return pd.DataFrame({'ccf' : ccf_values, 'lags' : lags})
 
 def plot_CCF(ccf_values, lags, figsize = (10,10)):
+
+    """
+    Grafica la función de correlación cruzada (CCF).
+
+    Args:
+        ccf_values (array-like): Los valores de la función de correlación cruzada.
+        lags (array-like): Los desfases (lags) correspondientes a los valores de la CCF.
+        figsize (tuple): El tamaño de la figura de la gráfica. Por defecto es (10, 10).
+
+    Returns:
+        None
+    """
 
     # Graficar función de correlación cruzada
     plt.figure(figsize=figsize)
@@ -182,9 +254,10 @@ def plot_CCF(ccf_values, lags, figsize = (10,10)):
     plt.show()
 
 def diff_ts(series : pd.Series, differences : int = 1) -> pd.Series:
-    """La función recive como argumento una serie de pandas y el número de 
-    diferencias que se le aplicarán a la serie. La función regresa la 
-    serie diferenciada n veces.
+    """
+    La función recive como argumento una serie de pandas y el número de 
+        diferencias que se le aplicarán a la serie. La función regresa la 
+        serie diferenciada n veces.
 
     Args:
         series (pd.Series): recibe una pandas serie
@@ -200,6 +273,19 @@ def diff_ts(series : pd.Series, differences : int = 1) -> pd.Series:
     return diff_series
 
 def plot_acf_pacf_serie(series : pd.Series, lags : int = None, **kwargs):
+    """
+    Grafica la función de autocorrelación (ACF) y la función de autocorrelación parcial (PACF)
+        de una serie temporal.
+
+    Args:
+        series (pd.Series): La serie temporal a graficar.
+        lags (int, opcional): El número de desfases (lags) a calcular. Si no se especifica,
+            se calcula como 10 * log(n), donde n es el tamaño de la serie.
+        **kwargs: Argumentos adicionales opcionales.
+
+    Returns:
+        None
+    """
     if lags == None:
         lags = 10*int(math.log((series.shape[0])))
 
@@ -207,7 +293,19 @@ def plot_acf_pacf_serie(series : pd.Series, lags : int = None, **kwargs):
     _ = plot_acf(series, lags=lags, zero = False, ax = ax1)
     _ = plot_pacf(series, lags=lags, zero = False, ax = ax2)
 
-def acf_pacf(series : pd.Series, nlags : int = None, **kwargs):
+def acf_pacf(series : pd.Series, nlags : int = None, **kwargs) -> tuple[pd.Series, pd.Series]:
+    """
+    Calcula la función de autocorrelación (ACF) y la función de autocorrelación parcial (PACF) de una serie temporal.
+
+    Args:
+        series (pd.Series): La serie temporal para la cual se calcularán las funciones.
+        nlags (int, opcional): El número de desfases (lags) a calcular. Si no se especifica, se calcula como 10 * log(n), 
+            donde n es el tamaño de la serie.
+        **kwargs: Argumentos adicionales opcionales.
+
+    Returns:
+        tuple: Una tupla que contiene dos arrays, uno con los valores de la ACF y otro con los valores de la PACF.
+    """
     if nlags == None:
         nlags = 10*int(math.log((series.shape[0])))
 
@@ -217,7 +315,8 @@ def acf_pacf(series : pd.Series, nlags : int = None, **kwargs):
     return acf_vals, pacf_vals
 
 def fit_arima(series: pd.Series, order : tuple[int, int, int], **kwargs) -> pd.Series:
-    """Obtiene los residuales después de evaluar un modelo arima
+    """
+    Obtiene los residuales después de evaluar un modelo arima
 
     Args:
         series (pd.Series): erie a ajustar modelo arima
@@ -235,11 +334,10 @@ def fit_arima(series: pd.Series, order : tuple[int, int, int], **kwargs) -> pd.S
     result = model.fit()
     return result
 
-
-
 def smooth_serie(serie: pd.Series, do_abs: bool = True, window_size: int = 50, metodo: str = 'mean') -> pd.Series:
-    """La función suaviza la serie aplicado primero valor absoluto en caso de no definir lo contratio y 
-    aplica un método de rolling windows dependiendo del método seleccionado.
+    """
+    La función suaviza la serie aplicado primero valor absoluto en caso de no definir lo contratio y 
+        aplica un método de rolling windows dependiendo del método seleccionado.
 
     Args:
         serie (pd.Series): serie que se va a suavizar
@@ -279,7 +377,19 @@ def smooth_serie(serie: pd.Series, do_abs: bool = True, window_size: int = 50, m
 
     return pd_smooth_serie
 
-def CCF_lags(x, y, max_lag=250):
+def CCF_lags(x : pd.Series | np.ndarray, y : pd.Series | np.ndarray, max_lag : int =250):
+
+    """
+    Calcula la función de correlación cruzada (CCF) entre dos series temporales para una cantidad máxima de desfases (lags).
+
+    Args:
+        x (pd.Series o np.ndarray): La primera serie temporal.
+        y (pd.Series o np.ndarray): La segunda serie temporal.
+        max_lag (int): El número máximo de desfases (lags) a calcular. Por defecto es 250.
+
+    Returns:
+        pd.DataFrame: Un DataFrame con los valores de la CCF y los desfases correspondientes.
+    """
 
     n = np.max([x.shape[0], y.shape[0]])
     lags = np.arange(-max_lag, max_lag + 1)
@@ -288,8 +398,20 @@ def CCF_lags(x, y, max_lag=250):
     # return ccf_values, lags
     return pd.DataFrame({'ccf' : ccf_values, 'lags' : lags})
 
-def genera_df_ccf(dict_df, col1 : str = "II", col2 : str = "III"):
+def genera_df_ccf(dict_df : dict, col1 : str = "II", col2 : str = "III") -> pd.DataFrame:
+    """
+    Genera un DataFrame que contiene las funciones de correlación cruzada (CCF) entre dos columnas 
+        específicas de múltiples DataFrames.
 
+    Args:
+        dict_df (dict): Un diccionario donde las claves son identificadores de pacientes y los valores 
+            son DataFrames con las series temporales.
+        col1 (str): El nombre de la primera columna para calcular la CCF. Por defecto es "II".
+        col2 (str): El nombre de la segunda columna para calcular la CCF. Por defecto es "III".
+
+    Returns:
+        pd.DataFrame: Un DataFrame donde las filas son los desfases (lags) y las columnas son las CCF de cada paciente.
+    """
     mi_patients = list(dict_df.keys())
     df_ccf = pd.concat(
     [CCF_lags(dict_df[i][col1], dict_df[i][col2]).set_index("lags").rename(columns={'ccf': i}) 
@@ -299,25 +421,72 @@ def genera_df_ccf(dict_df, col1 : str = "II", col2 : str = "III"):
 
     return df_ccf
 
-def genera_dict_comb_ccf(df, combinaciones):
+def genera_dict_comb_ccf(df : dict, combinaciones : list) -> dict:
+
+    """
+    Genera un diccionario que contiene DataFrames con las funciones de correlación cruzada (CCF) 
+        para múltiples combinaciones de señales.
+
+    Args:
+        df (dict): Un diccionario donde las claves son identificadores de pacientes y los valores 
+            son DataFrames con las series temporales.
+        combinaciones (list): Una lista de tuplas, donde cada tupla contiene dos nombres de columnas 
+            para las cuales se calculará la CCF.
+
+    Returns:
+        dict: Un diccionario donde las claves son tuplas de nombres de señales y los valores son 
+            DataFrames con las CCF correspondientes.
+    """
+
     dict_ccf = {
         (signal1, signal2): genera_df_ccf(df, col1=signal1, col2=signal2)
         for signal1, signal2 in combinaciones
         }
     return dict_ccf
 
+def plot_ccf_dict(df_dict : dict, x_lags : list = [0, -75, 75]):
+    """
+    Grafica las funciones de correlación cruzada (CCF) almacenadas en un diccionario.
 
-def plot_ccf_dict(df_dict, x_lags = [0, -75, 75]):
+    Args:
+        df_dict (dict): Un diccionario donde las claves son tuplas de nombres de señales y los valores son DataFrames 
+            con las CCF correspondientes.
+        x_lags (list): Una lista de desfases (lags) específicos para marcar en las gráficas. 
+            Por defecto es [0, -75, 75].
+
+    Returns:
+        None
+    """
     for signal1, signal2 in df_dict.keys():
         df_dict[(signal1, signal2)].plot(color="gray", alpha=0.1, legend=False)
         plt.title(f"CCF señal {signal1} vs señal {signal2}, 250 lags")
         [plt.axvline(x, color='black') for x in x_lags]
         plt.show()
 
-def plot_ccf_faces(dict_mi_ccf, dict_sttc_mi_ccf, dict_sttc_ccf, dict_other_ccf, 
-                   list_signals,
-                   x_lags = [0, -75, 75],
+def plot_ccf_faces(dict_mi_ccf : dict, dict_sttc_mi_ccf : dict, dict_sttc_ccf : dict, dict_other_ccf : dict, 
+                   list_signals : list,
+                   x_lags : list = [0, -75, 75],
                    con_suavizamiento = None):
+    
+    """
+    Grafica las funciones de correlación cruzada (CCF) para múltiples combinaciones de señales y clases, 
+        organizadas en una cuadrícula de subgráficas.
+
+    Args:
+        dict_mi_ccf (dict): Diccionario con las CCF para la clase MI.
+        dict_sttc_mi_ccf (dict): Diccionario con las CCF para la clase STTC MI.
+        dict_sttc_ccf (dict): Diccionario con las CCF para la clase STTC.
+        dict_other_ccf (dict): Diccionario con las CCF para la clase OTHER.
+        list_signals (list): Lista de tuplas, donde cada tupla contiene dos nombres de señales para 
+            las cuales se graficarán las CCF.
+        x_lags (list): Lista de desfases (lags) específicos para marcar en las gráficas. 
+            Por defecto es [0, -75, 75].
+        con_suavizamiento (bool, opcional): Indica si se debe aplicar suavizamiento a las gráficas. 
+            Por defecto es None.
+
+    Returns:
+        None
+    """
     
     suavizamiento = "con suavizamiento" if con_suavizamiento else ""
     
@@ -344,15 +513,38 @@ def plot_ccf_faces(dict_mi_ccf, dict_sttc_mi_ccf, dict_sttc_ccf, dict_other_ccf,
         plt.tight_layout()
         plt.show()
 
-def plot_ccf_faces_stats(dict_mi_ccf,
-                        dict_sttc_mi_ccf,
-                        dict_sttc_ccf,
-                        dict_other_ccf,
-                   list_signals,
-                   status = False,
-                   series = True,
-                   x_lags = [0, -75, 75],
+def plot_ccf_faces_stats(dict_mi_ccf : dict,
+                        dict_sttc_mi_ccf : dict,
+                        dict_sttc_ccf : dict,
+                        dict_other_ccf : dict,
+                   list_signals : list,
+                   status : bool = False,
+                   series : bool = True,
+                   x_lags : list = [0, -75, 75],
                    con_suavizamiento = None):
+    
+    """
+    Grafica las funciones de correlación cruzada (CCF) para múltiples combinaciones de señales y clases, 
+        organizadas en una cuadrícula de subgráficas, con opción de incluir estadísticas.
+
+    Args:
+        dict_mi_ccf (dict): Diccionario con las CCF para la clase MI.
+        dict_sttc_mi_ccf (dict): Diccionario con las CCF para la clase STTC MI.
+        dict_sttc_ccf (dict): Diccionario con las CCF para la clase STTC.
+        dict_other_ccf (dict): Diccionario con las CCF para la clase OTHER.
+        list_signals (list): Lista de tuplas, donde cada tupla contiene dos nombres de señales para 
+            las cuales se graficarán las CCF.
+        status (bool): Indica si se deben calcular y graficar estadísticas (media y desviación estándar). 
+            Por defecto es False.
+        series (bool): Indica si se deben graficar las series individuales. Por defecto es True.
+        x_lags (list): Lista de desfases (lags) específicos para marcar en las gráficas. 
+            Por defecto es [0, -75, 75].
+        con_suavizamiento (bool, opcional): Indica si se debe aplicar suavizamiento a las gráficas. 
+            Por defecto es None.
+
+    Returns:
+        None
+    """
     
     suavizamiento = "con suavizamiento" if con_suavizamiento else ""
     if status:
@@ -406,7 +598,22 @@ def plot_ccf_faces_stats(dict_mi_ccf,
         plt.tight_layout()
         plt.show()
 
-def dict_apply_function(dict_df, col, funct, **kargs):
+def dict_apply_function(dict_df : dict, col : str, funct : function, **kargs) -> pd.DataFrame:
+    """
+    Aplica una función a una columna específica de múltiples DataFrames almacenados en un diccionario 
+        y concatena los resultados en un solo DataFrame.
+
+    Args:
+        dict_df (dict): Un diccionario donde las claves son identificadores de pacientes y 
+            los valores son DataFrames con las series temporales.
+        col (str): El nombre de la columna a la cual se aplicará la función.
+        funct (function): La función que se aplicará a la columna especificada.
+        **kargs: Argumentos adicionales que se pasarán a la función.
+
+    Returns:
+        pd.DataFrame: Un DataFrame con los resultados de aplicar la función a la columna especificada de cada 
+            DataFrame en el diccionario.
+    """
     mi_patients = list(dict_df.keys())
     df_func = pd.concat(
     [dict_df[i][col].apply(funct, **kargs) for i in mi_patients], 
@@ -414,7 +621,23 @@ def dict_apply_function(dict_df, col, funct, **kargs):
     )
     return df_func
 
-def dict_apply_smooth(dict_df, cols, dict_window = None, **kargs):
+def dict_apply_smooth(dict_df : dict, cols : list, dict_window : dict = None, **kargs):
+    """
+    Aplica una función de suavizamiento a columnas específicas de múltiples DataFrames almacenados 
+        en un diccionario.
+
+    Args:
+        dict_df (dict): Un diccionario donde las claves son identificadores de pacientes y 
+            los valores son DataFrames con las series temporales.
+        cols (list): Una lista de nombres de columnas a las cuales se aplicará la función 
+            de suavizamiento.
+        dict_window (dict, opcional): Un diccionario que especifica el tamaño de la ventana 
+            de suavizamiento para cada columna. Si no se proporciona, se utilizará un tamaño de ventana por defecto.
+        **kargs: Argumentos adicionales que se pasarán a la función de suavizamiento.
+
+    Returns:
+        dict: Un diccionario con los DataFrames suavizados.
+    """
     if dict_window:
         dict_smooth_df = {
     i: dict_df[i][cols].apply(lambda col: smooth_serie(col, window_size=dict_window[col.name], **kargs)).dropna()
@@ -425,7 +648,22 @@ def dict_apply_smooth(dict_df, cols, dict_window = None, **kargs):
             for i in dict_df.keys()}
     return dict_smooth_df
 
-def get_estadistica_dict(df_dict, signals):
+def get_estadistica_dict(df_dict : dict, signals : list) -> dict:
+
+    """
+    Calcula estadísticas descriptivas para múltiples señales en un diccionario de DataFrames.
+
+    Args:
+        df_dict (dict): Un diccionario donde las claves son identificadores de pacientes y 
+            los valores son DataFrames con las series temporales.
+        signals (list): Una lista de nombres de señales para las cuales se calcularán las estadísticas.
+
+    Returns:
+        dict: Un diccionario donde las claves son los nombres de las señales y los valores son 
+            DataFrames con las estadísticas calculadas (media, mínimo, máximo, desviación estándar, 
+            límite superior e inferior de la desviación estándar).
+    """
+
     df_stats = {
         label: pd.DataFrame({
             pacient: df_dict[pacient][label] 
@@ -437,7 +675,21 @@ def get_estadistica_dict(df_dict, signals):
     }
     return df_stats
 
-def get_estadistica_label_dict(df_dict, signals):
+def get_estadistica_label_dict(df_dict : dict, signals : list) -> dict:
+    """
+    Calcula estadísticas descriptivas para múltiples señales en un diccionario de DataFrames, 
+        organizadas por etiquetas.
+
+    Args:
+        df_dict (dict): Un diccionario donde las claves son nombres de señales y los valores 
+            son diccionarios con identificadores de pacientes y sus series temporales.
+        signals (list): Una lista de nombres de señales para las cuales se calcularán las estadísticas.
+
+    Returns:
+        dict: Un diccionario donde las claves son los nombres de las señales y los valores son 
+            DataFrames con las estadísticas calculadas (media, mínimo, máximo, desviación estándar, 
+            límite superior e inferior de la desviación estándar).
+    """
     df_stats = {
         label: pd.DataFrame({
             pacient: df_dict[label][pacient] 
@@ -449,7 +701,22 @@ def get_estadistica_label_dict(df_dict, signals):
     }
     return df_stats
 
-def del_get_estadistica_label_dict(df_dict, signals):
+def del_get_estadistica_label_dict(df_dict : dict, signals : list) -> dict:
+
+    """
+    Calcula estadísticas descriptivas para múltiples señales en un diccionario de DataFrames, 
+        organizadas por etiquetas.
+
+    Args:
+        df_dict (dict): Un diccionario donde las claves son nombres de señales y los valores 
+            son diccionarios con identificadores de pacientes y sus series temporales.
+        signals (list): Una lista de nombres de señales para las cuales se calcularán las estadísticas.
+
+    Returns:
+        dict: Un diccionario donde las claves son los nombres de las señales y los valores 
+            son DataFrames con las estadísticas calculadas (media, mínimo, máximo, desviación estándar, 
+            límite superior e inferior de la desviación estándar).
+    """
 
     dict_label_stats = {}
     for i in signals:
@@ -469,14 +736,30 @@ def del_get_estadistica_label_dict(df_dict, signals):
 
     return dict_label_stats
 
-
-def plot_signal_stats(df_mi_stats, df_sttc_mi_stats, df_sttc_stats, df_other_stats,
-          list_signals,
-          stat = "mean",
-          with_std = False,
+def plot_signal_stats(df_mi_stats : dict, df_sttc_mi_stats : dict, df_sttc_stats : dict, df_other_stats : dict,
+          list_signals : list,
+          stat : str = "mean",
+          with_std : bool = False,
           con_suavizamiento = None):
     # list_signals = ['AVL', 'V3', 'V1', 'V2', 'II', 'V4', 'V5', 'V6', 'III', 'AVR', 'AVF', 'I']
+    """
+    Grafica estadísticas de señales para múltiples clases, organizadas en una cuadrícula de subgráficas.
 
+    Args:
+        df_mi_stats (dict): Diccionario con las estadísticas de las señales para la clase MI.
+        df_sttc_mi_stats (dict): Diccionario con las estadísticas de las señales para la clase STTC MI.
+        df_sttc_stats (dict): Diccionario con las estadísticas de las señales para la clase STTC.
+        df_other_stats (dict): Diccionario con las estadísticas de las señales para la clase OTHER.
+        list_signals (list): Lista de nombres de señales para las cuales se graficarán las estadísticas.
+        stat (str): La estadística a graficar (por defecto es "mean").
+        with_std (bool): Indica si se deben graficar las bandas de desviación estándar. 
+            Por defecto es False.
+        con_suavizamiento (bool, opcional): Indica si se debe aplicar suavizamiento a las gráficas. 
+            Por defecto es None.
+
+    Returns:
+        None
+    """
     suavizamiento = "con suavizamiento" if con_suavizamiento else ""
 
     for i in list_signals:
@@ -509,7 +792,20 @@ def plot_signal_stats(df_mi_stats, df_sttc_mi_stats, df_sttc_stats, df_other_sta
         plt.tight_layout()
         plt.show()
 
-def prueba_ljung_box_labels(df_dict, signals):
+def prueba_ljung_box_labels(df_dict : dict, signals : list) -> pd.DataFrame:
+    """
+    Realiza la prueba de Ljung-Box para múltiples señales en un diccionario de DataFrames y 
+        calcula el promedio de los resultados.
+
+    Args:
+        df_dict (dict): Un diccionario donde las claves son identificadores de pacientes y 
+            los valores son DataFrames con las series temporales.
+        signals (list): Una lista de nombres de señales para las cuales se realizará la 
+            prueba de Ljung-Box.
+
+    Returns:
+        pd.Series: Una serie con el promedio de los resultados de la prueba de Ljung-Box para cada señal.
+    """
     plb = pd.DataFrame({label :[ 1 if (acorr_ljungbox(df_dict[pacient][label], 
                                                 lags=[100], return_df=True)['lb_pvalue'].iloc[0]) < 0.05 else 0
         for pacient in df_dict.keys()]
@@ -518,7 +814,23 @@ def prueba_ljung_box_labels(df_dict, signals):
 
     return plb
 
-def prueba_dickey_fuller(df_dict, signals, apply_diff = False):
+def prueba_dickey_fuller(df_dict : dict, signals : list, apply_diff : bool = False):
+    """
+    Realiza la prueba de Dickey-Fuller aumentada para múltiples señales en un diccionario de 
+        DataFrames y calcula el promedio de los resultados.
+
+    Args:
+        df_dict (dict): Un diccionario donde las claves son identificadores de pacientes y los 
+            valores son DataFrames con las series temporales.
+        signals (list): Una lista de nombres de señales para las cuales se realizará la prueba
+            de Dickey-Fuller.
+        apply_diff (bool): Indica si se debe aplicar la diferenciación a las series temporales 
+            antes de realizar la prueba. Por defecto es False.
+
+    Returns:
+        pd.Series: Una serie con el promedio de los resultados de la prueba de Dickey-Fuller 
+            para cada señal.
+    """
 
     if apply_diff:
         pdf = pd.DataFrame({label :[ 1 if (adfuller(df_dict[pacient][label].diff().dropna())[1]) < 0.05 else 0
@@ -533,33 +845,113 @@ def prueba_dickey_fuller(df_dict, signals, apply_diff = False):
 
     return pdf
 
-def evalua_ks(serie1, serie2, alpha = 0.05):
+def evalua_ks(serie1 : pd.Series | np.array, serie2 : pd.Series | np.array, alpha : float = 0.05) -> int:
+    """
+    Evalúa la prueba de Kolmogorov-Smirnov (KS) para dos series temporales.
+
+    Args:
+        serie1 (pd.Series): La primera serie temporal.
+        serie2 (pd.Series): La segunda serie temporal.
+        alpha (float): El nivel de significancia para la prueba. Por defecto es 0.05.
+
+    Returns:
+        int: Retorna 1 si el p-valor es mayor que alpha (no se rechaza la hipótesis nula), 
+            de lo contrario retorna 0.
+    """
     _, p_value = ks_2samp(serie1, serie2)
     return 1 if p_value > alpha else 0
 
-def eval_corr(serie1, serie2):
+def eval_corr(serie1 : pd.Series | np.array, serie2 : pd.Series | np.array) -> tuple:
+    """
+    Calcula la correlación de Pearson y Spearman entre dos series temporales.
+
+    Args:
+        serie1 (pd.Series o np.ndarray): La primera serie temporal.
+        serie2 (pd.Series o np.ndarray): La segunda serie temporal.
+
+    Returns:
+        tuple: Una tupla que contiene la correlación de Pearson y la correlación de Spearman.
+    """
     pearson_corr, _ = pearsonr(serie1, serie2)
     spearman_corr, _ = spearmanr(serie1, serie2)
     return pearson_corr, spearman_corr
 
-def max_lag_corr(serie1, serie2):
+def max_lag_corr(serie1 : pd.Series | np.array, serie2 : pd.Series | np.array) -> int:
+    """
+    Calcula el desfase (lag) máximo de correlación cruzada entre dos series temporales.
+
+    Args:
+        serie1 (pd.Series o np.ndarray): La primera serie temporal.
+        serie2 (pd.Series o np.ndarray): La segunda serie temporal.
+
+    Returns:
+        int: El desfase (lag) en el que se encuentra la máxima correlación cruzada.
+    """
     cross_corr = np.correlate(serie1, serie2, mode="full")
     max_len = np.max(len(serie1), len(serie2))
     max_lag = np.argmax(cross_corr) - (max_len - 1)
     return max_lag
 
-def distancia_euclidiana(serie1, serie2):
+def distancia_euclidiana(serie1 : pd.Series | np.array, serie2 : pd.Series | np.array) -> float:
+    """
+    Calcula la distancia euclidiana entre dos series temporales.
+
+    Args:
+        serie1 (pd.Series o np.ndarray): La primera serie temporal.
+        serie2 (pd.Series o np.ndarray): La segunda serie temporal.
+
+    Returns:
+        float: La distancia euclidiana entre las dos series temporales.
+    """
     distancia = np.linalg.norm(serie1 - serie2)
     return distancia
 
-def eval_coint(serie1, serie2, alpha = 0.05):
+def eval_coint(serie1 : pd.Series | np.array, serie2 : pd.Series | np.array, alpha : float = 0.05) -> int:
+    """
+    Evalúa la prueba de cointegración entre dos series temporales.
+
+    Args:
+        serie1 (pd.Series o np.ndarray): La primera serie temporal.
+        serie2 (pd.Series o np.ndarray): La segunda serie temporal.
+        alpha (float): El nivel de significancia para la prueba. Por defecto es 0.05.
+
+    Returns:
+        int: Retorna 1 si el p-valor es menor que alpha (se rechaza la hipótesis nula de no cointegración), 
+            de lo contrario retorna 0.
+    """
     stat, p_value, _ = coint(serie1, serie2)
     stat, p_value
     return 1 if p_value < alpha else 0
     
-#{key: value for key, value in iterable if condition}
+def plot_acf_pact_analysis(df : pd.DataFrame, 
+                           label : str, 
+                           metric : str = "mean", 
+                           apply_diff : bool = False, 
+                           method = None, 
+                           clase : str = "", 
+                           intervalo_confianza : bool = False, 
+                           **kwargs):
+    
+    """
+    Grafica el análisis de la función de autocorrelación (ACF) y la función de autocorrelación 
+        parcial (PACF) para una serie temporal.
 
-def plot_acf_pact_analysis(df, label, metric : str = "mean", apply_diff = False, method = None, clase = "", intervalo_confianza = False, **kwargs):
+    Args:
+        df (pd.DataFrame): El DataFrame que contiene las series temporales.
+        label (str): El nombre de la columna que contiene la serie temporal a analizar.
+        metric (str): La métrica a utilizar para calcular la ACF y PACF. Por defecto es "mean".
+        apply_diff (bool): Indica si se debe aplicar la diferenciación a la serie temporal 
+            antes de realizar el análisis. Por defecto es False.
+        method (str, opcional): El método a utilizar para calcular la PACF. Por defecto es None.
+        clase (str, opcional): La clase a la que pertenece la serie temporal. Por defecto es 
+            una cadena vacía.
+        intervalo_confianza (bool): Indica si se debe calcular y graficar el intervalo de confianza. 
+            Por defecto es False.
+        **kwargs: Argumentos adicionales que se pasarán a las funciones de ACF y PACF.
+
+    Returns:
+        None
+    """
     
     if apply_diff:
         df_series = df[label].diff().dropna()
@@ -614,24 +1006,51 @@ def plot_acf_pact_analysis(df, label, metric : str = "mean", apply_diff = False,
     plt.tight_layout()
     plt.show()
 
-def get_peaks_seasonal(df_seasonal, n_std = 2):
+def get_peaks_seasonal(df_seasonal : pd.Series | np.array, n_std : float = 2) -> list:
+
+    """
+    Encuentra los picos estacionales en una serie temporal estacional.
+
+    Args:
+        df_seasonal (pd.Series o np.ndarray): La serie temporal estacional.
+        n_std (float): El número de desviaciones estándar para determinar los picos. Por defecto es 2.
+
+    Returns:
+        list: Una lista de índices donde se encuentran los picos y valles en la serie temporal estacional.
+    """
 
     up = find_peaks(df_seasonal, height=df_seasonal.std()*n_std)[0]
     low = find_peaks(-1*df_seasonal, height=df_seasonal.std()*n_std)[0]
     up_low = list(up)+list(low)
     up_low.sort()
-    
-
     return up_low
 
-def get_list_jumps(up_low):
+def get_list_jumps(up_low : list) -> list:
+    """
+    Calcula las diferencias entre los índices de picos y valles en una lista.
+
+    Args:
+        up_low (list): Una lista de índices que representan los picos y valles en una serie temporal.
+
+    Returns:
+        list: Una lista de diferencias entre los índices de picos y valles consecutivos.
+    """
     diferencias = [up_low[i+1] - up_low[i] for i in range(len(up_low)-1)]
-    # print("promedio")
-    # print(np.mean(diferencias))
     return diferencias
 
+def get_jumps_signal(df_signal : pd.DataFrame, metric : str = "mean", period : int = 100) -> dict:
+    """
+    Calcula los saltos promedio en la señal estacional para múltiples señales en un DataFrame.
 
-def get_jumps_signal(df_signal, metric = "mean", period = 100):
+    Args:
+        df_signal (pd.DataFrame): El DataFrame que contiene las series temporales.
+        metric (str): La métrica a utilizar para calcular las estadísticas. Por defecto es "mean".
+        period (int): El periodo para la descomposición estacional. Por defecto es 100.
+
+    Returns:
+        dict: Un diccionario donde las claves son los nombres de las señales y los valores son los 
+            saltos promedio en la señal estacional.
+    """
     labels = df_signal.keys()
     df_dict_seasonal = {
         label : 
@@ -646,9 +1065,23 @@ def get_jumps_signal(df_signal, metric = "mean", period = 100):
                                     # ]
         for label in labels}
     return df_dict_seasonal
-    # return pd.DataFrame(df_dict_seasonal)
 
-def genera_df_jumps_signals(mi_dict, sttc_mi_dict, sttc_dict, other_dict):
+def genera_df_jumps_signals(mi_dict : dict, sttc_mi_dict : dict, sttc_dict : dict, other_dict : dict) -> pd.DataFrame:
+
+    """
+    Genera un DataFrame que contiene los saltos promedio en la señal estacional para múltiples 
+        clases de señales.
+
+    Args:
+        mi_dict (dict): Diccionario con los saltos promedio para la clase MI.
+        sttc_mi_dict (dict): Diccionario con los saltos promedio para la clase STTC MI.
+        sttc_dict (dict): Diccionario con los saltos promedio para la clase STTC.
+        other_dict (dict): Diccionario con los saltos promedio para la clase OTHER.
+
+    Returns:
+        pd.DataFrame: Un DataFrame que contiene los saltos promedio y la desviación estándar para 
+            cada señal y clase.
+    """
     
     df_mi = pd.DataFrame(list(mi_dict.items()), columns=['Señal', 'MI'])
     df_sttc_mi = pd.DataFrame(list(sttc_mi_dict.items()), columns=['Señal', 'STTC MI'])
@@ -664,7 +1097,21 @@ def genera_df_jumps_signals(mi_dict, sttc_mi_dict, sttc_dict, other_dict):
 
     return df
 
-def get_seasonal_trend(df_signal, metric = "mean", period = 100):
+def get_seasonal_trend(df_signal : pd.DataFrame, metric : str = "mean", period : int = 100) -> dict:
+
+    """
+    Calcula los saltos promedio en la señal estacional para múltiples señales en un DataFrame.
+
+    Args:
+        df_signal (pd.DataFrame): El DataFrame que contiene las series temporales.
+        metric (str): La métrica a utilizar para calcular las estadísticas. Por defecto es "mean".
+        period (int): El periodo para la descomposición estacional. Por defecto es 100.
+
+    Returns:
+        dict: Un diccionario donde las claves son los nombres de las señales y los valores son 
+            los saltos promedio en la señal estacional.
+    """
+
     labels = df_signal.keys()
     df_dict_seasonal = {
         label : 
@@ -680,11 +1127,29 @@ def get_seasonal_trend(df_signal, metric = "mean", period = 100):
         for label in labels}
     return df_dict_seasonal
 
-def plot_seasonal_analysis(df_mi_signals,
-                           df_sttc_mi_signals,
-                           df_sttc_signals,
-                           df_other_signals,
-                            label, metric : str = "mean", period = 100, aug_figsize = 1,**kwargs):
+def plot_seasonal_analysis(df_mi_signals : pd.DataFrame,
+                           df_sttc_mi_signals : pd.DataFrame,
+                           df_sttc_signals : pd.DataFrame,
+                           df_other_signals : pd.DataFrame,
+                            label : str, metric : str = "mean", period : int = 100, aug_figsize : int = 1,**kwargs):
+
+    """
+    Grafica el análisis estacional para múltiples clases de señales.
+
+    Args:
+        df_mi_signals (pd.DataFrame): DataFrame con las señales de la clase MI.
+        df_sttc_mi_signals (pd.DataFrame): DataFrame con las señales de la clase STTC MI.
+        df_sttc_signals (pd.DataFrame): DataFrame con las señales de la clase STTC.
+        df_other_signals (pd.DataFrame): DataFrame con las señales de la clase OTHER.
+        label (str): El nombre de la columna que contiene la serie temporal a analizar.
+        metric (str): La métrica a utilizar para calcular las estadísticas. Por defecto es "mean".
+        period (int): El periodo para la descomposición estacional. Por defecto es 100.
+        aug_figsize (int): Factor de aumento para el tamaño de la figura. Por defecto es 1.
+        **kwargs: Argumentos adicionales opcionales.
+
+    Returns:
+        None
+    """
     
 
     df_mi_seasonal = seasonal_decompose(
@@ -724,10 +1189,24 @@ def plot_seasonal_analysis(df_mi_signals,
     plt.tight_layout()
     plt.show()
 
+def apply_plot_ccf_faces(df_mi : dict, df_sttc_mi : dict, df_sttc : dict, df_other : dict, 
+                   list_signals : list, **kwargs):
+    
+    """
+    Aplica la generación y graficación de funciones de correlación cruzada (CCF) para múltiples clases de señales.
 
+    Args:
+        df_mi (dict): Diccionario con las señales de la clase MI.
+        df_sttc_mi (dict): Diccionario con las señales de la clase STTC MI.
+        df_sttc (dict): Diccionario con las señales de la clase STTC.
+        df_other (dict): Diccionario con las señales de la clase OTHER.
+        list_signals (list): Lista de tuplas, donde cada tupla contiene dos nombres de señales para las cuales se calcularán y 
+            graficarán las CCF.
+        **kwargs: Argumentos adicionales opcionales que se pasarán a la función de graficación.
 
-def apply_plot_ccf_faces(df_mi, df_sttc_mi, df_sttc, df_other, 
-                   list_signals, **kwargs):
+    Returns:
+        None
+    """
     
     df_mi_ccf = genera_dict_comb_ccf(df_mi, list_signals)
     df_sttc_mi_ccf = genera_dict_comb_ccf(df_sttc_mi, list_signals)
@@ -738,15 +1217,38 @@ def apply_plot_ccf_faces(df_mi, df_sttc_mi, df_sttc, df_other,
     plot_ccf_faces(df_mi_ccf, df_sttc_mi_ccf, df_sttc_ccf, df_other_ccf, 
                    list_signals, **kwargs)
     
-def apply_plot_ccf_faces_stats(df_mi,
-                        df_sttc_mi,
-                        df_sttc,
-                        df_other,
-                   list_signals,
-                   status = True,
-                   series = True,
-                   x_lags = [],
+def apply_plot_ccf_faces_stats(df_mi : dict,
+                        df_sttc_mi : dict,
+                        df_sttc : dict,
+                        df_other : dict,
+                   list_signals : list,
+                   status : bool = True,
+                   series : bool = True,
+                   x_lags : list = [],
                    con_suavizamiento = None):
+    
+    """
+    Aplica la generación y graficación de funciones de correlación cruzada (CCF) con estadísticas para múltiples 
+        clases de señales.
+
+    Args:
+        df_mi (dict): Diccionario con las señales de la clase MI.
+        df_sttc_mi (dict): Diccionario con las señales de la clase STTC MI.
+        df_sttc (dict): Diccionario con las señales de la clase STTC.
+        df_other (dict): Diccionario con las señales de la clase OTHER.
+        list_signals (list): Lista de tuplas, donde cada tupla contiene dos nombres de señales 
+            para las cuales se calcularán y graficarán las CCF.
+        status (bool): Indica si se deben calcular y graficar estadísticas (media y desviación estándar). 
+            Por defecto es True.
+        series (bool): Indica si se deben graficar las series individuales. Por defecto es True.
+        x_lags (list): Lista de desfases (lags) específicos para marcar en las gráficas. 
+            Por defecto es una lista vacía.
+        con_suavizamiento (bool, opcional): Indica si se debe aplicar suavizamiento a las gráficas. 
+            Por defecto es None.
+
+    Returns:
+        None
+    """
     
     df_mi_ccf = genera_dict_comb_ccf(df_mi, list_signals)
     df_sttc_mi_ccf = genera_dict_comb_ccf(df_sttc_mi, list_signals)
@@ -763,30 +1265,48 @@ def apply_plot_ccf_faces_stats(df_mi,
                    x_lags = x_lags,
                    con_suavizamiento = con_suavizamiento)
     
-def apply_plot_signal_stats(df_mi, df_sttc_mi, df_sttc, df_other,
-      list_signals, con_suavizamiento = None, dict_window = None, window_size = None, **kwargs):
-     
-     # window_size = kwargs.get("window_size")
-     
-     if con_suavizamiento or dict_window or window_size:
-          if window_size:
-               df_mi = dict_apply_smooth(df_mi, list_signals, window_size = window_size)
-               df_sttc_mi = dict_apply_smooth(df_sttc_mi, list_signals, window_size = window_size)
-               df_sttc = dict_apply_smooth(df_sttc, list_signals, window_size = window_size)
-               df_other = dict_apply_smooth(df_other, list_signals, window_size = window_size)
-          else:
-               df_mi = dict_apply_smooth(df_mi, list_signals, dict_window = dict_window)
-               df_sttc_mi = dict_apply_smooth(df_sttc_mi, list_signals, dict_window = dict_window)
-               df_sttc = dict_apply_smooth(df_sttc, list_signals, dict_window = dict_window)
-               df_other = dict_apply_smooth(df_other, list_signals, dict_window = dict_window)
+def apply_plot_signal_stats(df_mi : dict, df_sttc_mi : dict, df_sttc : dict, df_other : dict,
+      list_signals : list, con_suavizamiento = None, dict_window : dict = None, window_size : int = None, **kwargs):
+    """
+    Aplica la generación y graficación de estadísticas de señales para múltiples clases de señales, 
+        con opción de suavizamiento.
 
-          con_suavizamiento = True
+    Args:
+        df_mi (dict): Diccionario con las señales de la clase MI.
+        df_sttc_mi (dict): Diccionario con las señales de la clase STTC MI.
+        df_sttc (dict): Diccionario con las señales de la clase STTC.
+        df_other (dict): Diccionario con las señales de la clase OTHER.
+        list_signals (list): Lista de nombres de señales para las cuales se calcularán y graficarán 
+            las estadísticas.
+        con_suavizamiento (bool, opcional): Indica si se debe aplicar suavizamiento a las señales. 
+            Por defecto es None.
+        dict_window (dict, opcional): Diccionario que especifica el tamaño de la ventana de 
+            suavizamiento para cada señal. Por defecto es None.
+        window_size (int, opcional): Tamaño de la ventana de suavizamiento. Por defecto es None.
+        **kwargs: Argumentos adicionales opcionales que se pasarán a la función de graficación.
+
+    Returns:
+        None
+    """
+    if con_suavizamiento or dict_window or window_size:
+        if window_size:
+            df_mi = dict_apply_smooth(df_mi, list_signals, window_size = window_size)
+            df_sttc_mi = dict_apply_smooth(df_sttc_mi, list_signals, window_size = window_size)
+            df_sttc = dict_apply_smooth(df_sttc, list_signals, window_size = window_size)
+            df_other = dict_apply_smooth(df_other, list_signals, window_size = window_size)
+        else:
+            df_mi = dict_apply_smooth(df_mi, list_signals, dict_window = dict_window)
+            df_sttc_mi = dict_apply_smooth(df_sttc_mi, list_signals, dict_window = dict_window)
+            df_sttc = dict_apply_smooth(df_sttc, list_signals, dict_window = dict_window)
+            df_other = dict_apply_smooth(df_other, list_signals, dict_window = dict_window)
+        
+        con_suavizamiento = True
     
-     df_mi_stats = get_estadistica_dict(df_mi, list_signals)
-     df_sttc_mi_stats = get_estadistica_dict(df_sttc_mi, list_signals)
-     df_sttc_stats = get_estadistica_dict(df_sttc, list_signals)
-     df_other_stats = get_estadistica_dict(df_other, list_signals)
-          
-     plot_signal_stats(df_mi_stats, df_sttc_mi_stats, df_sttc_stats, df_other_stats,
-               list_signals, con_suavizamiento = con_suavizamiento, **kwargs)
+    df_mi_stats = get_estadistica_dict(df_mi, list_signals)
+    df_sttc_mi_stats = get_estadistica_dict(df_sttc_mi, list_signals)
+    df_sttc_stats = get_estadistica_dict(df_sttc, list_signals)
+    df_other_stats = get_estadistica_dict(df_other, list_signals)
+        
+    plot_signal_stats(df_mi_stats, df_sttc_mi_stats, df_sttc_stats, df_other_stats,
+            list_signals, con_suavizamiento = con_suavizamiento, **kwargs)
     
