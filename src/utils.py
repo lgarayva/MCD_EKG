@@ -1285,10 +1285,10 @@ def apply_plot_signal_stats(df_mi : dict, df_sttc_mi : dict, df_sttc : dict, df_
     plot_signal_stats(df_mi_stats, df_sttc_mi_stats, df_sttc_stats, df_other_stats,
             list_signals, con_suavizamiento = con_suavizamiento, **kwargs)
 
-def split_train_test_val(X,y, sizes = [0.10, 0.20], random_state = 42):
+def split_train_test_val(X,y, sizes = [0.10, 0.20], random_state = 42, stratify = None):
     
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=sizes[1], random_state=random_state)
-    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=sizes[0], random_state=random_state)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=sizes[1], random_state=random_state, stratify=stratify)
+    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=sizes[0], random_state=random_state, stratify=stratify)
     
     return X_train, X_test, X_val, y_train, y_test, y_val
 
