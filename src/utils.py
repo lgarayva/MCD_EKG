@@ -649,11 +649,14 @@ def dict_apply_smooth(dict_df : dict, cols : list, dict_window : dict = None, **
 
     if dict_window:
         dict_smooth_df = {
-    i: dict_df[i][cols].apply(lambda col: smooth_serie(col, window_size=dict_window[col.name], **kargs)).dropna()
+    i: dict_df[i][cols].
+        apply(lambda col: smooth_serie(col, window_size=dict_window[col.name], **kargs)).
+        dropna().assign(patient_id=i).assign(label=dict_df[i]["label"].values[0])
     for i in dict_df.keys()}
     else:
         dict_smooth_df = {
-            i: dict_df[i][cols].apply(smooth_serie, **kargs).dropna()
+            i: dict_df[i][cols].apply(smooth_serie, **kargs).dropna().
+            assign(patient_id=i).assign(label=dict_df[i]["label"].values[0])
             for i in dict_df.keys()}
     return dict_smooth_df
 
