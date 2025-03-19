@@ -14,6 +14,8 @@ from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 
+from sklearn.model_selection import train_test_split
+
 import matplotlib.pyplot as plt
 
 import math
@@ -1279,4 +1281,42 @@ def apply_plot_signal_stats(df_mi : dict, df_sttc_mi : dict, df_sttc : dict, df_
         
     plot_signal_stats(df_mi_stats, df_sttc_mi_stats, df_sttc_stats, df_other_stats,
             list_signals, con_suavizamiento = con_suavizamiento, **kwargs)
+
+def split_train_test_val(X,y, sizes = [0.10, 0.20], random_state = 42):
+    
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=sizes[1], random_state=random_state)
+    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=sizes[0], random_state=random_state)
+    
+    return X_train, X_test, X_val, y_train, y_test, y_val
+
+def get_df_acf_pacf(df, list_signals):
+    acf_pacf_dict = {}
+    patient_id = df["patient_id"].values[0]
+    label = df["label"].values[0]
+
+    for signal in list_signals:
+        
+        serie_acf, serie_pacf = acf_pacf(df[signal], lags = 5)
+        acf_pacf_dict["acf_" + signal] = (pd.DataFrame(
+                    [serie_acf[1:6]], 
+                    columns=["acf_" + signal + "_lag_" + str(i) for i in range(1,len(serie_acf[1:6])+1)]))
+        acf_pacf_dict["pacf_" + signal] = (pd.DataFrame(
+                    [serie_pacf[1:6]], 
+                    columns=["pacf_" + signal + "_lag_" + str(i) for i in range(1,len(serie_pacf[1:6])+1)]))
+
+    
+    result_df = pd.concat(acf_pacf_dict.values(), axis=1)
+    result_df["patient_id"] = patient_id
+    result_df["label"] = label
+
+    return result_df
+
+def genera_df_acf_pacf(df, list_signals):
+    dict_acf_pacf = {
+        pacient: get_df_acf_pacf(df[pacient], list_signals)
+        for pacient in df.keys()}
+    return dict_acf_pacf
+
+def dict_to_dataframe(dict):
+    return pd.concat(dict.values(), axis=0, ignore_index=True)
     
