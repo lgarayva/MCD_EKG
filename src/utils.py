@@ -1292,14 +1292,16 @@ def split_train_test_val(X,y, sizes = [0.10, 0.20], random_state = 42, stratify 
     
     return X_train, X_test, X_val, y_train, y_test, y_val
 
-def get_df_acf_pacf(df, list_signals):
+def get_df_acf_pacf(df, list_signals, apply_diff = False):
     acf_pacf_dict = {}
     patient_id = df["patient_id"].values[0]
     label = df["label"].values[0]
 
     for signal in list_signals:
+
+        df_series = df[signal].diff().dropna() if apply_diff else df[signal]
         
-        serie_acf, serie_pacf = acf_pacf(df[signal], lags = 5)
+        serie_acf, serie_pacf = acf_pacf(df_series, lags = 5)
         acf_pacf_dict["acf_" + signal] = (pd.DataFrame(
                     [serie_acf[1:6]], 
                     columns=["acf_" + signal + "_lag_" + str(i) for i in range(1,len(serie_acf[1:6])+1)]))
@@ -1314,9 +1316,9 @@ def get_df_acf_pacf(df, list_signals):
 
     return result_df
 
-def genera_df_acf_pacf(df, list_signals):
+def genera_df_acf_pacf(df, list_signals, apply_diff = False):
     dict_acf_pacf = {
-        pacient: get_df_acf_pacf(df[pacient], list_signals)
+        pacient: get_df_acf_pacf(df[pacient], list_signals, apply_diff = apply_diff)
         for pacient in df.keys()}
     return dict_acf_pacf
 
