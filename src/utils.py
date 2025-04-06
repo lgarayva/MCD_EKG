@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import numpy as np
+from typing import Union
 
 from scipy.signal import find_peaks
 from scipy.stats import ks_2samp, pearsonr, spearmanr
@@ -12,6 +13,8 @@ from statsmodels.stats.diagnostic import acorr_ljungbox
 from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.tsa.statespace.sarimax import SARIMAX
+
+from sklearn.model_selection import train_test_split
 
 import matplotlib.pyplot as plt
 
@@ -211,14 +214,14 @@ def plot_acf_residuals(series : pd.Series):
     plt.ylabel(label)
     plt.show()
 
-def CCF_lags(x : pd.Series | np.ndarray, y : pd.Series | np.ndarray, max_lag : int =20):
+def CCF_lags(x : Union[pd.Series, np.ndarray]| np.ndarray, y : Union[pd.Series, np.ndarray]| np.ndarray, max_lag : int =20):
     """
     Calcula la función de correlación cruzada (CCF) entre dos series temporales para una cantidad 
     máxima de desfases (lags).
 
     Args:
-        x (pd.Series o np.ndarray): La primera serie temporal.
-        y (pd.Series o np.ndarray): La segunda serie temporal.
+        x (Union[pd.Series, np.ndarray]o np.ndarray): La primera serie temporal.
+        y (Union[pd.Series, np.ndarray]o np.ndarray): La segunda serie temporal.
         max_lag (int): El número máximo de desfases (lags) a calcular. Por defecto es 20.
 
     Returns:
@@ -382,14 +385,14 @@ def smooth_serie(serie: pd.Series, do_abs: bool = True, window_size: int = 50, m
 
     return pd_smooth_serie
 
-def CCF_lags(x : pd.Series | np.ndarray, y : pd.Series | np.ndarray, max_lag : int =250):
+def CCF_lags(x : Union[pd.Series, np.ndarray]| np.ndarray, y : Union[pd.Series, np.ndarray]| np.ndarray, max_lag : int =250):
     """
     Calcula la función de correlación cruzada (CCF) entre dos series temporales para una cantidad 
     máxima de desfases (lags).
 
     Args:
-        x (pd.Series o np.ndarray): La primera serie temporal.
-        y (pd.Series o np.ndarray): La segunda serie temporal.
+        x (Union[pd.Series, np.ndarray]o np.ndarray): La primera serie temporal.
+        y (Union[pd.Series, np.ndarray]o np.ndarray): La segunda serie temporal.
         max_lag (int): El número máximo de desfases (lags) a calcular. Por defecto es 250.
 
     Returns:
@@ -603,7 +606,7 @@ def plot_ccf_faces_stats(dict_mi_ccf : dict,
         plt.tight_layout()
         plt.show()
 
-def dict_apply_function(dict_df : dict, col : str, funct : function, **kargs) -> pd.DataFrame:
+def dict_apply_function(dict_df : dict, col : str, funct, **kargs) -> pd.DataFrame:
     """
     Aplica una función a una columna específica de múltiples DataFrames almacenados en un diccionario 
     y concatena los resultados en un solo DataFrame.
@@ -646,11 +649,14 @@ def dict_apply_smooth(dict_df : dict, cols : list, dict_window : dict = None, **
 
     if dict_window:
         dict_smooth_df = {
-    i: dict_df[i][cols].apply(lambda col: smooth_serie(col, window_size=dict_window[col.name], **kargs)).dropna()
+    i: dict_df[i][cols].
+        apply(lambda col: smooth_serie(col, window_size=dict_window[col.name], **kargs)).
+        dropna().assign(patient_id=i).assign(label=dict_df[i]["label"].values[0])
     for i in dict_df.keys()}
     else:
         dict_smooth_df = {
-            i: dict_df[i][cols].apply(smooth_serie, **kargs).dropna()
+            i: dict_df[i][cols].apply(smooth_serie, **kargs).dropna().
+            assign(patient_id=i).assign(label=dict_df[i]["label"].values[0])
             for i in dict_df.keys()}
     return dict_smooth_df
 
@@ -816,13 +822,13 @@ def prueba_dickey_fuller(df_dict : dict, signals : list, apply_diff : bool = Fal
 
     return pdf
 
-def evalua_ks(serie1 : pd.Series | np.array, serie2 : pd.Series | np.array, alpha : float = 0.05) -> int:
+def evalua_ks(serie1 : Union[pd.Series, np.ndarray], serie2 : Union[pd.Series, np.ndarray], alpha : float = 0.05) -> int:
     """
     Evalúa la prueba de Kolmogorov-Smirnov (KS) para dos series temporales.
 
     Args:
-        serie1 (pd.Series o np.ndarray): La primera serie temporal.
-        serie2 (pd.Series o np.ndarray): La segunda serie temporal.
+        serie1 (Union[pd.Series, np.ndarray]o np.ndarray): La primera serie temporal.
+        serie2 (Union[pd.Series, np.ndarray]o np.ndarray): La segunda serie temporal.
         alpha (float): El nivel de significancia para la prueba. Por defecto es 0.05.
 
     Returns:
@@ -832,13 +838,13 @@ def evalua_ks(serie1 : pd.Series | np.array, serie2 : pd.Series | np.array, alph
     _, p_value = ks_2samp(serie1, serie2)
     return 1 if p_value > alpha else 0
 
-def eval_corr(serie1 : pd.Series | np.array, serie2 : pd.Series | np.array) -> tuple:
+def eval_corr(serie1 : Union[pd.Series, np.ndarray]|Union[pd.Series, np.ndarray], serie2 : Union[pd.Series, np.ndarray]|Union[pd.Series, np.ndarray]) -> tuple:
     """
     Calcula la correlación de Pearson y Spearman entre dos series temporales.
 
     Args:
-        serie1 (pd.Series o np.ndarray): La primera serie temporal.
-        serie2 (pd.Series o np.ndarray): La segunda serie temporal.
+        serie1 (Union[pd.Series, np.ndarray]o np.ndarray): La primera serie temporal.
+        serie2 (Union[pd.Series, np.ndarray]o np.ndarray): La segunda serie temporal.
 
     Returns:
         tuple: Una tupla que contiene la correlación de Pearson y la correlación de Spearman.
@@ -847,13 +853,13 @@ def eval_corr(serie1 : pd.Series | np.array, serie2 : pd.Series | np.array) -> t
     spearman_corr, _ = spearmanr(serie1, serie2)
     return pearson_corr, spearman_corr
 
-def max_lag_corr(serie1 : pd.Series | np.array, serie2 : pd.Series | np.array) -> int:
+def max_lag_corr(serie1 : Union[pd.Series, np.ndarray]|Union[pd.Series, np.ndarray], serie2 : Union[pd.Series, np.ndarray]|Union[pd.Series, np.ndarray]) -> int:
     """
     Calcula el desfase (lag) máximo de correlación cruzada entre dos series temporales.
 
     Args:
-        serie1 (pd.Series o np.ndarray): La primera serie temporal.
-        serie2 (pd.Series o np.ndarray): La segunda serie temporal.
+        serie1 (Union[pd.Series, np.ndarray]o np.ndarray): La primera serie temporal.
+        serie2 (Union[pd.Series, np.ndarray]o np.ndarray): La segunda serie temporal.
 
     Returns:
         int: El desfase (lag) en el que se encuentra la máxima correlación cruzada.
@@ -863,13 +869,13 @@ def max_lag_corr(serie1 : pd.Series | np.array, serie2 : pd.Series | np.array) -
     max_lag = np.argmax(cross_corr) - (max_len - 1)
     return max_lag
 
-def distancia_euclidiana(serie1 : pd.Series | np.array, serie2 : pd.Series | np.array) -> float:
+def distancia_euclidiana(serie1 : Union[pd.Series, np.ndarray]|Union[pd.Series, np.ndarray], serie2 : Union[pd.Series, np.ndarray]|Union[pd.Series, np.ndarray]) -> float:
     """
     Calcula la distancia euclidiana entre dos series temporales.
 
     Args:
-        serie1 (pd.Series o np.ndarray): La primera serie temporal.
-        serie2 (pd.Series o np.ndarray): La segunda serie temporal.
+        serie1 (Union[pd.Series, np.ndarray]o np.ndarray): La primera serie temporal.
+        serie2 (Union[pd.Series, np.ndarray]o np.ndarray): La segunda serie temporal.
 
     Returns:
         float: La distancia euclidiana entre las dos series temporales.
@@ -878,13 +884,13 @@ def distancia_euclidiana(serie1 : pd.Series | np.array, serie2 : pd.Series | np.
     distancia = np.linalg.norm(serie1 - serie2)
     return distancia
 
-def eval_coint(serie1 : pd.Series | np.array, serie2 : pd.Series | np.array, alpha : float = 0.05) -> int:
+def eval_coint(serie1 : Union[pd.Series, np.ndarray]|Union[pd.Series, np.ndarray], serie2 : Union[pd.Series, np.ndarray]|Union[pd.Series, np.ndarray], alpha : float = 0.05) -> int:
     """
     Evalúa la prueba de cointegración entre dos series temporales.
 
     Args:
-        serie1 (pd.Series o np.ndarray): La primera serie temporal.
-        serie2 (pd.Series o np.ndarray): La segunda serie temporal.
+        serie1 (Union[pd.Series, np.ndarray]o np.ndarray): La primera serie temporal.
+        serie2 (Union[pd.Series, np.ndarray]o np.ndarray): La segunda serie temporal.
         alpha (float): El nivel de significancia para la prueba. Por defecto es 0.05.
 
     Returns:
@@ -978,12 +984,12 @@ def plot_acf_pact_analysis(df : pd.DataFrame,
     plt.tight_layout()
     plt.show()
 
-def get_peaks_seasonal(df_seasonal : pd.Series | np.array, n_std : float = 2) -> list:
+def get_peaks_seasonal(df_seasonal : Union[pd.Series, np.ndarray]|Union[pd.Series, np.ndarray], n_std : float = 2) -> list:
     """
     Encuentra los picos estacionales en una serie temporal estacional.
 
     Args:
-        df_seasonal (pd.Series o np.ndarray): La serie temporal estacional.
+        df_seasonal (Union[pd.Series, np.ndarray]o np.ndarray): La serie temporal estacional.
         n_std (float): El número de desviaciones estándar para determinar los picos. Por defecto es 2.
 
     Returns:
@@ -1278,4 +1284,44 @@ def apply_plot_signal_stats(df_mi : dict, df_sttc_mi : dict, df_sttc : dict, df_
         
     plot_signal_stats(df_mi_stats, df_sttc_mi_stats, df_sttc_stats, df_other_stats,
             list_signals, con_suavizamiento = con_suavizamiento, **kwargs)
+
+def split_train_test_val(X,y, sizes = [0.10, 0.20], random_state = 42, stratify = None):
+    
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=sizes[1], random_state=random_state, stratify=stratify)
+    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=sizes[0], random_state=random_state, stratify=stratify)
+    
+    return X_train, X_test, X_val, y_train, y_test, y_val
+
+def get_df_acf_pacf(df, list_signals, apply_diff = False):
+    acf_pacf_dict = {}
+    patient_id = df["patient_id"].values[0]
+    label = df["label"].values[0]
+
+    for signal in list_signals:
+
+        df_series = df[signal].diff().dropna() if apply_diff else df[signal]
+        
+        serie_acf, serie_pacf = acf_pacf(df_series, lags = 5)
+        acf_pacf_dict["acf_" + signal] = (pd.DataFrame(
+                    [serie_acf[1:6]], 
+                    columns=["acf_" + signal + "_lag_" + str(i) for i in range(1,len(serie_acf[1:6])+1)]))
+        acf_pacf_dict["pacf_" + signal] = (pd.DataFrame(
+                    [serie_pacf[1:6]], 
+                    columns=["pacf_" + signal + "_lag_" + str(i) for i in range(1,len(serie_pacf[1:6])+1)]))
+
+    
+    result_df = pd.concat(acf_pacf_dict.values(), axis=1)
+    result_df["patient_id"] = patient_id
+    result_df["label"] = label
+
+    return result_df
+
+def genera_df_acf_pacf(df, list_signals, apply_diff = False):
+    dict_acf_pacf = {
+        pacient: get_df_acf_pacf(df[pacient], list_signals, apply_diff = apply_diff)
+        for pacient in df.keys()}
+    return dict_acf_pacf
+
+def dict_to_dataframe(dict):
+    return pd.concat(dict.values(), axis=0, ignore_index=True)
     
