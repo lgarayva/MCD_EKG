@@ -1288,6 +1288,8 @@ def apply_plot_signal_stats(df_mi : dict, df_sttc_mi : dict, df_sttc : dict, df_
 def split_train_test_val(X,y, sizes = [0.10, 0.20], random_state = 42, stratify = None):
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=sizes[1], random_state=random_state, stratify=stratify)
+    if stratify.any():
+        stratify = y_train
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=sizes[0], random_state=random_state, stratify=stratify)
     
     return X_train, X_test, X_val, y_train, y_test, y_val
@@ -1324,4 +1326,203 @@ def genera_df_acf_pacf(df, list_signals, apply_diff = False):
 
 def dict_to_dataframe(dict):
     return pd.concat(dict.values(), axis=0, ignore_index=True)
+
+def get_jumps_patient(df_patients : pd.DataFrame, metric : str = "mean", period : int = 100) -> dict:
+    """
+    Calcula los saltos promedio en la señal estacional para múltiples señales en un DataFrame.
+
+    Args:
+        df_signal (pd.DataFrame): El DataFrame que contiene las series temporales.
+        metric (str): La métrica a utilizar para calcular las estadísticas. Por defecto es "mean".
+        period (int): El periodo para la descomposición estacional. Por defecto es 100.
+
+    Returns:
+        dict: Un diccionario donde las claves son los nombres de las señales y los valores son los 
+              saltos promedio en la señal estacional.
+    """
+
+    patients = df_patients.keys()
+    df_dict_seasonal = {
+        patient : 
+            # [
+                np.mean(
+                    get_list_jumps(
+                        get_peaks_seasonal(
+                            seasonal_decompose(
+                                pd.Series(
+                                    get_estadisticas(df_patients[patient])[metric]),
+                                        period = period).seasonal)))
+                                    # ]
+        for patient in patients}
+    return df_dict_seasonal
+
+class SerieAnalisis:
+    def __init__(self, serie):
+        self.serie = serie
+    def amplitud(self):
+        return self.serie.max() - self.serie.min()
+    def intensidad(self):
+        return self.serie.std()
+    def seasonal_serie(self, period = 100):
+        return seasonal_decompose(self.serie, period = period).seasonal
+    def ratio(self, period=100):
+        seasonal = self.seasonal_serie(period)
+        return seasonal.std() / self.serie.std()
+    def mean_peaks(self, n_std = 2):
+        diff_peaks = get_list_jumps(get_peaks_seasonal(self.serie, n_std = n_std))
+        if len(diff_peaks) < 2:
+            return np.nan
+        return np.mean(diff_peaks)
+    def std_peaks(self, n_std = 2):
+        diff_peaks = get_list_jumps(get_peaks_seasonal(self.serie, n_std = n_std))
+        if len(diff_peaks) < 2:
+            return np.nan
+        return np.std(diff_peaks)
+    def n_peaks(self, n_std = 2):
+        peaks = get_peaks_seasonal(self.serie, n_std = n_std)
+        return len(peaks)
+
+def get_serie_summary(serie, cara, period = 100):
+    """
+    Genera un resumen de la serie temporal
+    """
+    class_serie = SerieAnalisis(serie)
     
+    return {
+        "amplitud" + "_" + cara : class_serie.amplitud(),
+        "intensidad" + "_" + cara : class_serie.intensidad(),
+        "ratio" + "_" + cara : class_serie.ratio(),
+        "mean_peaks" + "_" + cara : class_serie.mean_peaks(),
+        "std_peaks" + "_" + cara : class_serie.std_peaks(),
+        "n_peaks" + "_" + cara : class_serie.n_peaks()
+    }
+
+def get_dict_serie_summary(dict, caras, period,) -> pd.DataFrame:
+    """Genera un resumen de la serie temporal
+
+    Args:
+        dict (_type_): _description_
+        caras (_type_): _description_
+        period (_type_): _description_
+
+    Returns:
+        pd.DataFrame: _description_
+    """
+
+    df_summary = pd.DataFrame()
+    
+    for patient in dict.keys():
+        df_aux = pd.DataFrame()
+        for cara in caras:
+            if cara in dict[patient].keys():
+                serie = dict[patient][cara]
+                summary = get_serie_summary(serie, cara, period)
+                df_aux = pd.concat([df_aux, pd.DataFrame(summary, index=[0])], axis=1)
+        df_aux["patient"] = patient
+        df_aux["cara"] = cara
+        df_summary = pd.concat([df_summary, df_aux], axis=0)
+                
+    return df_summary.reset_index(drop=True)
+
+def patients_dict_ccf(dict, combinaciones):
+    patients_dict = {patient: pd.concat(
+    [CCF_lags(dict[patient][col1], dict[patient][col2])
+        .set_index("lags")
+        .rename(columns={'ccf': col1 if col1 == col2 else col1 + "_" + col2}) 
+        for col1, col2 in combinaciones], 
+    axis=1, join="inner"
+    )# .assign(fixed_column="fixed_value")
+    for patient in dict.keys()}
+
+    return patients_dict
+
+class CCFAnalisis:
+    def __init__(self, serie):
+        self.serie = serie
+    def cruces_cero(self):
+        signos = np.sign(self.serie)
+        cruces = signos[:-1].values * signos[1:].values < 0
+        indices_cruce = np.where(cruces)[0]
+        return indices_cruce
+    def n_cruces_cero(self):
+        return len(self.cruces_cero())
+    def promedio(self):
+        return np.mean(self.serie)
+    def std(self):
+        return np.std(self.serie)
+    def max(self):
+        return self.serie.max()
+    def min(self):
+        return self.serie.min()
+    def maxlag(self):
+        return self.serie.idxmax()
+    def minlag(self):
+        return self.serie.idxmin()
+    def kurtosis(self):
+        return kurtosis(self.serie)
+    def trim_mean(self, proportion_to_cut=0.05):
+        return trim_mean(self.serie, proportion_to_cut)
+    
+
+def matrix_norm(df, dict_combinaciones):
+    """
+    Calcula la norma de una matriz.
+
+    Args:
+        df (pd.DataFrame): DataFrame que contiene las ccf.
+        dict_combinaciones (dict): Diccionario con las combinaciones de columnas, 
+                                   con claves "uni_combinacion" y "bi_combinacion".
+
+    Returns:
+        float: La norma calculada.
+    """
+    norma = (sum((np.mean(df[col]) ** 2) for col in dict_combinaciones["uni_combinacion"]) +
+            sum(2 * (np.mean(df[col]) ** 2) for col in dict_combinaciones["bi_combinacion"]))
+    return np.sqrt(norma)
+
+def get_ccf_summary(ccf, combinacion, proportion_to_cut=0.05):
+    """
+    Genera un resumen de la serie temporal
+    """
+    class_ccf = CCFAnalisis(ccf)
+    
+    return {
+        "n_cruces_cero" + "_" + combinacion : class_ccf.n_cruces_cero(),
+        "promedio" + "_" + combinacion : class_ccf.promedio(),
+        "std" + "_" + combinacion : class_ccf.std(),
+        "max" + "_" + combinacion : class_ccf.max(),
+        "min" + "_" + combinacion : class_ccf.min(),
+        "maxlag" + "_" + combinacion : class_ccf.maxlag(),
+        "minlag" + "_" + combinacion : class_ccf.minlag(),
+        "kurtosis" + "_" + combinacion : class_ccf.kurtosis(),
+        "trim_mean" + "_" + combinacion : class_ccf.trim_mean(proportion_to_cut = proportion_to_cut),
+    }
+
+def get_dict_ccf_summary(dict, dict_combinaciones, proportion_to_cut=0.05,) -> pd.DataFrame:
+    """Genera un resumen de la ccf
+
+    Args:
+        dict (_type_): _description_
+        caras (_type_): _description_
+        period (_type_): _description_
+
+    Returns:
+        pd.DataFrame: _description_
+    """
+
+    df_summary = pd.DataFrame()
+    
+    for patient in dict.keys():
+        df_aux = pd.DataFrame()
+        for combinacion in dict_combinaciones["uni_combinacion"] + dict_combinaciones["bi_combinacion"]:
+            if combinacion in dict[patient].keys():
+                serie = dict[patient][combinacion]
+                summary = get_ccf_summary(serie, combinacion, proportion_to_cut)
+                df_aux = pd.concat([df_aux, pd.DataFrame(summary, index=[0])], axis=1)
+        df_aux["patient"] = patient
+        df_aux["combinacion"] = combinacion
+        df_aux["norm_ccf"] = matrix_norm(dict[patient], dict_combinaciones)
+        df_summary = pd.concat([df_summary, df_aux], axis=0)
+                
+    return df_summary.reset_index(drop=True)
+
