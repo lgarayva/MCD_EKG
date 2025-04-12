@@ -4,7 +4,8 @@ import numpy as np
 from typing import Union
 
 from scipy.signal import find_peaks
-from scipy.stats import ks_2samp, pearsonr, spearmanr
+from scipy.stats import ks_2samp, pearsonr, spearmanr, kurtosis, trim_mean
+
 
 
 from statsmodels.tsa.stattools import acf, pacf, adfuller, coint
@@ -1526,3 +1527,22 @@ def get_dict_ccf_summary(dict, dict_combinaciones, proportion_to_cut=0.05,) -> p
                 
     return df_summary.reset_index(drop=True)
 
+def genera_acf_pacf_features(df, patients, clase, list_signals, muestra):
+    patients_clase = patients[patients["class"] == clase]["patient"].values
+    df_clase = {patient : df[patient] for patient in patients_clase}
+    df_acf_pacf = dict_to_dataframe(genera_df_acf_pacf(df_clase, list_signals, apply_diff= True))
+    df_acf_pacf.to_csv(f"output/features/{muestra}/{clase}_acf_pacf.csv", index = False)
+
+def genera_peak_features(df, patients, clase, list_signals, muestra, period = 100):
+    patients_clase = patients[patients["class"] == clase]["patient"].values
+    df_clase = {patient : df[patient] for patient in patients_clase}
+    df_peak = get_dict_serie_summary(df_clase, list_signals, period)
+    df_peak.to_csv(f"output/features/{muestra}/{clase}_peak.csv", index = False)
+
+
+def genera_ccf_features(df, patients, clase, dict_combinaciones, muestra):
+    patients_clase = patients[patients["class"] == clase]["patient"].values
+    df_clase = {patient : df[patient] for patient in patients_clase}
+    df_ccf = patients_dict_ccf(df_clase, dict_combinaciones["uni_combinacion"] + dict_combinaciones["bi_combinacion"])
+    df_cff_stats = get_dict_ccf_summary(df_ccf, dict_combinaciones,)
+    df_cff_stats.to_csv(f"output/features/{muestra}/{clase}_cff_stats.csv", index = False)
