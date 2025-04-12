@@ -13,3 +13,4 @@ seaborn
 scipy
 tslearn
 tabulate
+dask
