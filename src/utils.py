@@ -1550,8 +1550,8 @@ def genera_ccf_features(df, patients, clase, dict_combinaciones, muestra):
 
 def get_features(muestra, clase, proyect_path = os.getcwd(), gen_csv = True):
     df_acf_pacf = pd.read_csv(f"{proyect_path}/output/features/{muestra}/{clase}_acf_pacf.csv")
-    df_peak = pd.read_csv(f"{proyect_path}/output/features/{muestra}/{clase}_peak.csv").drop('cara', axis=1)
-    df_ccf_stats = pd.read_csv(f"{proyect_path}/output/features/{muestra}/{clase}_ccf_stats.csv").drop('combinacion', axis=1)
+    df_peak = pd.read_csv(f"{proyect_path}/output/features/{muestra}/{clase}_peak.csv").drop('cara', axis=1, errors='ignore')
+    df_ccf_stats = pd.read_csv(f"{proyect_path}/output/features/{muestra}/{clase}_ccf_stats.csv").drop('combinacion', axis=1, errors='ignore')
 
     df_features = pd.merge(pd.merge(df_acf_pacf, df_peak, on=["patient"], how='inner'),
                      df_ccf_stats, on=["patient"], how='inner')
