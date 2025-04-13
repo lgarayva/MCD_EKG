@@ -1558,6 +1558,5 @@ def get_features(muestra, clase, proyect_path = os.getcwd(), gen_csv = True):
     
     if gen_csv:
         df_features.to_csv(f"{proyect_path}/output/features/{muestra}/{clase}_features.csv", index=False)
-        return
     
     return df_features
