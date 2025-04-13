@@ -1314,7 +1314,7 @@ def get_df_acf_pacf(df, list_signals, apply_diff = False):
 
     
     result_df = pd.concat(acf_pacf_dict.values(), axis=1)
-    result_df["patient_id"] = patient_id
+    result_df["patient"] = patient_id
     result_df["label"] = label
 
     return result_df
@@ -1420,7 +1420,7 @@ def get_dict_serie_summary(dict, caras, period,) -> pd.DataFrame:
                 summary = get_serie_summary(serie, cara, period)
                 df_aux = pd.concat([df_aux, pd.DataFrame(summary, index=[0])], axis=1)
         df_aux["patient"] = patient
-        df_aux["cara"] = cara
+        # df_aux["cara"] = cara
         df_summary = pd.concat([df_summary, df_aux], axis=0)
                 
     return df_summary.reset_index(drop=True)
@@ -1521,7 +1521,7 @@ def get_dict_ccf_summary(dict, dict_combinaciones, proportion_to_cut=0.05,) -> p
                 summary = get_ccf_summary(serie, combinacion, proportion_to_cut)
                 df_aux = pd.concat([df_aux, pd.DataFrame(summary, index=[0])], axis=1)
         df_aux["patient"] = patient
-        df_aux["combinacion"] = combinacion
+        # df_aux["combinacion"] = combinacion
         df_aux["norm_ccf"] = matrix_norm(dict[patient], dict_combinaciones)
         df_summary = pd.concat([df_summary, df_aux], axis=0)
                 
@@ -1546,3 +1546,18 @@ def genera_ccf_features(df, patients, clase, dict_combinaciones, muestra):
     df_ccf = patients_dict_ccf(df_clase, dict_combinaciones["uni_combinacion"] + dict_combinaciones["bi_combinacion"])
     df_cff_stats = get_dict_ccf_summary(df_ccf, dict_combinaciones,)
     df_cff_stats.to_csv(f"output/features/{muestra}/{clase}_cff_stats.csv", index = False)
+
+
+def get_features(muestra, clase, proyect_path = os.getcwd(), gen_csv = True):
+    df_acf_pacf = pd.read_csv(f"{proyect_path}/output/features/{muestra}/{clase}_acf_pacf.csv")
+    df_peak = pd.read_csv(f"{proyect_path}/output/features/{muestra}/{clase}_peak.csv").drop('cara', axis=1)
+    df_ccf_stats = pd.read_csv(f"{proyect_path}/output/features/{muestra}/{clase}_ccf_stats.csv").drop('combinacion', axis=1)
+
+    df_features = pd.merge(pd.merge(df_acf_pacf, df_peak, on=["patient"], how='inner'),
+                     df_ccf_stats, on=["patient"], how='inner')
+    
+    if gen_csv:
+        df_features.to_csv(f"{proyect_path}/output/features/{muestra}/{clase}_features.csv", index=False)
+        return
+    
+    return df_features
