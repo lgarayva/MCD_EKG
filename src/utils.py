@@ -21,6 +21,10 @@ import matplotlib.pyplot as plt
 
 import math
 
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score, log_loss, classification_report
+from scipy.stats import ks_2samp
+
+
 def lectura_carpetas_dict(data_path : str) -> dict:
     """
     La función tiene como objetivo, dada una ruta específica, obtener las subcarpetas
@@ -1560,3 +1564,55 @@ def get_features(muestra, clase, proyect_path = os.getcwd(), gen_csv = True):
         df_features.to_csv(f"{proyect_path}/output/features/{muestra}/{clase}_features.csv", index=False)
     
     return df_features
+
+def ks_multiclase(y_true, y_proba):
+    """
+    Aplica KS test por clase en multiclase.
+    y_true: etiquetas verdaderas (entero)
+    y_proba: matriz de probabilidades [n_samples, n_clases]
+    """
+    ks_dict = {}
+    n_classes = y_proba.shape[1]
+    for i in range(n_classes):
+        preds_i = y_proba[:, i]
+        mask_pos = y_true == i
+        mask_neg = y_true != i
+        stat, _ = ks_2samp(preds_i[mask_pos], preds_i[mask_neg])
+        ks_dict[f'class_{i}'] = stat
+    return ks_dict
+
+
+
+def table_metrics(y_real, y_pred, y_proba):
+    """Genera tabla de métricas de evaluación para clasificación multiclase"""
+
+    metrics_dict = {
+        'accuracy': accuracy_score(y_real, y_pred),
+        'precision_weighted': precision_score(y_real, y_pred, average='weighted'),
+        'recall_weighted': recall_score(y_real, y_pred, average='weighted'),
+        'f1_weighted': f1_score(y_real, y_pred, average='weighted'),
+        'roc_auc_ovr': roc_auc_score(y_real, y_proba, multi_class='ovr', average='weighted'),
+        'log_loss': log_loss(y_real, y_proba),
+        'gini_normalized': 2 * roc_auc_score(y_real, y_proba, multi_class='ovr', average='weighted') - 1,
+
+    }
+    ks_results = ks_multiclase(y_real, y_proba)
+    pred_classes = np.unique(y_real)
+    for cls in pred_classes:
+        metrics_dict[f'ks_test_clase_{cls}'] = ks_results[f'class_{cls}']
+    
+    return pd.DataFrame(metrics_dict, index=[0]).T.rename(columns={0: 'value'}).reset_index().rename(columns={'index': 'metric'})
+
+def genera_metricas_markdown(y_test, y_pred, y_pred_prob):
+    """
+    Genera un dataframe con las métricas de evaluación del modelo.
+    """
+    print(table_metrics(y_test,y_pred, y_pred_prob).to_markdown())
+
+    report_dict = classification_report(y_test, y_pred, output_dict=True)
+    report_df = pd.DataFrame(report_dict).transpose()
+    print("\n")
+    
+    print(report_df.to_markdown())
+
+    return 
