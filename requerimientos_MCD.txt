@@ -14,3 +14,4 @@ scipy
 tslearn
 tabulate
 dask
+xgboost
