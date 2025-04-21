@@ -1607,7 +1607,7 @@ def genera_metricas_markdown(y_test, y_pred, y_pred_prob):
     """
     Genera un dataframe con las métricas de evaluación del modelo.
     """
-    print(table_metrics(y_test,y_pred, y_pred_prob).to_markdown())
+    print(table_metrics(y_test,y_pred, y_pred_prob).to_markdown(index=False))
 
     report_dict = classification_report(y_test, y_pred, output_dict=True)
     report_df = pd.DataFrame(report_dict).transpose()
@@ -1616,3 +1616,25 @@ def genera_metricas_markdown(y_test, y_pred, y_pred_prob):
     print(report_df.to_markdown())
 
     return 
+
+def params_to_markdown(params_dict : dict) -> str:
+    """Convierte un diccionario de hiperparámetros a una tabla en formato Markdown.
+
+    Args:
+        params_dict (dict): Diccionario de parámetros.
+
+    Returns:
+        str: Tabla en formato Markdown.
+    """
+
+
+    params_dict = {key: value for key, value in params_dict.items() if value is not None}
+    # Convertir el diccionario a un DataFrame
+    df = pd.DataFrame([
+        {"parámetro": k, "valor": v}
+        for k, v in params_dict.items()])
+    
+    # Convertir el DataFrame a una tabla Markdown
+    markdown_table = df.to_markdown(index=False)
+    
+    return markdown_table
