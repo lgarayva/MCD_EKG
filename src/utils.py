@@ -1638,3 +1638,93 @@ def params_to_markdown(params_dict : dict) -> str:
     markdown_table = df.to_markdown(index=False)
     
     return markdown_table
+
+def split_dataframe_into_chunks(df : pd.DataFrame, chunk_size : int) -> dict:
+    """Divide un dataframe en chunks de tamaño especificado y devuelve un diccionario con los chunks.
+
+    Args:
+        df (pd.DataFrame): Dataframe a dividir en chunks.
+        chunk_sizen (int): Tamaño de cada chunk.
+
+    Raises:
+        ValueError: Si el dataframe no es divisible por el tamaño del chunk.
+        ValueError: Si el tamaño del chunk es menor o igual a cero.
+        ValueError: Si el tamaño del chunk es mayor que el tamaño del dataframe.
+        ValueError: Si el tamaño del chunk es cero.
+
+    Returns:
+        dict: Diccionario con dataframes dividisos en chunks.
+    """
+
+    dict_chunks = {}
+    if df.shape[0] / chunk_size % 2 != 0:
+            raise ValueError(f"El número de filas del DataFrame ({df.shape[0]}) no es divisible por el tamaño del chunk ({chunk_size}). Ajusta el tamaño del chunk para que sea un divisor exacto.")
+    if chunk_size <= 0:
+        raise ValueError("El tamaño del chunk debe ser mayor que cero.")
+    if chunk_size > len(df):
+        raise ValueError("El tamaño del chunk no puede ser mayor que el tamaño del DataFrame.")
+    if chunk_size == 0:
+        raise ValueError("El tamaño del chunk no puede ser cero.")
+    for idx, i in enumerate(range(0, len(df), chunk_size), start=1):
+        dict_chunks[f"chunk_{idx}"] =  df.iloc[i:i + chunk_size]
+
+    return dict_chunks
+
+def lags_to_columns(df : pd.DataFrame, list_signals : list, chunk : str) -> pd.DataFrame:
+    """Transforma un dataframe en formato largo a formato ancho, donde cada señal se convierte en una columna separada.
+
+    Args:
+        df (pd.DataFrame): Dataframe en formato largo.
+        list_signals (list): señales a transformar.
+        chunk (str): Nombre del chunk.
+
+    Returns:
+        pd.DataFrame: Dataframe en formato ancho.
+    """
+    df_wide = pd.DataFrame({'patient_id': [df['patient_id'].values[0]],
+                            'label': [df['label'].values[0]],
+                            'chunk': chunk,
+                            })
+
+    for signal in list_signals:
+        values = df[signal].values
+        df_aux = pd.DataFrame([values], columns=[f"{signal}_{i+1}" for i in range(len(values))])
+        df_wide = pd.concat([df_wide, df_aux], axis=1)
+
+    return df_wide
+
+
+def combine_lags_to_dataframe(df : pd.DataFrame, list_signals : list) -> pd.DataFrame:
+    """Convierte un dataframe en formato largo a formato ancho, donde cada señal se convierte en una columna separada.
+    Combina los resultados de cada señal en un solo dataframe.
+
+    Args:
+        df (pd.DataFrame): Dataframe en formato largo.
+        list_signals (list): Lista de señales a transformar.
+
+    Returns:
+        pd.DataFrame: Dataframe en formato ancho.
+    """
+    list_df = []
+    for i in df.keys():
+        list_df.append(lags_to_columns(df[i], list_signals, i))
+    df_final = pd.concat(list_df, ignore_index=True)
+
+    return df_final
+
+def patient_to_chunk(df_dict : dict, list_signals : list, chunk_size : int) -> dict:
+    """Convierte dict de dataframes en chunks de tamaño especificado y devuelve un diccionario con los chunks.
+
+    Args:
+        df_dict (dict): Diccionario de dataframes a dividir en chunks.
+        list_signals (list): Lista de señales a transformar.
+        chunk_size (int): Tamaño de cada chunk.
+
+    Returns:
+        dict: Diccionario con dataframes dividisos en chunks.
+    """
+
+    dict_patient_chunks = {patient_id: combine_lags_to_dataframe(split_dataframe_into_chunks(df_dict[patient_id], chunk_size),
+                                                                 list_signals)
+                           for patient_id in df_dict.keys()}
+    return dict_patient_chunks
