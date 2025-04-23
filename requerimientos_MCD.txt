@@ -1,6 +1,6 @@
 tensorflow-macos
 tensorflow-metal
-tensorflow==2.15.0
+tensorflow
 tensorflow-hub
 ipykernel
 matplotlib
