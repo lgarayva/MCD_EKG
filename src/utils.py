@@ -1730,3 +1730,4 @@ def patient_to_chunk(df_dict : dict, list_signals : list, chunk_size : int) -> d
                                                                  list_signals)
                            for patient_id in df_dict.keys()}
     return dict_patient_chunks
+
