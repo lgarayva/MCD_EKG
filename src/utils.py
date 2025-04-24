@@ -1290,12 +1290,14 @@ def apply_plot_signal_stats(df_mi : dict, df_sttc_mi : dict, df_sttc : dict, df_
     plot_signal_stats(df_mi_stats, df_sttc_mi_stats, df_sttc_stats, df_other_stats,
             list_signals, con_suavizamiento = con_suavizamiento, **kwargs)
 
-def split_train_test_val(X,y, sizes = [0.10, 0.20], random_state = 42, stratify = None):
+def split_train_test_val(X,y, sizes = [0.05, 0.05], random_state = 42, stratify = None):
+
+    val_split = sizes[0] / (1 - sizes[1])
     
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=sizes[1], random_state=random_state, stratify=stratify)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=sizes[0], random_state=random_state, stratify=stratify)
     if stratify.any():
         stratify = y_train
-    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=sizes[0], random_state=random_state, stratify=stratify)
+    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=val_split, random_state=random_state, stratify=stratify)
     
     return X_train, X_test, X_val, y_train, y_test, y_val
 
@@ -1728,3 +1730,24 @@ def patient_to_chunk(df_dict : dict, list_signals : list, chunk_size : int) -> d
                                                                  list_signals)
                            for patient_id in df_dict.keys()}
     return dict_patient_chunks
+
+def table_metrics_clase(y_real, y_pred):
+    """Genera tabla de métricas de evaluación para clasificación multiclase"""
+
+    metrics_dict = {
+        'accuracy': accuracy_score(y_real, y_pred),
+        'precision_weighted': precision_score(y_real, y_pred, average='weighted'),
+        'recall_weighted': recall_score(y_real, y_pred, average='weighted'),
+        'f1_weighted': f1_score(y_real, y_pred, average='weighted'),
+    }
+    
+    return pd.DataFrame(metrics_dict, index=[0]).T.rename(columns={0: 'value'}).reset_index().rename(columns={'index': 'metric'})
+
+
+def get_metrics_mode(df):
+
+    mode_pred = (df.
+                 groupby(["patient_id", "y_true"])["pred"].
+                 agg(lambda x: pd.Series.mode(x)[0]).reset_index())
+    
+    return table_metrics_clase(mode_pred["y_true"], mode_pred["pred"]).to_markdown(index=False)
