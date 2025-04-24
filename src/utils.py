@@ -1731,3 +1731,23 @@ def patient_to_chunk(df_dict : dict, list_signals : list, chunk_size : int) -> d
                            for patient_id in df_dict.keys()}
     return dict_patient_chunks
 
+def table_metrics_clase(y_real, y_pred):
+    """Genera tabla de métricas de evaluación para clasificación multiclase"""
+
+    metrics_dict = {
+        'accuracy': accuracy_score(y_real, y_pred),
+        'precision_weighted': precision_score(y_real, y_pred, average='weighted'),
+        'recall_weighted': recall_score(y_real, y_pred, average='weighted'),
+        'f1_weighted': f1_score(y_real, y_pred, average='weighted'),
+    }
+    
+    return pd.DataFrame(metrics_dict, index=[0]).T.rename(columns={0: 'value'}).reset_index().rename(columns={'index': 'metric'})
+
+
+def get_metrics_mode(df):
+
+    mode_pred = (df.
+                 groupby(["patient_id", "y_true"])["pred"].
+                 agg(lambda x: pd.Series.mode(x)[0]).reset_index())
+    
+    return table_metrics_clase(mode_pred["y_true"], mode_pred["pred"]).to_markdown(index=False)
