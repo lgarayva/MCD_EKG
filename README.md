@@ -3,7 +3,6 @@ Repositorio de investigación de la MCD para el análisis de EKG
 
 
 ### Create virtual env
-
 ´´´
 
 conda activate mcd_env
