@@ -1331,7 +1331,7 @@ def get_df_acf_pacf(df, list_signals, apply_diff = False):
 
     
     result_df = pd.concat(acf_pacf_dict.values(), axis=1)
-    result_df["patient"] = patient_id
+    result_df["patient_id"] = patient_id
     result_df["label"] = label
 
     return result_df
@@ -1518,6 +1518,7 @@ def patients_dict_ccf_chunk(df_dict : dict, combinaciones : tuple, max_lag : int
                 ],
                 axis=1, join="inner"
             )
+                .assign(label=df["label"].iloc[0])
             for chunk, df in chunks.items()
         }
         for patient, chunks in df_dict.items()
@@ -1602,6 +1603,7 @@ def get_ccf_summary_chunk(dict : dict, dict_combinaciones : dict, proportion_to_
             df_aux["norm_ccf"] = matrix_norm(df, dict_combinaciones)
             df_aux["chunk"] = chunk
             df_aux["patient_id"] = patient
+            df_aux["label"] = df["label"].values[0]
             df_summary = pd.concat([df_summary, df_aux], axis=0)
 
     return df_summary.reset_index(drop=True)
