@@ -1301,6 +1301,17 @@ def split_train_test_val(X,y, sizes = [0.05, 0.05], random_state = 42, stratify 
     
     return X_train, X_test, X_val, y_train, y_test, y_val
 
+def add_chunk_column(func):
+    def wrapper(df, list_signals, *args, chunk_name=None, **kwargs):
+        result_df = func(df, list_signals, *args, **kwargs)
+        if chunk_name is not None:
+            result_df["chunk"] = chunk_name
+        else:
+            raise ValueError("chunk_name must be provided to add_chunk_column decorator.")
+        return result_df
+    return wrapper
+
+@add_chunk_column
 def get_df_acf_pacf(df, list_signals, apply_diff = False):
     acf_pacf_dict = {}
     patient_id = df["patient_id"].values[0]
@@ -1320,7 +1331,7 @@ def get_df_acf_pacf(df, list_signals, apply_diff = False):
 
     
     result_df = pd.concat(acf_pacf_dict.values(), axis=1)
-    result_df["patient"] = patient_id
+    result_df["patient_id"] = patient_id
     result_df["label"] = label
 
     return result_df
@@ -1330,6 +1341,13 @@ def genera_df_acf_pacf(df, list_signals, apply_diff = False):
         pacient: get_df_acf_pacf(df[pacient], list_signals, apply_diff = apply_diff)
         for pacient in df.keys()}
     return dict_acf_pacf
+
+def genera_df_acf_pacf_chunk(dict : dict, list_signals : list, apply_diff : bool = False) -> pd.DataFrame:
+    df_list = []
+    for patient, patient_data in dict.items():
+            for chunk, df in patient_data.items():
+                df_list.append(get_df_acf_pacf(df, list_signals, apply_diff, chunk_name=chunk))
+    return pd.concat(df_list, axis=0).reset_index(drop=True)
 
 def dict_to_dataframe(dict):
     return pd.concat(dict.values(), axis=0, ignore_index=True)
@@ -1364,44 +1382,54 @@ def get_jumps_patient(df_patients : pd.DataFrame, metric : str = "mean", period 
     return df_dict_seasonal
 
 class SerieAnalisis:
-    def __init__(self, serie):
+    def __init__(self, serie, period=100):
         self.serie = serie
+        self.period = period
+
     def amplitud(self):
         return self.serie.max() - self.serie.min()
+
     def intensidad(self):
         return self.serie.std()
-    def seasonal_serie(self, period = 100):
-        return seasonal_decompose(self.serie, period = period).seasonal
-    def ratio(self, period=100):
+
+    def seasonal_serie(self, period=None):
+        period = period or self.period
+        return seasonal_decompose(self.serie, period=period).seasonal
+
+    def ratio(self, period=None):
+        period = period or self.period
         seasonal = self.seasonal_serie(period)
         return seasonal.std() / self.serie.std()
-    def mean_peaks(self, n_std = 2):
-        diff_peaks = get_list_jumps(get_peaks_seasonal(self.serie, n_std = n_std))
-        if len(diff_peaks) < 2:
-            return np.nan
-        return np.mean(diff_peaks)
-    def std_peaks(self, n_std = 2):
-        diff_peaks = get_list_jumps(get_peaks_seasonal(self.serie, n_std = n_std))
-        if len(diff_peaks) < 2:
-            return np.nan
-        return np.std(diff_peaks)
-    def n_peaks(self, n_std = 2):
-        peaks = get_peaks_seasonal(self.serie, n_std = n_std)
+
+    def _diff_peaks(self, n_std):
+        return get_list_jumps(get_peaks_seasonal(self.serie, n_std=n_std))
+
+    def mean_peaks(self, n_std=2):
+        diffs = self._diff_peaks(n_std)
+        return np.mean(diffs) if len(diffs) >= 2 else np.nan
+
+    def std_peaks(self, n_std=2):
+        diffs = self._diff_peaks(n_std)
+        return np.std(diffs) if len(diffs) >= 2 else np.nan
+
+    def n_peaks(self, n_std=2):
+        peaks = get_peaks_seasonal(self.serie, n_std=n_std)
         return len(peaks)
 
-def get_serie_summary(serie, cara, period = 100):
+
+def get_serie_summary(serie, cara, period = 100, n_std = 2):
     """
     Genera un resumen de la serie temporal
     """
-    class_serie = SerieAnalisis(serie)
+    class_serie = SerieAnalisis(serie, period)
     
     return {
         "amplitud" + "_" + cara : class_serie.amplitud(),
         "intensidad" + "_" + cara : class_serie.intensidad(),
         "ratio" + "_" + cara : class_serie.ratio(),
-        "mean_peaks" + "_" + cara : class_serie.mean_peaks(),
-        "std_peaks" + "_" + cara : class_serie.std_peaks(),
-        "n_peaks" + "_" + cara : class_serie.n_peaks()
+        "mean_peaks" + "_" + cara : class_serie.mean_peaks(n_std),
+        "std_peaks" + "_" + cara : class_serie.std_peaks(n_std),
+        "n_peaks" + "_" + cara : class_serie.n_peaks(n_std)
     }
 
 def get_dict_serie_summary(dict, caras, period,) -> pd.DataFrame:
@@ -1431,6 +1459,41 @@ def get_dict_serie_summary(dict, caras, period,) -> pd.DataFrame:
                 
     return df_summary.reset_index(drop=True)
 
+@add_chunk_column
+def get_df_serie_summary(df, caras, period, n_std) -> pd.DataFrame:
+    """Genera un resumen de la serie temporal
+
+    Args:
+        dict (_type_): _description_
+        caras (_type_): _description_
+        period (_type_): _description_
+
+    Returns:
+        pd.DataFrame: _description_
+    """
+
+    df_summary = pd.DataFrame()
+    for cara in caras:
+        serie = df[cara]
+        summary = get_serie_summary(serie, cara, period, n_std)
+        df_aux = pd.concat([df_summary, pd.DataFrame(summary, index=[0])], axis=1)
+    df_aux["patient_id"] = df["patient_id"].values[0]
+    df_aux["label"] = df["label"].values[0]
+    df_summary = pd.concat([df_summary, df_aux], axis=0)
+
+                
+    return df_summary.reset_index(drop=True)
+
+def get_dict_serie_summary_chunk(df_dict, list_signals, period = 10, n_std = 1):
+    df_list = []
+    for patient, patient_data in df_dict.items():
+        for chunk, df in patient_data.items():
+            
+            df_list.append(get_df_serie_summary(df, list_signals, period, n_std, chunk_name=chunk))
+
+    return pd.concat(df_list, axis=0).reset_index(drop=True)
+
+
 def patients_dict_ccf(dict, combinaciones):
     patients_dict = {patient: pd.concat(
     [CCF_lags(dict[patient][col1], dict[patient][col2])
@@ -1440,6 +1503,26 @@ def patients_dict_ccf(dict, combinaciones):
     axis=1, join="inner"
     )# .assign(fixed_column="fixed_value")
     for patient in dict.keys()}
+
+    return patients_dict
+
+def patients_dict_ccf_chunk(df_dict : dict, combinaciones : tuple, max_lag : int =25) -> dict:
+    patients_dict = {
+        patient: {
+            chunk: pd.concat(
+                [
+                    CCF_lags(df[col1], df[col2], max_lag)
+                    .set_index("lags")
+                    .rename(columns={'ccf': col1 if col1 == col2 else f"{col1}_{col2}"})
+                    for col1, col2 in combinaciones
+                ],
+                axis=1, join="inner"
+            )
+                .assign(label=df["label"].iloc[0])
+            for chunk, df in chunks.items()
+        }
+        for patient, chunks in df_dict.items()
+    }
 
     return patients_dict
 
@@ -1504,6 +1587,27 @@ def get_ccf_summary(ccf, combinacion, proportion_to_cut=0.05):
         "kurtosis" + "_" + combinacion : class_ccf.kurtosis(),
         "trim_mean" + "_" + combinacion : class_ccf.trim_mean(proportion_to_cut = proportion_to_cut),
     }
+
+def get_ccf_summary_chunk(dict : dict, dict_combinaciones : dict, proportion_to_cut : float = 0.05) -> pd.DataFrame:
+    df_summary = pd.DataFrame()
+    # for patient, patient_data in df_mi_ccf.items():
+    for patient, patient_data in dict.items():
+        # df_aux = pd.DataFrame()
+        for chunk, df in patient_data.items():
+            df_aux = pd.DataFrame()
+            for combinacion in dict_combinaciones["uni_combinacion"] + dict_combinaciones["bi_combinacion"]:
+                if combinacion in df.columns:
+                    serie = df[combinacion]
+                    summary = get_ccf_summary(serie, combinacion, proportion_to_cut)
+                    df_aux = pd.concat([df_aux, pd.DataFrame(summary, index=[0])], axis=1)
+            df_aux["norm_ccf"] = matrix_norm(df, dict_combinaciones)
+            df_aux["chunk"] = chunk
+            df_aux["patient_id"] = patient
+            df_aux["label"] = df["label"].values[0]
+            df_summary = pd.concat([df_summary, df_aux], axis=0)
+
+    return df_summary.reset_index(drop=True)
+
 
 def get_dict_ccf_summary(dict, dict_combinaciones, proportion_to_cut=0.05,) -> pd.DataFrame:
     """Genera un resumen de la ccf
