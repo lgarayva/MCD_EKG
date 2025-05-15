@@ -35,7 +35,39 @@ Manera en que se trabajaron los datos, alineado al análisis exploratorio, si se
 
 Variables que se crearon, origenes de variables.
 
+En este apartado se trabajó, con base en los resultados del análisis exploratorio de datos, la creación de variables para el modelo. Se trabajaron tres bloques de variables:
+
+* Variables de acf y pacf.
+* variables estadísticas de la serie y descomposición de la serie.
+* Variables de ccf.
+
+
+Para las variables de acf y pacf, con base en el análisis, se encontró que las primeras 5 autocorrelaciones en promedio eran distintas de cero, por lo que se utilizaron estas autocorrelaciones como variables para el modelo. En total se tenían 12 señales y cada señal se utilizó las primeras 5 acf y pacf dando en total ´12x5x2 = 120´ variables de este bloque.
+
+Para las variables de estádisticas de la serie se tomó en cuenta variables como amplitud de la serie, intensidad de la serie, ratio de la serie, promedio en donde se dan los picos en la serie en el componente estacional, desviación estandar de la serie en el componente estacional y número de picos en la serie en el componente estacional.
+
+Para las variables de la CCF se tomaron en cuenta: el número de cruces por cero; el promedio, máximo, mínimo y desviación estándar de la CCF; el lag correspondiente al máximo y al mínimo de la CCF; la curtosis de la CCF; la media recortada de la CCF; y la norma de la matriz de la CCF.
+
 # 5 Modelo
+
+Para el modelado se utilizaron distintas arquitecturas de modelos de aprendizaje de máquina. En el modelado realizamos 3 pruebas: 
+
+* Modelado utilzando feature engeeniering
+* Modelado utilizando los valores de las series dividido en partes la serie (chunks).
+* Modelado utilizando feature engeeniering diviendo la serie en partes (chunks). 
+
+Los modelos que se utilizaron en estas pruebas fueron los siguientes:
+
+* Logistic Regression
+* Random Forest Classifier
+* Gradient Boosting Classifier
+* Naive Bayes
+* XGB Classifier
+
+Para estos modelos se realizó una búsqueda de hiperparámetros con técnicas de ´grid seacrh´ a excepción del modelo de XGB Classifier. 
+
+Para la evaluación de modelos tomanos en consideración las métricas de accuracy, recall_weighted, f1_weighted y roc_auc_ovr. Con base en estas métricas se evaluó que modelo que desempeñó de mejor manera. Para los modelos que se dividieron en chunks adicional de estas métricas, tomamos en consideración la moda de las predicciones de los chunks y así obtuvimos las métricas de accuracy, precision_weighted, recall_weighted y f1_weighted.
+
 
 Modelos que se realizaron, tiempos de ejecución de modelos, comparación de modelos.
 
