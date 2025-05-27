@@ -58,6 +58,69 @@ El sexto análisis que se realizó fue similar al análisis cuatro, a diferencia
 
 Un sétimo análisis que se realizó fue un análisis de cluster KMeans con las primeras autocorrelaciones y autocorrelaciones parciales, con el objetivo de identificar si esto era suficiente para separar las clases.
 
+Es importante mencionar que en este apartado analizaremos únicamente la señal II y clase MI ,Infarto de Miocardio, ya que sirve computacionalmente para analizar infarto inferior.
+
+## 3.1 Análisis de ACF y PACF
+
+![ACF PACF II](img/acf_pacf/acf_pacf_II.png)
+
+![ACF PACF II 30 lags](img/acf_pacf/acf_pacf_II_2.png)
+
+De las gráficas de de autocorrelación, podemos notar que estas no decienden a cero, mientras que las gráficas de autocorrelación parciales tienden a decrecer a cero confirme aumentan los lags. De esto podemos pensar que existe no estacionariedad en la serie o inlcuso que existe una raíz unitaria. Que la PACF tienda a cero podría indicar que existe un componente AR en la serie, es decir, la serie podría analizarse con un modelo ARIMA(p,d,0).
+
+Para analizar más a fondo, estudiaremos la existencia de raíces unitarias y de no estacionariedad aplicando diferencias a la serie y aplicando la prueba de Dickey-Fuller.
+
+## Raíces unitarias
+
+Realizando la prueba de Dickey-Fuller por señal y por clase obtenemos los siguientes resultados:
+
+| Señal   |       MI |   STTC MI |     STTC |    OTHER |
+|:--------|---------:|----------:|---------:|---------:|
+| AVL     | 0.843333 |  0.88     | 0.818333 | 0.735    |
+| V3      | 0.916667 |  0.916667 | 0.881667 | 0.941667 |
+| V1      | 0.856667 |  0.906667 | 0.86     | 0.853333 |
+| V2      | 0.923333 |  0.941667 | 0.891667 | 0.941667 |
+| II      | 0.841667 |  0.861667 | 0.823333 | 0.85     |
+| V4      | 0.861667 |  0.891667 | 0.805    | 0.911667 |
+| V5      | 0.795    |  0.876667 | 0.815    | 0.883333 |
+| V6      | 0.708333 |  0.836667 | 0.753333 | 0.82     |
+| III     | 0.808333 |  0.873333 | 0.733333 | 0.681667 |
+| AVR     | 0.888333 |  0.908333 | 0.878333 | 0.91     |
+| AVF     | 0.785    |  0.84     | 0.733333 | 0.733333 |
+| I       | 0.891667 |  0.9      | 0.888333 | 0.906667 |
+
+de la tabla podemos ver que existe una parte de señales y clases que tienen una raíz unitaria, sin embargo no es la mayoría (menos del 50%), sin embargo las series no son estacionarios, por lo que para volver estacionaria la serie es necesario aplicar una diferencia.
+
+| Señal   |       MI |   STTC MI |     STTC |   OTHER |
+|:--------|---------:|----------:|---------:|--------:|
+| AVL     | 0.996667 |         1 | 0.998333 |       1 |
+| V3      | 1        |         1 | 1        |       1 |
+| V1      | 1        |         1 | 1        |       1 |
+| V2      | 1        |         1 | 1        |       1 |
+| II      | 1        |         1 | 1        |       1 |
+| V4      | 1        |         1 | 1        |       1 |
+| V5      | 1        |         1 | 1        |       1 |
+| V6      | 0.998333 |         1 | 1        |       1 |
+| III     | 0.996667 |         1 | 0.998333 |       1 |
+| AVR     | 1        |         1 | 1        |       1 |
+| AVF     | 0.998333 |         1 | 1        |       1 |
+| I       | 0.998333 |         1 | 1        |       1 |
+
+Realizando la prueba para analizar si es necesario aplicar una diferencia adicional a la serie, vemos que menos del 1% de las series presenta raíz unitaria, por lo que únicamente aplicaremos una diferencia.
+
+![ACF PACF II diff](img/acf_pacf/acf_pacf_II_diff_MI.png)
+
+Aplicando una diferencia a la serie y obteniendo la ACF y PACF, podemos observar que únicamente las primeras 5 autocorrelaciones de la ACF son significativamente distintas de cero, mientras que la PACF conserva el comportamiento decreciente a cero, lo que nos lleva a pensar que nuestra suposición fue correcta de que las series eran no estacionarias y presentan un componente autorregresivo.
+
+## Descomposición de la serie
+
+## Análisis de correlación cruzada
+
+## Análisis de serie con intervalos de desviación estándar
+
+## Análisis de serie con intervalos de desviación estándar con suavizamiento de series
+
+## Análisis KMeans
 
 Análisis de datos que se realizó, análisis de ACF, PACF, CCF, seasonal, etc. Hallazgos de este análisis exploratorio y oportunidades de ingeniería de variables.
 
