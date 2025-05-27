@@ -4,7 +4,39 @@
 
 Planteamiento del problema, que se busca realizar. Oigen de los datos. Importancia del proyecto.
 
+Un electrocardiograma (ECG) es un indicador no intrusivo que sirve como diagnóstico para identificar enfermedades cardiobasculares.
+
+Las enfermedades cardiobasculares son la principal causa de muerte a nivel mundial, inlcuso en paises con ingresos altos solo por debajo del cancer. El electrocardiograma es una herramienta útil para evaluar el estado clínico cardíaco del paciente.
+
 # 2. Datos
+
+Los datos fueron obtenidos de PTB-XL, el cual es el mayor conjunto de datos clínicos de ECG disponible públicamente hasta la fecha. Estos datos fueron desarrollados con el objetivo de ser utiizados en métodos de aprendizaje de máquina con el fin de generar un sistema de decisiones automatizado para la interpretación de ECG. Este conjunto de datos fue desarollado con contrarrestar dos grandes obstáculos que se tenían con datos de ECG.
+
+* El primer obstáculo que se tenía era que no existía un conjunto de datos para entrenamiento y validación público que puidera utilizarse para entrenar los modelos.
+* El segundo obstáclulo fue la falta de procedimientos definidos para evaluar los algoritmos.
+
+Los datos de *PTB-XL* fue registrada mediante dispositivos *Schiller AG* de octubre de 1989 a junio de 1966.
+
+El conjunto de datos tiene las siguientes características:
+
+* tiene un volumen de 21,837 registros de 12 señales, cada una de 10 segundos, provenientes de 18,885 pacientes.
+* El conjunto de datos está balanceado respecto al género: 52 % hombres y 48 % mujeres. Presenta un amplio rango de edades, desde 0 hasta 95 años, con una mediana de 62 y un rango intercuartílico de 22.
+* Los electrocardiogramas fueron validados por hasta 2 cardiologos, los registros incluyen información sobre ritmo, forma y diagnóstico del ECG.
+* Los diagnósticos se clasificaron en formato de múltiples etiquetas, organizados en 5 superclases y 24 subclases.
+
+Para los datos se realizó un proceso de adquisición de datos y procesamiento de datos.
+
+### Adquisicón de datos
+
+1. Las señales se recortaron en segmentos de 10 segundos y guardado en un formato comprimido de 400 Hz. Para todas las señales, se usó el estandar de las 12 caras (I, II, III, aVL, aVR, aVF, V1, V2, V3, V4, V5 y V6) con referencia al brazo derecho.
+2. La información fue registrada en la base de datos por una enfermera.
+3. Cada registro fue interpretado en un 67.13% de manera manual por un cardiólogo, 31.2% de manera automática por un dispositivo de ECG con validaciones posteriores por un cardiólogo y un 1.67% sin reporte inicial.
+4. Finalmente, todos los reportes volvieron a ser anotados de manera manual por un experto basado principalmente en características cuantitativas de las señales.
+
+
+### Procesamiento de datos
+
+Las señalres fueron converidas del formato original a un formato finario con 16bits de preseición a una resolución de 1 \mu V /LSB. Las señalres pasaron por un proceso en el que se eliminaron picos de encendido y apagado en los dispositivos, estos picos se encontraban al inicio y final de los registros, además, las señales fueron resampleadas a una señal de 500 Hz, también se generó una versión de 100 Hz.
 
 dónde se obtuvieron los datos, organización de datos. origen de datos. clases de datos, etc.
 
