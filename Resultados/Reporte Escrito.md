@@ -114,6 +114,31 @@ Aplicando una diferencia a la serie y obteniendo la ACF y PACF, podemos observar
 
 ## Descomposición de la serie
 
+En el análisis de descomposición de la serie, analisamos únicamente la parte estacional de la serie. Para este analisis utilizamos el promedio de la serie para obtener esta descomposición. Una vez obtenido el componente estacional del promedio de las series obtuvimos los saltos dentro de la serie tomando en cuenta un salto por encima de dos desviaciones estándar. Con los saltos obtenemos una estadística de cada cuantos periodos se dan estos y obteuvimos los siguientes resultados:
+
+
+| Señal   |       MI |   STTC MI |     STTC |    OTHER |   promedio |      std |
+|:--------|---------:|----------:|---------:|---------:|-----------:|---------:|
+| AVL     |  48.2105 |   33.4483 | 100      |  31.7931 |    53.363  | 31.9553  |
+| V3      | 100      |   48.8421 |  25.2051 |  32.5517 |    51.6497 | 33.7129  |
+| V1      | 100      |  100      |  25.0256 |  50      |    68.7564 | 37.49    |
+| V2      |  33.3793 |  100      |  50      |  50      |    58.3448 | 28.8542  |
+| II      |  50.2105 |   47.7895 |  32.2069 |  48.3684 |    44.6438 |  8.3553  |
+| V4      |  25.359  |   19.898  | 100      | 100      |    61.3142 | 44.7261  |
+| V5      |  24.4872 |   24.0256 |  19.9184 |  31.8276 |    25.0647 |  4.95428 |
+| V6      |  25.3846 |   24.3077 |  33.3793 | 100      |    45.7679 | 36.3805  |
+| III     |  19.6939 |   50.3684 |  24.359  | 100      |    48.6053 | 36.8252  |
+| AVR     |  24.4872 |   31.5517 |  32.2069 |  32.2759 |    30.1304 |  3.77628 |
+| AVF     |  32.069  |   50.2632 |  32.9655 |  48.3684 |    40.9165 |  9.73633 |
+| I       |  32.9655 |   31.5517 |  33.6897 |  34.2143 |    33.1053 |  1.15534 |
+
+
+Teniendo en promedio los picos cada $46.805166$ en todas las señales.
+
+![ACF PACF II diff](img/acf_pacf/seasonal_trend_II.png)
+
+De las gráficas de componente estacional, podemos observar que para las señales MI presenta menos variabilidad o desviación, y vemos que existen tendencias de picos más marcadas.
+
 ## Análisis de correlación cruzada
 
 ## Análisis de serie con intervalos de desviación estándar
