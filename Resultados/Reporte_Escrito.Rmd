@@ -68,9 +68,9 @@ Es importante mencionar que en este apartado analizaremos únicamente la señal 
 
 ## 3.1 Análisis de ACF y PACF
 
-![ACF PACF II](img/acf_pacf/acf_pacf_II.png)
+![ACF PACF II](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II.png)
 
-![ACF PACF II 30 lags](img/acf_pacf/acf_pacf_II_2.png)
+![ACF PACF II 30 lags](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_2.png)
 
 De las gráficas de de autocorrelación, podemos notar que estas no descienden a cero, mientras que las gráficas de autocorrelación parciales tienden a decrecer a cero confirme aumentan los lags. De esto podemos pensar que existe no estacionariedad en la serie o incluso que existe una raíz unitaria. Que la PACF tienda a cero podría indicar que existe un componente AR en la serie, es decir, la serie podría analizarse con un modelo $ARIMA(p,d,0)$.
 
@@ -114,7 +114,7 @@ de la tabla podemos ver que existe una parte de señales y clases que tienen una
 
 Realizando la prueba para analizar si es necesario aplicar una diferencia adicional a la serie, vemos que menos del 1% de las series presenta raíz unitaria, por lo que únicamente aplicaremos una diferencia.
 
-![ACF PACF II diff](img/acf_pacf/acf_pacf_II_diff_MI.png)
+![ACF PACF II diff](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_diff_MI.png)
 
 Aplicando una diferencia a la serie y obteniendo la ACF y PACF, podemos observar que únicamente las primeras 5 autocorrelaciones de la ACF son significativamente distintas de cero, mientras que la PACF conserva el comportamiento decreciente a cero, lo que nos lleva a pensar que nuestra suposición fue correcta de que las series eran no estacionarias y presentan un componente autorregresivo.
 
@@ -141,11 +141,75 @@ En el análisis de descomposición de la serie, analizamos únicamente la parte 
 
 Teniendo en promedio los picos cada $46.805166$ en todas las señales.
 
-![ACF PACF II diff](img/acf_pacf/seasonal_trend_II.png)
+![ACF PACF II diff](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/seasonal_trend_II.png)
 
 De las gráficas de componente estacional, podemos observar que para las señales MI presenta menos variabilidad o desviación, y vemos que existen tendencias de picos más marcadas.
 
 ## Análisis de correlación cruzada
+
+Para el análisis de correlación cruzada analizamos distintas variantes de estas:
+
+* Análisis de correlación cruzada de las series originales.
+* Análisis de correlación cruzada de las series originales con intervalos de desviación estándar.
+* Análisis de correlación cruzada promedio de las series originales con intervalos de desviación estándar.
+* Promedio de series con intervalos de desviación estándar.
+* Promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
+* Análisis de cross-correlation del promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
+* Análisis de cross-correlation window particular.
+* Análisis de cross-correlation con ventana (window) promedio
+
+Para este estudio realizamos un análisis de las señales de la misma cara con sus respectivas combinaciones.
+
+
+### Análisis de correlación cruzada de las series originales
+
+En este primer análisis buscábamos encontrar relaciones entre las señales con respecto a las clases, como ejeplo utilizaremos la cara interior la cual contiene la señal II.
+
+![CCF II III](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III.png)
+
+![CCF II AVF](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF.png)
+
+De las gráficas podemos observar que existen correlaciones cruzadas notables en los retrasos $[-75, 0, 75]$ y unos picos menores dentro de ese intervalo, sin embargo, visualmente no logramos encontrar una diferenciación clara entre las clases.
+
+### Análisis de correlación cruzada de las series originales con intervalos de desviación estándar.
+
+En este segundo análisis estudiamos como se comprota el promedio de las correlaciones cruzadas en conjunto con la desviación estándar. 
+
+![CCF II III SD](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd.png)
+
+![CCF II AVF SD](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd.png)
+
+De este análisis vemos que en promedio la correlación cruzada tiene un máximo en el retraso 0, sin embargo, en los demás retrazos no parece existir una corrlación cruzada significativa.
+
+### Análisis de correlación cruzada promedio de las series originales con intervalos de desviación estándar.
+
+![CCF MEAN II III SD](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_mean_II_III_sd.png)
+
+![CCF MEAN II AVF SD](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_mean_II_AVF_sd.png)
+
+En relación con el ánalisis enterior, vemos que en promedio la correlación cruzada tiene un máximo en el retraso 0, sin embargo, en los demás retrazos no parece existir una corrlación cruzada significativa.
+
+
+### Promedio de series con intervalos de desviación estándar.
+
+Se realizó un análisis del promedio de las series con intervalos de desviación estandar, sin embargo, visualmente no se encontraron relaciones directas para separar las clases.
+
+![SIGNAL II MEAN](/Users/leongaray/Desktop/MCD_EKG/img/ccf/img/ccf/signal_II_mean.png)
+
+Como se observa en las gráficas, las señalres presentan bastante variabilidad y no se logra apreciar patrones en las clases.
+
+### Promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
+
+Se realizó un análisis del promedio de las series suavizadas con una ventana de 50 periodos con intervalos de desviación estandar, sin embargo, visualmente no se encontraron relaciones directas para separar las clases.
+
+![SIGNAL II MEAN SMOOTH](/Users/leongaray/Desktop/MCD_EKG/img/ccf/img/ccf/signal_II_mean_smooth.png)
+
+En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas, sin embargo, visualmente no podemos relaciones.
+
+### Análisis de cross-correlation del promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
+
+* Análisis de cross-correlation window particular.
+* Análisis de cross-correlation con ventana (window) promedio
 
 ## Análisis de serie con intervalos de desviación estándar
 
