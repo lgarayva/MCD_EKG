@@ -956,7 +956,7 @@ def plot_acf_pact_analysis(df : pd.DataFrame,
 
     fig, axs = plt.subplots(2, 2, figsize=(10, 8)) 
 
-    fig.suptitle(f"ACT y FACT {clase} {label}")
+    fig.suptitle(f"ACT y PACT {clase} {label}")
 
     axs[0,0].stem(lags, agg_acf)
     axs[0,0].set_xlabel("Lag")
