@@ -2,33 +2,33 @@
 
 # 1. Introducción
 
-Planteamiento del problema, que se busca realizar. Oigen de los datos. Importancia del proyecto.
+Planteamiento del problema, que se busca realizar. Origen de los datos. Importancia del proyecto.
 
-Un electrocardiograma (ECG) es un indicador no intrusivo que sirve como diagnóstico para identificar enfermedades cardiobasculares.
+Un electrocardiograma (ECG) es un indicador no intrusivo que sirve como diagnóstico para identificar enfermedades cardiovasculares
 
-Las enfermedades cardiobasculares son la principal causa de muerte a nivel mundial, inlcuso en paises con ingresos altos solo por debajo del cancer. El electrocardiograma es una herramienta útil para evaluar el estado clínico cardíaco del paciente.
+Las enfermedades cardiovasculares son la principal causa de muerte a nivel mundial, incluso en países con ingresos altos solo por debajo del cáncer. El electrocardiograma es una herramienta útil para evaluar el estado clínico cardíaco del paciente.
 
 # 2. Datos
 
-Los datos fueron obtenidos de PTB-XL, el cual es el mayor conjunto de datos clínicos de ECG disponible públicamente hasta la fecha. Estos datos fueron desarrollados con el objetivo de ser utiizados en métodos de aprendizaje de máquina con el fin de generar un sistema de decisiones automatizado para la interpretación de ECG. Este conjunto de datos fue desarollado con contrarrestar dos grandes obstáculos que se tenían con datos de ECG.
+Los datos fueron obtenidos de PTB-XL, el cual es el mayor conjunto de datos clínicos de ECG disponible públicamente hasta la fecha. Estos datos fueron desarrollados con el objetivo de ser utilizados en métodos de aprendizaje de máquina con el fin de generar un sistema de decisiones automatizado para la interpretación de ECG. Este conjunto de datos fue desarrollado con contrarrestar dos grandes obstáculos que se tenían con datos de ECG.
 
-* El primer obstáculo que se tenía era que no existía un conjunto de datos para entrenamiento y validación público que puidera utilizarse para entrenar los modelos.
-* El segundo obstáclulo fue la falta de procedimientos definidos para evaluar los algoritmos.
+* El primer obstáculo que se tenía era que no existía un conjunto de datos para entrenamiento y validación público que pudiera utilizarse para entrenar los modelos.
+* El segundo obstáculo fue la falta de procedimientos definidos para evaluar los algoritmos.
 
 Los datos de *PTB-XL* fue registrada mediante dispositivos *Schiller AG* de octubre de 1989 a junio de 1966.
 
 El conjunto de datos tiene las siguientes características:
 
 * tiene un volumen de 21,837 registros de 12 señales, cada una de 10 segundos, provenientes de 18,885 pacientes.
-* El conjunto de datos está balanceado respecto al género: 52 % hombres y 48 % mujeres. Presenta un amplio rango de edades, desde 0 hasta 95 años, con una mediana de 62 y un rango intercuartílico de 22.
-* Los electrocardiogramas fueron validados por hasta 2 cardiologos, los registros incluyen información sobre ritmo, forma y diagnóstico del ECG.
+* El conjunto de datos está balanceado respecto al género: 52% hombres y 48% mujeres. Presenta un amplio rango de edades, desde 0 hasta 95 años, con una mediana de 62 y un rango intercuartílico de 22.
+* Los electrocardiogramas fueron validados por hasta 2 cardiólogos, los registros incluyen información sobre ritmo, forma y diagnóstico del ECG.
 * Los diagnósticos se clasificaron en formato de múltiples etiquetas, organizados en 5 superclases y 24 subclases.
 
 Para los datos se realizó un proceso de adquisición de datos y procesamiento de datos.
 
-### Adquisicón de datos
+### Adquisición de datos
 
-1. Las señales se recortaron en segmentos de 10 segundos y guardado en un formato comprimido de 400 Hz. Para todas las señales, se usó el estandar de las 12 caras (I, II, III, aVL, aVR, aVF, V1, V2, V3, V4, V5 y V6) con referencia al brazo derecho.
+1. Las señales se recortaron en segmentos de 10 segundos y guardado en un formato comprimido de 400 Hz. Para todas las señales, se usó el estándar de las 12 caras (I, II, III, aVL, aVR, aVF, V1, V2, V3, V4, V5 y V6) con referencia al brazo derecho.
 2. La información fue registrada en la base de datos por una enfermera.
 3. Cada registro fue interpretado en un 67.13% de manera manual por un cardiólogo, 31.2% de manera automática por un dispositivo de ECG con validaciones posteriores por un cardiólogo y un 1.67% sin reporte inicial.
 4. Finalmente, todos los reportes volvieron a ser anotados de manera manual por un experto basado principalmente en características cuantitativas de las señales.
@@ -36,7 +36,7 @@ Para los datos se realizó un proceso de adquisición de datos y procesamiento d
 
 ### Procesamiento de datos
 
-Las señalres fueron converidas del formato original a un formato finario con 16bits de preseición a una resolución de 1 \mu V /LSB. Las señalres pasaron por un proceso en el que se eliminaron picos de encendido y apagado en los dispositivos, estos picos se encontraban al inicio y final de los registros, además, las señales fueron resampleadas a una señal de 500 Hz, también se generó una versión de 100 Hz.
+Las señales fueron convertidas del formato original a un formato binario con 16bits de precisión a una resolución de 1 $\mu$ V /LSB. Las señales pasaron por un proceso en el que se eliminaron picos de encendido y apagado en los dispositivos, estos picos se encontraban al inicio y final de los registros, además, las señales fueron re muestradas a una señal de 500 Hz, también se generó una versión de 100 Hz.
 
 dónde se obtuvieron los datos, organización de datos. origen de datos. clases de datos, etc.
 
@@ -46,27 +46,27 @@ Para el análisis exploratorio de datos exploramos distintas opciones.
 
 En primer lugar analizamos las autocorrelaciones, ACF, y autocorrelaciones parciales, PACF. Para este primer análisis, se revisó la ACF de las series originales y obteniendo el agregado de estas; también se analizó el agregado de las series y posteriormente se obtuvo la ACF y PACF. Para el análisis de la ACF y PACF se dividió el análisis por clase y por señal.
 
-El segundo análisis que se realizó fue el análisis de identificación de raices unitarios por medio de la prueba de Dickey-Fuller, esto para identificar si las series presentaban una raíz unitario que podría afectar la estacionalidad de las series. Este anális fue de vital importancia ya que logramos identificar que la mayoría de las series eran no estacionarias lo que afectaba la identificación de la ACF, posterior a aplicar diferencia pudimos encontrar patrones más claros en esta.
+El segundo análisis que se realizó fue el análisis de identificación de raíces unitarios por medio de la prueba de Dickey-Fuller, esto para identificar si las series presentaban una raíz unitario que podría afectar la estacionalidad de las series. Este análisis fue de vital importancia ya que logramos identificar que la mayoría de las series eran no estacionarias lo que afectaba la identificación de la ACF, posterior a aplicar diferencia pudimos encontrar patrones más claros en esta.
 
 El tercer análisis que realizamos fue la descomposición de la serie, para este análisis nos enfocamos específicamente en el componente estacional, esto con el objetivo de encontrar patrones y periodicidades. Una vez encontrado estos patrones obtuvimos un patrón de picos en la serie el que utilizamos posteriormente para suavizar la serie, con el objetivo de encontrar posibles patrones en las series eliminando ruido en esta.
 
-El cuatro análisis que realizamos fue el análisis de ´cross-correlation´, en este análisis ya no nos centramos en las señales particulares, sino que analizamos combinaciones de señales, con el objetivo de encontrar relaciones entre pares. En este apartado analizamos las series originales y el promedio de las series.
+El cuatro análisis que realizamos fue el análisis de *cross-correlation*, en este análisis ya no nos centramos en las señales particulares, sino que analizamos combinaciones de señales, con el objetivo de encontrar relaciones entre pares. En este apartado analizamos las series originales y el promedio de las series.
 
-El quinto análisis fue el promedio de las series con intervalos de desviación estandar. Este análisis se realizó tanto para la serie original como a la serie suavizada con los resultados obtenidos en el análisis tres.
+El quinto análisis fue el promedio de las series con intervalos de desviación estándar. Este análisis se realizó tanto para la serie original como a la serie suavizada con los resultados obtenidos en el análisis tres.
 
 El sexto análisis que se realizó fue similar al análisis cuatro, a diferencia que para este análisis utilizamos un suavizamiento de las series.
 
-Un sétimo análisis que se realizó fue un análisis de cluster KMeans con las primeras autocorrelaciones y autocorrelaciones parciales, con el objetivo de identificar si esto era suficiente para separar las clases.
+Un sétimo análisis que se realizó fue un análisis de *cluster KMeans* con las primeras autocorrelaciones y autocorrelaciones parciales, con el objetivo de identificar si esto era suficiente para separar las clases.
 
 Es importante mencionar que en este apartado analizaremos únicamente la señal II y clase MI ,Infarto de Miocardio, ya que sirve computacionalmente para analizar infarto inferior.
 
 ## 3.1 Análisis de ACF y PACF
 
-![ACF PACF II](img/acf_pacf/acf_pacf_II.png)
+![ACF PACF II](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II.png)
 
-![ACF PACF II 30 lags](img/acf_pacf/acf_pacf_II_2.png)
+![ACF PACF II 30 lags](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_2.png)
 
-De las gráficas de de autocorrelación, podemos notar que estas no decienden a cero, mientras que las gráficas de autocorrelación parciales tienden a decrecer a cero confirme aumentan los lags. De esto podemos pensar que existe no estacionariedad en la serie o inlcuso que existe una raíz unitaria. Que la PACF tienda a cero podría indicar que existe un componente AR en la serie, es decir, la serie podría analizarse con un modelo ARIMA(p,d,0).
+De las gráficas de de autocorrelación, podemos notar que estas no descienden a cero, mientras que las gráficas de autocorrelación parciales tienden a decrecer a cero confirme aumentan los lags. De esto podemos pensar que existe no estacionariedad en la serie o incluso que existe una raíz unitaria. Que la PACF tienda a cero podría indicar que existe un componente AR en la serie, es decir, la serie podría analizarse con un modelo $ARIMA(p,d,0)$.
 
 Para analizar más a fondo, estudiaremos la existencia de raíces unitarias y de no estacionariedad aplicando diferencias a la serie y aplicando la prueba de Dickey-Fuller.
 
@@ -108,13 +108,13 @@ de la tabla podemos ver que existe una parte de señales y clases que tienen una
 
 Realizando la prueba para analizar si es necesario aplicar una diferencia adicional a la serie, vemos que menos del 1% de las series presenta raíz unitaria, por lo que únicamente aplicaremos una diferencia.
 
-![ACF PACF II diff](img/acf_pacf/acf_pacf_II_diff_MI.png)
+![ACF PACF II diff](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_diff_MI.png)
 
 Aplicando una diferencia a la serie y obteniendo la ACF y PACF, podemos observar que únicamente las primeras 5 autocorrelaciones de la ACF son significativamente distintas de cero, mientras que la PACF conserva el comportamiento decreciente a cero, lo que nos lleva a pensar que nuestra suposición fue correcta de que las series eran no estacionarias y presentan un componente autorregresivo.
 
 ## Descomposición de la serie
 
-En el análisis de descomposición de la serie, analisamos únicamente la parte estacional de la serie. Para este analisis utilizamos el promedio de la serie para obtener esta descomposición. Una vez obtenido el componente estacional del promedio de las series obtuvimos los saltos dentro de la serie tomando en cuenta un salto por encima de dos desviaciones estándar. Con los saltos obtenemos una estadística de cada cuantos periodos se dan estos y obteuvimos los siguientes resultados:
+En el análisis de descomposición de la serie, analizamos únicamente la parte estacional de la serie. Para este análisis utilizamos el promedio de la serie para obtener esta descomposición. Una vez obtenido el componente estacional del promedio de las series obtuvimos los saltos dentro de la serie tomando en cuenta un salto por encima de dos desviaciones estándar. Con los saltos obtenemos una estadística de cada cuantos periodos se dan estos y obtuvimos los siguientes resultados:
 
 
 | Señal   |       MI |   STTC MI |     STTC |    OTHER |   promedio |      std |
@@ -135,7 +135,7 @@ En el análisis de descomposición de la serie, analisamos únicamente la parte 
 
 Teniendo en promedio los picos cada $46.805166$ en todas las señales.
 
-![ACF PACF II diff](img/acf_pacf/seasonal_trend_II.png)
+![ACF PACF II diff](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/seasonal_trend_II.png)
 
 De las gráficas de componente estacional, podemos observar que para las señales MI presenta menos variabilidad o desviación, y vemos que existen tendencias de picos más marcadas.
 
@@ -153,7 +153,7 @@ Manera en que se trabajaron los datos, alineado al análisis exploratorio, si se
 
 # 4. Ingenieria de variables
 
-Variables que se crearon, origenes de variables.
+Variables que se crearon, orígenes de variables.
 
 En este apartado se trabajó, con base en los resultados del análisis exploratorio de datos, la creación de variables para el modelo. Se trabajaron tres bloques de variables:
 
@@ -162,9 +162,9 @@ En este apartado se trabajó, con base en los resultados del análisis explorato
 * Variables de ccf.
 
 
-Para las variables de acf y pacf, con base en el análisis, se encontró que las primeras 5 autocorrelaciones en promedio eran distintas de cero, por lo que se utilizaron estas autocorrelaciones como variables para el modelo. En total se tenían 12 señales y cada señal se utilizó las primeras 5 acf y pacf dando en total ´12x5x2 = 120´ variables de este bloque.
+Para las variables de $acf$ y $pacf$, con base en el análisis, se encontró que las primeras 5 autocorrelaciones en promedio eran distintas de cero, por lo que se utilizaron estas autocorrelaciones como variables para el modelo. En total se tenían 12 señales y cada señal se utilizó las primeras 5 $acf$ y $pacf$ dando en total $12x5x2 = 120$ variables de este bloque.
 
-Para las variables de estádisticas de la serie se tomó en cuenta variables como amplitud de la serie, intensidad de la serie, ratio de la serie, promedio en donde se dan los picos en la serie en el componente estacional, desviación estandar de la serie en el componente estacional y número de picos en la serie en el componente estacional.
+Para las variables de estadísticas de la serie se tomó en cuenta variables como amplitud de la serie, intensidad de la serie, ratio de la serie, promedio en donde se dan los picos en la serie en el componente estacional, desviación estándar de la serie en el componente estacional y número de picos en la serie en el componente estacional.
 
 Para las variables de la CCF se tomaron en cuenta: el número de cruces por cero; el promedio, máximo, mínimo y desviación estándar de la CCF; el lag correspondiente al máximo y al mínimo de la CCF; la curtosis de la CCF; la media recortada de la CCF; y la norma de la matriz de la CCF.
 
@@ -172,7 +172,7 @@ Para las variables de la CCF se tomaron en cuenta: el número de cruces por cero
 
 Para el modelado se utilizaron distintas arquitecturas de modelos de aprendizaje de máquina. En el modelado realizamos 3 pruebas: 
 
-* Modelado utilzando feature engeeniering
+* Modelado utilizando feature engeeniering
 * Modelado utilizando los valores de las series dividido en partes la serie (chunks).
 * Modelado utilizando feature engeeniering diviendo la serie en partes (chunks). 
 
@@ -184,9 +184,9 @@ Los modelos que se utilizaron en estas pruebas fueron los siguientes:
 * Naive Bayes
 * XGB Classifier
 
-Para estos modelos se realizó una búsqueda de hiperparámetros con técnicas de ´grid seacrh´ a excepción del modelo de XGB Classifier. 
+Para estos modelos se realizó una búsqueda de hiperparámetros con técnicas de *grid seacrh* a excepción del modelo de XGB Classifier. 
 
-Para la evaluación de modelos tomanos en consideración las métricas de accuracy, recall_weighted, f1_weighted y roc_auc_ovr. Con base en estas métricas se evaluó que modelo que desempeñó de mejor manera. Para los modelos que se dividieron en chunks adicional de estas métricas, tomamos en consideración la moda de las predicciones de los chunks y así obtuvimos las métricas de accuracy, precision_weighted, recall_weighted y f1_weighted.
+Para la evaluación de modelos tomamos en consideración las métricas de *accuracy*, *recall_weighted*, *f1_weighted* y *roc_auc_ovr.* Con base en estas métricas se evaluó que modelo que desempeñó de mejor manera. Para los modelos que se dividieron en *chunks* adicional de estas métricas, tomamos en consideración la moda de las predicciones de los *chunks* y así obtuvimos las métricas de *accuracy*, *precision_weighted*, *recall_weighted* y *f1_weighted.*
 
 
 Modelos que se realizaron, tiempos de ejecución de modelos, comparación de modelos.
