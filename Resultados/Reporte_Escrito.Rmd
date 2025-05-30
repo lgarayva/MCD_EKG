@@ -173,13 +173,13 @@ De las gráficas podemos observar que existen correlaciones cruzadas notables en
 
 ### Análisis de correlación cruzada de las series originales con intervalos de desviación estándar.
 
-En este segundo análisis estudiamos como se comprota el promedio de las correlaciones cruzadas en conjunto con la desviación estándar. 
+En este segundo análisis estudiamos como se comporta el promedio de las correlaciones cruzadas en conjunto con la desviación estándar. 
 
 ![CCF II III SD](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd.png)
 
 ![CCF II AVF SD](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd.png)
 
-De este análisis vemos que en promedio la correlación cruzada tiene un máximo en el retraso 0, sin embargo, en los demás retrazos no parece existir una corrlación cruzada significativa.
+De este análisis vemos que en promedio la correlación cruzada tiene un máximo en el retraso 0, sin embargo, en los demás retrasos no parece existir una correlación cruzada significativa.
 
 ### Análisis de correlación cruzada promedio de las series originales con intervalos de desviación estándar.
 
@@ -187,20 +187,20 @@ De este análisis vemos que en promedio la correlación cruzada tiene un máximo
 
 ![CCF MEAN II AVF SD](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_mean_II_AVF_sd.png)
 
-En relación con el ánalisis enterior, vemos que en promedio la correlación cruzada tiene un máximo en el retraso 0, sin embargo, en los demás retrazos no parece existir una corrlación cruzada significativa.
+En relación con el análisis interior, vemos que en promedio la correlación cruzada tiene un máximo en el retraso 0, sin embargo, en los demás retrasos no parece existir una correlación cruzada significativa.
 
 
 ### Promedio de series con intervalos de desviación estándar.
 
-Se realizó un análisis del promedio de las series con intervalos de desviación estandar, sin embargo, visualmente no se encontraron relaciones directas para separar las clases.
+Se realizó un análisis del promedio de las series con intervalos de desviación estándar, sin embargo, visualmente no se encontraron relaciones directas para separar las clases.
 
 ![SIGNAL II MEAN](/Users/leongaray/Desktop/MCD_EKG/img/ccf/img/ccf/signal_II_mean.png)
 
-Como se observa en las gráficas, las señalres presentan bastante variabilidad y no se logra apreciar patrones en las clases.
+Como se observa en las gráficas, las señales presentan bastante variabilidad y no se logra apreciar patrones en las clases.
 
 ### Promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
 
-Se realizó un análisis del promedio de las series suavizadas con una ventana de 50 periodos con intervalos de desviación estandar, sin embargo, visualmente no se encontraron relaciones directas para separar las clases.
+Se realizó un análisis del promedio de las series suavizadas con una ventana de 50 periodos con intervalos de desviación estándar, sin embargo, visualmente no se encontraron relaciones directas para separar las clases.
 
 ![SIGNAL II MEAN SMOOTH](/Users/leongaray/Desktop/MCD_EKG/img/ccf/img/ccf/signal_II_mean_smooth.png)
 
@@ -208,8 +208,37 @@ En las gráficas se puede observar que con este suavizamiento se elimina variabi
 
 ### Análisis de cross-correlation del promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
 
-* Análisis de cross-correlation window particular.
-* Análisis de cross-correlation con ventana (window) promedio
+Otro análisis realizado fue el análisis de correlación cruzada del promedio de la serie suavizada con una ventana arbitraria de 50 periodos.
+
+
+![SIGNAL II III SMOOTH 50](/Users/leongaray/Desktop/MCD_EKG/img/ccf/img/ccf/ccf_II_III_sd_smooth_50.png)
+
+![SIGNAL II AVF SMOOTH 50](/Users/leongaray/Desktop/MCD_EKG/img/ccf/img/ccf/ccf_II_AVF_sd_smooth_50.png)
+
+De las gráficas podemos notar que no existe una notable diferencia entre las clases, además que no se encuentra una diferencia notable con respecto a la correlación cruzada de la serie original.
+
+
+### Análisis de cross-correlation window particular.
+
+Otro análisis realizado fue el análisis de correlación cruzada utilizando como suavizamiento ventanas con periodos obtenidos en la descomposición de la serie. Este suavizamiento se hizo con los valores particulares de cada señal.
+
+![SIGNAL II III SMOOTH PART](/Users/leongaray/Desktop/MCD_EKG/img/ccf/img/ccf/ccf_II_III_sd_smooth_part.png)
+
+![SIGNAL II AVF SMOOTH PART](/Users/leongaray/Desktop/MCD_EKG/img/ccf/img/ccf/ccf_II_AVF_sd_smooth_part.png)
+
+Podemos observar que utilizar una ventana de suavizamiento particular tenemos una gráfica de correlación cruzada más suave, y podemos notar los picos en otros puntos además del retraso cero.
+
+Sin embargo, tampoco existe una relación clara para separar las clases de las señales.
+
+### Análisis de cross-correlation con ventana (window) promedio
+
+El último análisis de suavizamiento que se realizó con las correlaciones cruzadas fue analizar si el promedio de los saltos que encontramos en la descomposición de la serie de todas las clases.
+
+![SIGNAL II III SMOOTH MEAN](/Users/leongaray/Desktop/MCD_EKG/img/ccf/img/ccf/ccf_II_III_sd_smooth_mean.png)
+
+![SIGNAL II AVF SMOOTH MEAN](/Users/leongaray/Desktop/MCD_EKG/img/ccf/img/ccf/ccf_II_AVF_sd_smooth_mean.png)
+
+Podemos notar que aplicar un suavizamiento particular o promedio nos ayuda a encontrar picos en la gráfica de correlación cruzada que no era fácilmente ver en la gráfica del promedio de las series. Sin embargo, no encontramos una relación clara para poder separarlos.
 
 ## Análisis de serie con intervalos de desviación estándar
 
