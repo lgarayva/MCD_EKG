@@ -1,0 +1,1251 @@
+---
+title: "Reporte_Escrito"
+author: "León Garay"
+output: word_document
+---
+
+
+
+# 1. Introducción
+
+Planteamiento del problema, que se busca realizar. Origen de los datos. Importancia del proyecto.
+
+Un electrocardiograma (ECG) es un indicador no intrusivo que sirve como diagnóstico para identificar enfermedades cardiovasculares
+
+Las enfermedades cardiovasculares son la principal causa de muerte a nivel mundial, incluso en países con ingresos altos solo por debajo del cáncer. El electrocardiograma es una herramienta útil para evaluar el estado clínico cardíaco del paciente.
+
+# 2. Datos
+
+Los datos fueron obtenidos de PTB-XL, el cual es el mayor conjunto de datos clínicos de ECG disponible públicamente hasta la fecha. Estos datos fueron desarrollados con el objetivo de ser utilizados en métodos de aprendizaje de máquina con el fin de generar un sistema de decisiones automatizado para la interpretación de ECG. Este conjunto de datos fue desarrollado con contrarrestar dos grandes obstáculos que se tenían con datos de ECG.
+
+* El primer obstáculo que se tenía era que no existía un conjunto de datos para entrenamiento y validación público que pudiera utilizarse para entrenar los modelos.
+* El segundo obstáculo fue la falta de procedimientos definidos para evaluar los algoritmos.
+
+Los datos de *PTB-XL* fue registrada mediante dispositivos *Schiller AG* de octubre de 1989 a junio de 1966.
+
+El conjunto de datos tiene las siguientes características:
+
+* tiene un volumen de 21,837 registros de 12 señales, cada una de 10 segundos, provenientes de 18,885 pacientes.
+* El conjunto de datos está balanceado respecto al género: 52% hombres y 48% mujeres. Presenta un amplio rango de edades, desde 0 hasta 95 años, con una mediana de 62 y un rango intercuartílico de 22.
+* Los electrocardiogramas fueron validados por hasta 2 cardiólogos, los registros incluyen información sobre ritmo, forma y diagnóstico del ECG.
+* Los diagnósticos se clasificaron en formato de múltiples etiquetas, organizados en 5 superclases y 24 subclases.
+
+Para los datos se realizó un proceso de adquisición de datos y procesamiento de datos.
+
+### Adquisición de datos
+
+1. Las señales se recortaron en segmentos de 10 segundos y guardado en un formato comprimido de 400 Hz. Para todas las señales, se usó el estándar de las 12 caras (I, II, III, aVL, aVR, aVF, V1, V2, V3, V4, V5 y V6) con referencia al brazo derecho.
+2. La información fue registrada en la base de datos por una enfermera.
+3. Cada registro fue interpretado en un 67.13% de manera manual por un cardiólogo, 31.2% de manera automática por un dispositivo de ECG con validaciones posteriores por un cardiólogo y un 1.67% sin reporte inicial.
+4. Finalmente, todos los reportes volvieron a ser anotados de manera manual por un experto basado principalmente en características cuantitativas de las señales.
+
+
+### Procesamiento de datos
+
+Las señales fueron convertidas del formato original a un formato binario con 16bits de precisión a una resolución de 1 $\mu$ V /LSB. Las señales pasaron por un proceso en el que se eliminaron picos de encendido y apagado en los dispositivos, estos picos se encontraban al inicio y final de los registros, además, las señales fueron re muestradas a una señal de 500 Hz, también se generó una versión de 100 Hz.
+
+dónde se obtuvieron los datos, organización de datos. origen de datos. clases de datos, etc.
+
+# 3 Análisis exploratorio y Procesamiento
+
+Para el análisis exploratorio de datos exploramos distintas opciones. 
+
+En primer lugar analizamos las autocorrelaciones, ACF, y autocorrelaciones parciales, PACF. Para este primer análisis, se revisó la ACF de las series originales y obteniendo el agregado de estas; también se analizó el agregado de las series y posteriormente se obtuvo la ACF y PACF. Para el análisis de la ACF y PACF se dividió el análisis por clase y por señal.
+
+El segundo análisis que se realizó fue el análisis de identificación de raíces unitarios por medio de la prueba de Dickey-Fuller, esto para identificar si las series presentaban una raíz unitario que podría afectar la estacionalidad de las series. Este análisis fue de vital importancia ya que logramos identificar que la mayoría de las series eran no estacionarias lo que afectaba la identificación de la ACF, posterior a aplicar diferencia pudimos encontrar patrones más claros en esta.
+
+El tercer análisis que realizamos fue la descomposición de la serie, para este análisis nos enfocamos específicamente en el componente estacional, esto con el objetivo de encontrar patrones y periodicidades. Una vez encontrado estos patrones obtuvimos un patrón de picos en la serie el que utilizamos posteriormente para suavizar la serie, con el objetivo de encontrar posibles patrones en las series eliminando ruido en esta.
+
+El cuatro análisis que realizamos fue el análisis de *cross-correlation*, en este análisis ya no nos centramos en las señales particulares, sino que analizamos combinaciones de señales, con el objetivo de encontrar relaciones entre pares. En este apartado analizamos las series originales y el promedio de las series.
+
+El quinto análisis fue el promedio de las series con intervalos de desviación estándar. Este análisis se realizó tanto para la serie original como a la serie suavizada con los resultados obtenidos en el análisis tres.
+
+El sexto análisis que se realizó fue similar al análisis cuatro, a diferencia que para este análisis utilizamos un suavizamiento de las series.
+
+Es importante mencionar que en este apartado analizaremos únicamente la señal II y clase MI ,Infarto de Miocardio, ya que sirve computacionalmente para analizar infarto inferior.
+
+## 3.1 Análisis de ACF y PACF
+
+![ACF PACF II](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II.png)
+
+![ACF PACF II 30 lags](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_2.png)
+
+De las gráficas de de autocorrelación, podemos notar que estas no descienden a cero, mientras que las gráficas de autocorrelación parciales tienden a decrecer a cero confirme aumentan los lags. De esto podemos pensar que existe no estacionariedad en la serie o incluso que existe una raíz unitaria. Que la PACF tienda a cero podría indicar que existe un componente AR en la serie, es decir, la serie podría analizarse con un modelo $ARIMA(p,d,0)$.
+
+Para analizar más a fondo, estudiaremos la existencia de raíces unitarias y de no estacionariedad aplicando diferencias a la serie y aplicando la prueba de Dickey-Fuller.
+
+## Raíces unitarias
+
+Realizando la prueba de Dickey-Fuller por señal y por clase obtenemos los siguientes resultados:
+
+| Señal   |       MI |   STTC MI |     STTC |    OTHER |
+|:--------|---------:|----------:|---------:|---------:|
+| AVL     | 0.843333 |  0.88     | 0.818333 | 0.735    |
+| V3      | 0.916667 |  0.916667 | 0.881667 | 0.941667 |
+| V1      | 0.856667 |  0.906667 | 0.86     | 0.853333 |
+| V2      | 0.923333 |  0.941667 | 0.891667 | 0.941667 |
+| II      | 0.841667 |  0.861667 | 0.823333 | 0.85     |
+| V4      | 0.861667 |  0.891667 | 0.805    | 0.911667 |
+| V5      | 0.795    |  0.876667 | 0.815    | 0.883333 |
+| V6      | 0.708333 |  0.836667 | 0.753333 | 0.82     |
+| III     | 0.808333 |  0.873333 | 0.733333 | 0.681667 |
+| AVR     | 0.888333 |  0.908333 | 0.878333 | 0.91     |
+| AVF     | 0.785    |  0.84     | 0.733333 | 0.733333 |
+| I       | 0.891667 |  0.9      | 0.888333 | 0.906667 |
+
+de la tabla podemos ver que existe una parte de señales y clases que tienen una raíz unitaria, sin embargo no es la mayoría (menos del 50%), sin embargo las series no son estacionarios, por lo que para volver estacionaria la serie es necesario aplicar una diferencia.
+
+| Señal   |       MI |   STTC MI |     STTC |   OTHER |
+|:--------|---------:|----------:|---------:|--------:|
+| AVL     | 0.996667 |         1 | 0.998333 |       1 |
+| V3      | 1        |         1 | 1        |       1 |
+| V1      | 1        |         1 | 1        |       1 |
+| V2      | 1        |         1 | 1        |       1 |
+| II      | 1        |         1 | 1        |       1 |
+| V4      | 1        |         1 | 1        |       1 |
+| V5      | 1        |         1 | 1        |       1 |
+| V6      | 0.998333 |         1 | 1        |       1 |
+| III     | 0.996667 |         1 | 0.998333 |       1 |
+| AVR     | 1        |         1 | 1        |       1 |
+| AVF     | 0.998333 |         1 | 1        |       1 |
+| I       | 0.998333 |         1 | 1        |       1 |
+
+Realizando la prueba para analizar si es necesario aplicar una diferencia adicional a la serie, vemos que menos del 1% de las series presenta raíz unitaria, por lo que únicamente aplicaremos una diferencia.
+
+![ACF PACF II diff](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_diff_MI.png)
+
+Aplicando una diferencia a la serie y obteniendo la ACF y PACF, podemos observar que únicamente las primeras 5 autocorrelaciones de la ACF son significativamente distintas de cero, mientras que la PACF conserva el comportamiento decreciente a cero, lo que nos lleva a pensar que nuestra suposición fue correcta de que las series eran no estacionarias y presentan un componente autorregresivo.
+
+## Descomposición de la serie
+
+En el análisis de descomposición de la serie, analizamos únicamente la parte estacional de la serie. Para este análisis utilizamos el promedio de la serie para obtener esta descomposición. Una vez obtenido el componente estacional del promedio de las series obtuvimos los saltos dentro de la serie tomando en cuenta un salto por encima de dos desviaciones estándar. Con los saltos obtenemos una estadística de cada cuantos periodos se dan estos y obtuvimos los siguientes resultados:
+
+
+| Señal   |       MI |   STTC MI |     STTC |    OTHER |   promedio |      std |
+|:--------|---------:|----------:|---------:|---------:|-----------:|---------:|
+| AVL     |  48.2105 |   33.4483 | 100      |  31.7931 |    53.363  | 31.9553  |
+| V3      | 100      |   48.8421 |  25.2051 |  32.5517 |    51.6497 | 33.7129  |
+| V1      | 100      |  100      |  25.0256 |  50      |    68.7564 | 37.49    |
+| V2      |  33.3793 |  100      |  50      |  50      |    58.3448 | 28.8542  |
+| II      |  50.2105 |   47.7895 |  32.2069 |  48.3684 |    44.6438 |  8.3553  |
+| V4      |  25.359  |   19.898  | 100      | 100      |    61.3142 | 44.7261  |
+| V5      |  24.4872 |   24.0256 |  19.9184 |  31.8276 |    25.0647 |  4.95428 |
+| V6      |  25.3846 |   24.3077 |  33.3793 | 100      |    45.7679 | 36.3805  |
+| III     |  19.6939 |   50.3684 |  24.359  | 100      |    48.6053 | 36.8252  |
+| AVR     |  24.4872 |   31.5517 |  32.2069 |  32.2759 |    30.1304 |  3.77628 |
+| AVF     |  32.069  |   50.2632 |  32.9655 |  48.3684 |    40.9165 |  9.73633 |
+| I       |  32.9655 |   31.5517 |  33.6897 |  34.2143 |    33.1053 |  1.15534 |
+
+
+Teniendo en promedio los picos cada $46.805166$ en todas las señales.
+
+![ACF PACF II diff](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/seasonal_trend_II.png)
+
+De las gráficas de componente estacional, podemos observar que para las señales MI presenta menos variabilidad o desviación, y vemos que existen tendencias de picos más marcadas.
+
+## Análisis de correlación cruzada
+
+Para el análisis de correlación cruzada analizamos distintas variantes de estas:
+
+* Análisis de correlación cruzada de las series originales.
+* Análisis de correlación cruzada de las series originales con intervalos de desviación estándar.
+* Análisis de correlación cruzada promedio de las series originales con intervalos de desviación estándar.
+* Análisis de cross-correlation del promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
+* Análisis de cross-correlation window particular.
+* Análisis de cross-correlation con ventana (window) promedio
+
+Para este estudio realizamos un análisis de las señales de la misma cara con sus respectivas combinaciones.
+
+
+### Análisis de correlación cruzada de las series originales
+
+En este primer análisis buscábamos encontrar relaciones entre las señales con respecto a las clases, como ejeplo utilizaremos la cara interior la cual contiene la señal II.
+
+![CCF II III](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III.png)
+
+![CCF II AVF](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF.png)
+
+De las gráficas podemos observar que existen correlaciones cruzadas notables en los retrasos $[-75, 0, 75]$ y unos picos menores dentro de ese intervalo, sin embargo, visualmente no logramos encontrar una diferenciación clara entre las clases.
+
+### Análisis de correlación cruzada de las series originales con intervalos de desviación estándar.
+
+En este segundo análisis estudiamos como se comporta el promedio de las correlaciones cruzadas en conjunto con la desviación estándar. 
+
+![CCF II III SD](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd.png)
+
+![CCF II AVF SD](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd.png)
+
+De este análisis vemos que en promedio la correlación cruzada tiene un máximo en el retraso 0, sin embargo, en los demás retrasos no parece existir una correlación cruzada significativa.
+
+### Análisis de correlación cruzada promedio de las series originales con intervalos de desviación estándar.
+
+![CCF MEAN II III SD](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_mean_II_III_sd.png)
+
+![CCF MEAN II AVF SD](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_mean_II_AVF_sd.png)
+
+En relación con el análisis interior, vemos que en promedio la correlación cruzada tiene un máximo en el retraso 0, sin embargo, en los demás retrasos no parece existir una correlación cruzada significativa.
+
+### Análisis de cross-correlation del promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
+
+Otro análisis realizado fue el análisis de correlación cruzada del promedio de la serie suavizada con una ventana arbitraria de 50 periodos.
+
+
+![SIGNAL II III SMOOTH 50](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd_smooth_50.png)
+
+![SIGNAL II AVF SMOOTH 50](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd_smooth_50.png)
+
+De las gráficas podemos notar que no existe una notable diferencia entre las clases, además que no se encuentra una diferencia notable con respecto a la correlación cruzada de la serie original.
+
+
+### Análisis de cross-correlation window particular.
+
+Otro análisis realizado fue el análisis de correlación cruzada utilizando como suavizamiento ventanas con periodos obtenidos en la descomposición de la serie. Este suavizamiento se hizo con los valores particulares de cada señal.
+
+![SIGNAL II III SMOOTH PART](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd_smooth_part.png)                        
+
+![SIGNAL II AVF SMOOTH PART](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd_smooth_part.png)
+
+Podemos observar que utilizar una ventana de suavizamiento particular tenemos una gráfica de correlación cruzada más suave, y podemos notar los picos en otros puntos además del retraso cero.
+
+Sin embargo, tampoco existe una relación clara para separar las clases de las señales.
+
+### Análisis de cross-correlation con ventana (window) promedio
+
+El último análisis de suavizamiento que se realizó con las correlaciones cruzadas fue analizar si el promedio de los saltos que encontramos en la descomposición de la serie de todas las clases.
+
+![SIGNAL II III SMOOTH MEAN](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd_smooth_mean.png)
+
+![SIGNAL II AVF SMOOTH MEAN](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd_smooth_mean.png)
+
+Podemos notar que aplicar un suavizamiento particular o promedio nos ayuda a encontrar picos en la gráfica de correlación cruzada que no era fácilmente ver en la gráfica del promedio de las series. Sin embargo, no encontramos una relación clara para poder separarlos.
+
+## Análisis de serie con intervalos de desviación estándar
+
+### Promedio de series con intervalos de desviación estándar.
+
+Se realizó un análisis del promedio de las series con intervalos de desviación estándar, sin embargo, visualmente no se encontraron relaciones directas para separar las clases.
+
+![SIGNAL II MEAN](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean.png)
+
+Como se observa en las gráficas, las señales presentan bastante variabilidad y no se logra apreciar patrones en las clases.
+
+## Análisis de serie con intervalos de desviación estándar con suavizamiento de series
+
+Para este análisis se utilizaron las distintas ventanas de suavizamiento:
+
+* Promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
+* Promedio de series con suavizamiento particular e intervalos de desviación estándar.
+* Promedio de series con suavizamiento promedio e intervalos de desviación estándar.
+
+### Promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
+
+Se realizó un análisis del promedio de las series suavizadas con una ventana de 50 periodos con intervalos de desviación estándar, sin embargo, visualmente no se encontraron relaciones directas para separar las clases.
+
+![SIGNAL II MEAN SMOOTH](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth.png)
+
+En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas, sin embargo, visualmente no podemos relaciones.
+
+### Promedio de series con suavizamiento particular e intervalos de desviación estándar.
+
+Se realizó otro análisis, el promedio de las series suavizadas con una ventana particular para cada señal y clase con intervalos de desviación estándar, sin embargo, visualmente no se encontraron relaciones directas para separar las clases.
+
+![SIGNAL II MEAN SMOOTH](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth_part.png)
+
+En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas, sin embargo, visualmente no podemos relaciones.
+
+### Promedio de series con suavizamiento promedio e intervalos de desviación estándar.
+
+El último análisis realizdo fue el promedio de las series suavizadas con una ventana promedio para cada señal con intervalos de desviación estándar, sin embargo, visualmente no se encontraron relaciones directas para separar las clases.
+
+![SIGNAL II MEAN SMOOTH](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth_mean.png)
+
+En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas, sin embargo, visualmente no podemos relaciones.
+
+# 4. Ingenieria de variables
+
+Variables que se crearon, orígenes de variables.
+
+En este apartado se trabajó, con base en los resultados del análisis exploratorio de datos, la creación de variables para el modelo. Se trabajaron tres bloques de variables y una reducción de dimensionalidad:
+
+* Variables de acf y pacf.
+* variables estadísticas de la serie y descomposición de la serie.
+* Variables de ccf.
+* Análisis de Componentes Principales (PCA)
+
+## Variables de autocorrelaciones
+
+Para las variables de $acf$ y $pacf$, con base en el análisis, se encontró que las primeras 5 autocorrelaciones en promedio eran distintas de cero, por lo que se utilizaron estas autocorrelaciones como variables para el modelo. En total se tenían 12 señales y cada señal se utilizó las primeras 5 $acf$ y $pacf$ dando en total $12*5*2 = 120$ variables de este bloque.
+
+## Variables estadísticas de las series
+
+Para las variables de estadísticas de la serie se tomó en cuenta variables como amplitud de las series, intensidad de las series, ratio de las series, promedio en donde se dan los picos en las series en el componente estacional, desviación estándar de las series en el componente estacional y número de picos en las series en el componente estacional. Dando un total de $6*12=72$ variables de estadísticas de la serie.
+
+## Variables de correlación cruzada 
+
+Para las variables de la CCF se tomaron en cuenta: el número de cruces por cero; el promedio, máximo, mínimo y desviación estándar de la CCF; el lag correspondiente al máximo y al mínimo de la CCF; la curtosis de la CCF; la media recortada de la CCF; y la norma de la matriz de la CCF. Dando un total de $78*9+1 = 703$ variables del bloque de correlación cruzada.
+
+En donde el número de combinaciones posibles fue de: 
+
+$$\binom{12 + 2 - 1}{2} = 78$$
+
+## Análisis de Componentes Principales
+
+
+Se aplicó PCA sobre el conjunto de variables generadas para reducir la dimensionalidad y evitar la multicolinealidad. Inicialmente se tenían $120+72+703 = 905$ variables de todos los bloques. Se seleccionaron los primeros k componentes principales que explicaban al menos el 95% de la varianza. Resultando en 285 componentes principales.
+
+# 5 Modelo
+
+Para el modelado se utilizaron distintas arquitecturas de modelos de aprendizaje de máquina. En el modelado realizamos 3 pruebas: 
+
+* Modelado utilizando feature engeeniering
+* Modelado utilizando los valores de las series dividido en partes la serie (chunks).
+* Modelado utilizando feature engeeniering diviendo la serie en partes (chunks). 
+
+Los modelos que se utilizaron en estas pruebas fueron los siguientes:
+
+* Logistic Regression
+* Random Forest Classifier
+* Gradient Boosting Classifier
+* Naive Bayes
+* XGB Classifier
+
+Para estos modelos se realizó una búsqueda de hiperparámetros con técnicas de *grid seacrh* a excepción del modelo de XGB Classifier. 
+
+Se utilizaron los siguientes diccionarios en la búsqueda de hiperparámetros:
+
+
+
+```
+
+Logistic Regression: 
+
+        {'penalty': ['l2'],
+            'C': [0.00001, 0.0001, 0.001, 0.01, 0.1, 1, 10]}
+
+
+Random Forest Classifier
+        {'n_estimators': [100, 350, 500],
+             'max_features': ['log2', 'sqrt'],
+             'max_depth': [5, 10, 20],
+             'min_samples_split': [2, 10, 30],
+             'min_samples_leaf': [2, 10, 30]}
+
+Gradient Boosting Classifier
+        {'n_estimators': [1,10,100], 
+             'learning_rate' : [0.01,0.05,0.1],
+             'subsample' : [0.1,0.5,1.0], 
+             'max_depth': [5,10,20],
+             'min_samples_split': [2, 10, 30],
+             'min_samples_leaf': [2, 10, 30],
+             'max_features': ['log2', 'sqrt']}
+
+Naive Bayes
+        {'var_smoothing': [1e-9, 1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3]}
+
+Classifier
+        learning_rate=0.1,
+        n_estimators=5000,
+        eval_metric="merror",
+        objective="multi:softprob"
+```
+
+
+
+Para la evaluación de modelos tomamos en consideración las métricas de *accuracy*, *recall_weighted*, *f1_weighted* y *roc_auc_ovr.* Con base en estas métricas se evaluó que modelo que desempeñó de mejor manera. Para los modelos que se dividieron en *chunks* adicional de estas métricas, tomamos en consideración la moda de las predicciones de los *chunks* y así obtuvimos las métricas de *accuracy*, *precision_weighted*, *recall_weighted* y *f1_weighted.*
+
+## Modelado utilizando feature engeeniering
+
+### Logistic Regression
+
+| parámetro   | valor   |
+|:------------|:--------|
+| C           | 0.001   |
+| penalty     | l2      |
+
+|              |   precision |   recall |   f1-score |    support |
+|:-------------|------------:|---------:|-----------:|-----------:|
+| 0            |    0.487395 | 0.483333 |   0.485356 | 120        |
+| 1            |    0.612613 | 0.566667 |   0.588745 | 120        |
+| 2            |    0.475806 | 0.491667 |   0.483607 | 120        |
+| 3            |    0.539683 | 0.566667 |   0.552846 | 120        |
+| accuracy     |    0.527083 | 0.527083 |   0.527083 |   0.527083 |
+| macro avg    |    0.528874 | 0.527083 |   0.527638 | 480        |
+| weighted avg |    0.528874 | 0.527083 |   0.527638 | 480        |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.527083 |
+| precision_weighted | 0.528874 |
+| recall_weighted    | 0.527083 |
+| f1_weighted        | 0.527638 |
+| roc_auc_ovr        | 0.790475 |
+| log_loss           | 1.06877  |
+| gini_normalized    | 0.580949 |
+| ks_test_clase_0    | 0.408333 |
+| ks_test_clase_1    | 0.525    |
+| ks_test_clase_2    | 0.388889 |
+| ks_test_clase_3    | 0.494444 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |       58 |       20 |       17 |       25 |
+| Real 1 |       20 |       68 |       25 |        7 |
+| Real 2 |       18 |       17 |       59 |       26 |
+| Real 3 |       23 |        6 |       23 |       68 |
+
+
+### Random Forest Classifier
+
+| parámetro         | valor   |
+|:------------------|:--------|
+| max_depth         | 10      |
+| max_features      | sqrt    |
+| min_samples_leaf  | 2       |
+| min_samples_split | 2       |
+| n_estimators      | 500     |
+
+|              |   precision |   recall |   f1-score |    support |
+|:-------------|------------:|---------:|-----------:|-----------:|
+| 0            |    0.390244 | 0.4      |   0.395062 | 120        |
+| 1            |    0.57377  | 0.583333 |   0.578512 | 120        |
+| 2            |    0.445545 | 0.375    |   0.40724  | 120        |
+| 3            |    0.514925 | 0.575    |   0.543307 | 120        |
+| accuracy     |    0.483333 | 0.483333 |   0.483333 |   0.483333 |
+| macro avg    |    0.481121 | 0.483333 |   0.48103  | 480        |
+| weighted avg |    0.481121 | 0.483333 |   0.48103  | 480        |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.483333 |
+| precision_weighted | 0.481121 |
+| recall_weighted    | 0.483333 |
+| f1_weighted        | 0.48103  |
+| roc_auc_ovr        | 0.751476 |
+| log_loss           | 1.24126  |
+| gini_normalized    | 0.502951 |
+| ks_test_clase_0    | 0.302778 |
+| ks_test_clase_1    | 0.522222 |
+| ks_test_clase_2    | 0.327778 |
+| ks_test_clase_3    | 0.45     |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |       48 |       22 |       20 |       30 |
+| Real 1 |       23 |       70 |       21 |        6 |
+| Real 2 |       25 |       21 |       45 |       29 |
+| Real 3 |       27 |        9 |       15 |       69 |
+
+### Gradient Boosting Classifier
+
+| parámetro         | valor   |
+|:------------------|:--------|
+| learning_rate     | 0.01    |
+| max_depth         | 20      |
+| max_features      | sqrt    |
+| min_samples_leaf  | 30      |
+| min_samples_split | 2       |
+| n_estimators      | 100     |
+| subsample         | 1.0     |
+
+|              |   precision |   recall |   f1-score |   support |
+|:-------------|------------:|---------:|-----------:|----------:|
+| 0            |    0.431818 | 0.475    |   0.452381 |     120   |
+| 1            |    0.585586 | 0.541667 |   0.562771 |     120   |
+| 2            |    0.45045  | 0.416667 |   0.4329   |     120   |
+| 3            |    0.539683 | 0.566667 |   0.552846 |     120   |
+| accuracy     |    0.5      | 0.5      |   0.5      |       0.5 |
+| macro avg    |    0.501884 | 0.5      |   0.500224 |     480   |
+| weighted avg |    0.501884 | 0.5      |   0.500224 |     480   |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.5      |
+| precision_weighted | 0.501884 |
+| recall_weighted    | 0.5      |
+| f1_weighted        | 0.500224 |
+| roc_auc_ovr        | 0.751817 |
+| log_loss           | 1.25756  |
+| gini_normalized    | 0.503634 |
+| ks_test_clase_0    | 0.35     |
+| ks_test_clase_1    | 0.480556 |
+| ks_test_clase_2    | 0.344444 |
+| ks_test_clase_3    | 0.480556 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |       57 |       20 |       20 |       23 |
+| Real 1 |       26 |       65 |       24 |        5 |
+| Real 2 |       21 |       19 |       50 |       30 |
+| Real 3 |       28 |        7 |       17 |       68 |
+
+### Naive Bayes
+
+| parámetro     |   valor |
+|:--------------|--------:|
+| var_smoothing |   1e-09 |
+
+
+|              |   precision |   recall |   f1-score |    support |
+|:-------------|------------:|---------:|-----------:|-----------:|
+| 0            |    0.338129 | 0.391667 |   0.362934 | 120        |
+| 1            |    0.315412 | 0.733333 |   0.441103 | 120        |
+| 2            |    0.363636 | 0.1      |   0.156863 | 120        |
+| 3            |    0.482759 | 0.116667 |   0.187919 | 120        |
+| accuracy     |    0.335417 | 0.335417 |   0.335417 |   0.335417 |
+| macro avg    |    0.374984 | 0.335417 |   0.287205 | 480        |
+| weighted avg |    0.374984 | 0.335417 |   0.287205 | 480        |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.335417 |
+| precision_weighted | 0.374984 |
+| recall_weighted    | 0.335417 |
+| f1_weighted        | 0.287205 |
+| roc_auc_ovr        | 0.616916 |
+| log_loss           | 6.40477  |
+| gini_normalized    | 0.233831 |
+| ks_test_clase_0    | 0.186111 |
+| ks_test_clase_1    | 0.266667 |
+| ks_test_clase_2    | 0.163889 |
+| ks_test_clase_3    | 0.216667 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |       47 |       65 |        5 |        3 |
+| Real 1 |       25 |       88 |        6 |        1 |
+| Real 2 |       32 |       65 |       12 |       11 |
+| Real 3 |       35 |       61 |       10 |       14 |
+
+### XGB Classifier
+
+| parámetro          | valor          |
+|:-------------------|:---------------|
+| objective          | multi:softprob |
+| enable_categorical | False          |
+| eval_metric        | merror         |
+| learning_rate      | 0.1            |
+| missing            | nan            |
+| n_estimators       | 5000           |
+
+|              |   precision |   recall |   f1-score |    support |
+|:-------------|------------:|---------:|-----------:|-----------:|
+| 0            |    0.445378 | 0.441667 |   0.443515 | 120        |
+| 1            |    0.603604 | 0.558333 |   0.580087 | 120        |
+| 2            |    0.48     | 0.5      |   0.489796 | 120        |
+| 3            |    0.536    | 0.558333 |   0.546939 | 120        |
+| accuracy     |    0.514583 | 0.514583 |   0.514583 |   0.514583 |
+| macro avg    |    0.516245 | 0.514583 |   0.515084 | 480        |
+| weighted avg |    0.516245 | 0.514583 |   0.515084 | 480        |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.514583 |
+| precision_weighted | 0.516245 |
+| recall_weighted    | 0.514583 |
+| f1_weighted        | 0.515084 |
+| roc_auc_ovr        | 0.762303 |
+| log_loss           | 1.4775   |
+| gini_normalized    | 0.524606 |
+| ks_test_clase_0    | 0.333333 |
+| ks_test_clase_1    | 0.494444 |
+| ks_test_clase_2    | 0.380556 |
+| ks_test_clase_3    | 0.505556 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |       53 |       22 |       14 |       31 |
+| Real 1 |       22 |       67 |       26 |        5 |
+| Real 2 |       22 |       16 |       60 |       22 |
+| Real 3 |       22 |        6 |       25 |       67 |
+
+## Modelado utilizando valores de series en chunks de 100
+
+### Logistic Regression
+
+| parámetro   | valor   |
+|:------------|:--------|
+| C           | 0.001   |
+| penalty     | l2      |
+
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.236749 | 0.223333 |   0.229846 |  300        |
+| 1            |    0.27551  | 0.27     |   0.272727 |  300        |
+| 2            |    0.257329 | 0.263333 |   0.260297 |  300        |
+| 3            |    0.256329 | 0.27     |   0.262987 |  300        |
+| accuracy     |    0.256667 | 0.256667 |   0.256667 |    0.256667 |
+| macro avg    |    0.256479 | 0.256667 |   0.256464 | 1200        |
+| weighted avg |    0.256479 | 0.256667 |   0.256464 | 1200        |
+
+| metric             |       value |
+|:-------------------|------------:|
+| accuracy           | 0.256667    |
+| precision_weighted | 0.256479    |
+| recall_weighted    | 0.256667    |
+| f1_weighted        | 0.256464    |
+| roc_auc_ovr        | 0.500283    |
+| log_loss           | 1.39063     |
+| gini_normalized    | 0.000566667 |
+| ks_test_clase_0    | 0.0711111   |
+| ks_test_clase_1    | 0.06        |
+| ks_test_clase_2    | 0.0388889   |
+| ks_test_clase_3    | 0.03        |
+
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.236749 | 0.223333 |   0.229846 |  300        |
+| 1            |    0.27551  | 0.27     |   0.272727 |  300        |
+| 2            |    0.257329 | 0.263333 |   0.260297 |  300        |
+| 3            |    0.256329 | 0.27     |   0.262987 |  300        |
+| accuracy     |    0.256667 | 0.256667 |   0.256667 |    0.256667 |
+| macro avg    |    0.256479 | 0.256667 |   0.256464 | 1200        |
+| weighted avg |    0.256479 | 0.256667 |   0.256464 | 1200        |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.333333 |
+| precision_weighted | 0.340975 |
+| recall_weighted    | 0.333333 |
+| f1_weighted        | 0.335172 |
+
+
+
+### Random Forest Classifier
+
+| parámetro         | valor   |
+|:------------------|:--------|
+| max_depth         | 20      |
+| max_features      | sqrt    |
+| min_samples_leaf  | 2       |
+| min_samples_split | 10      |
+| n_estimators      | 500     |
+
+
+|              |   precision |   recall |   f1-score |   support |
+|:-------------|------------:|---------:|-----------:|----------:|
+| 0            |    0.407801 | 0.383333 |   0.395189 |   300     |
+| 1            |    0.640678 | 0.63     |   0.635294 |   300     |
+| 2            |    0.402214 | 0.363333 |   0.381786 |   300     |
+| 3            |    0.480114 | 0.563333 |   0.518405 |   300     |
+| accuracy     |    0.485    | 0.485    |   0.485    |     0.485 |
+| macro avg    |    0.482702 | 0.485    |   0.482669 |  1200     |
+| weighted avg |    0.482702 | 0.485    |   0.482669 |  1200     |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.485    |
+| precision_weighted | 0.482702 |
+| recall_weighted    | 0.485    |
+| f1_weighted        | 0.482669 |
+| roc_auc_ovr        | 0.73496  |
+| log_loss           | 1.20453  |
+| gini_normalized    | 0.46992  |
+| ks_test_clase_0    | 0.246667 |
+| ks_test_clase_1    | 0.546667 |
+| ks_test_clase_2    | 0.266667 |
+| ks_test_clase_3    | 0.44     |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |      115 |       63 |       53 |       69 |
+| Real 1 |       46 |      189 |       40 |       25 |
+| Real 2 |       68 |       34 |      109 |       89 |
+| Real 3 |       53 |        9 |       69 |      169 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.566667 |
+| precision_weighted | 0.565486 |
+| recall_weighted    | 0.566667 |
+| f1_weighted        | 0.563655 |
+
+### Gradient Boosting Classifier
+
+| parámetro         | valor   |
+|:------------------|:--------|
+| learning_rate     | 0.1     |
+| max_depth         | 20      |
+| max_features      | sqrt    |
+| min_samples_leaf  | 30      |
+| min_samples_split | 2       |
+| n_estimators      | 100     |
+| subsample         | 1.0     |
+
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.422222 | 0.443333 |   0.43252  |  300        |
+| 1            |    0.732    | 0.61     |   0.665455 |  300        |
+| 2            |    0.402299 | 0.466667 |   0.432099 |  300        |
+| 3            |    0.498258 | 0.476667 |   0.487223 |  300        |
+| accuracy     |    0.499167 | 0.499167 |   0.499167 |    0.499167 |
+| macro avg    |    0.513695 | 0.499167 |   0.504324 | 1200        |
+| weighted avg |    0.513695 | 0.499167 |   0.504324 | 1200        |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.499167 |
+| precision_weighted | 0.513695 |
+| recall_weighted    | 0.499167 |
+| f1_weighted        | 0.504324 |
+| roc_auc_ovr        | 0.746159 |
+| log_loss           | 1.19023  |
+| gini_normalized    | 0.492319 |
+| ks_test_clase_0    | 0.272222 |
+| ks_test_clase_1    | 0.563333 |
+| ks_test_clase_2    | 0.301111 |
+| ks_test_clase_3    | 0.416667 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |      133 |       48 |       65 |       54 |
+| Real 1 |       53 |      183 |       46 |       18 |
+| Real 2 |       73 |       15 |      140 |       72 |
+| Real 3 |       56 |        4 |       97 |      143 |
+
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.533333 |
+| precision_weighted | 0.557202 |
+| recall_weighted    | 0.533333 |
+| f1_weighted        | 0.540249 |
+
+### Naive Bayes
+
+| parámetro     |   valor |
+|:--------------|--------:|
+| var_smoothing |   1e-09 |
+
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.316327 | 0.103333 |   0.155779 |  300        |
+| 1            |    0.321823 | 0.776667 |   0.455078 |  300        |
+| 2            |    0.351145 | 0.153333 |   0.213457 |  300        |
+| 3            |    0.327935 | 0.27     |   0.296161 |  300        |
+| accuracy     |    0.325833 | 0.325833 |   0.325833 |    0.325833 |
+| macro avg    |    0.329307 | 0.325833 |   0.280119 | 1200        |
+| weighted avg |    0.329307 | 0.325833 |   0.280119 | 1200        |
+
+| metric             |     value |
+|:-------------------|----------:|
+| accuracy           |  0.325833 |
+| precision_weighted |  0.329307 |
+| recall_weighted    |  0.325833 |
+| f1_weighted        |  0.280119 |
+| roc_auc_ovr        |  0.588748 |
+| log_loss           | 20.8603   |
+| gini_normalized    |  0.177495 |
+| ks_test_clase_0    |  0.185556 |
+| ks_test_clase_1    |  0.242222 |
+| ks_test_clase_2    |  0.117778 |
+| ks_test_clase_3    |  0.115556 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |       31 |      164 |       29 |       76 |
+| Real 1 |       13 |      233 |       27 |       27 |
+| Real 2 |       20 |      171 |       46 |       63 |
+| Real 3 |       34 |      156 |       29 |       81 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.308333 |
+| precision_weighted | 0.302306 |
+| recall_weighted    | 0.308333 |
+| f1_weighted        | 0.241931 |
+
+### XGB Classifier
+
+| parámetro             | valor          |
+|:----------------------|:---------------|
+| objective             | multi:softprob |
+| early_stopping_rounds | 500            |
+| enable_categorical    | False          |
+| eval_metric           | auc            |
+| learning_rate         | 0.1            |
+| missing               | nan            |
+| n_estimators          | 4000           |
+
+|              |   precision |   recall |   f1-score |    support |
+|:-------------|------------:|---------:|-----------:|-----------:|
+| 0            |    0.444816 | 0.443333 |   0.444073 |  300       |
+| 1            |    0.732824 | 0.64     |   0.683274 |  300       |
+| 2            |    0.412698 | 0.419355 |   0.416    |  310       |
+| 3            |    0.5      | 0.556667 |   0.526814 |  300       |
+| accuracy     |    0.51405  | 0.51405  |   0.51405  |    0.51405 |
+| macro avg    |    0.522585 | 0.514839 |   0.51754  | 1210       |
+| weighted avg |    0.521677 | 0.51405  |   0.516701 | 1210       |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.51405  |
+| precision_weighted | 0.521677 |
+| recall_weighted    | 0.51405  |
+| f1_weighted        | 0.516701 |
+| roc_auc_ovr        | 0.767521 |
+| log_loss           | 1.12188  |
+| gini_normalized    | 0.535042 |
+| ks_test_clase_0    | 0.344286 |
+| ks_test_clase_1    | 0.597143 |
+| ks_test_clase_2    | 0.302043 |
+| ks_test_clase_3    | 0.459304 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |      133 |       45 |       71 |       51 |
+| Real 1 |       49 |      192 |       37 |       22 |
+| Real 2 |       69 |       17 |      130 |       94 |
+| Real 3 |       48 |        8 |       77 |      167 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.528926 |
+| precision_weighted | 0.537967 |
+| recall_weighted    | 0.528926 |
+| f1_weighted        | 0.532205 |
+
+## Modelado utilizando valores de series en chunks de 5
+
+### Logistic Regression
+
+| parámetro   | valor   |
+|:------------|:--------|
+| C           | 0.001   |
+| penalty     | l2      |
+
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.236749 | 0.223333 |   0.229846 |  300        |
+| 1            |    0.27551  | 0.27     |   0.272727 |  300        |
+| 2            |    0.257329 | 0.263333 |   0.260297 |  300        |
+| 3            |    0.256329 | 0.27     |   0.262987 |  300        |
+| accuracy     |    0.256667 | 0.256667 |   0.256667 |    0.256667 |
+| macro avg    |    0.256479 | 0.256667 |   0.256464 | 1200        |
+| weighted avg |    0.256479 | 0.256667 |   0.256464 | 1200        |
+
+| metric             |       value |
+|:-------------------|------------:|
+| accuracy           | 0.256667    |
+| precision_weighted | 0.256479    |
+| recall_weighted    | 0.256667    |
+| f1_weighted        | 0.256464    |
+| roc_auc_ovr        | 0.500283    |
+| log_loss           | 1.39063     |
+| gini_normalized    | 0.000566667 |
+| ks_test_clase_0    | 0.0711111   |
+| ks_test_clase_1    | 0.06        |
+| ks_test_clase_2    | 0.0388889   |
+| ks_test_clase_3    | 0.03        |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |       67 |       61 |       82 |       90 |
+| Real 1 |       68 |       81 |       77 |       74 |
+| Real 2 |       82 |       68 |       79 |       71 |
+| Real 3 |       66 |       84 |       69 |       81 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.333333 |
+| precision_weighted | 0.340975 |
+| recall_weighted    | 0.333333 |
+| f1_weighted        | 0.335172 |
+
+### Random Forest Classifier
+
+| parámetro         | valor   |
+|:------------------|:--------|
+| max_depth         | 20      |
+| max_features      | sqrt    |
+| min_samples_leaf  | 2       |
+| min_samples_split | 10      |
+| n_estimators      | 500     |
+
+|              |   precision |   recall |   f1-score |   support |
+|:-------------|------------:|---------:|-----------:|----------:|
+| 0            |    0.407801 | 0.383333 |   0.395189 |   300     |
+| 1            |    0.640678 | 0.63     |   0.635294 |   300     |
+| 2            |    0.402214 | 0.363333 |   0.381786 |   300     |
+| 3            |    0.480114 | 0.563333 |   0.518405 |   300     |
+| accuracy     |    0.485    | 0.485    |   0.485    |     0.485 |
+| macro avg    |    0.482702 | 0.485    |   0.482669 |  1200     |
+| weighted avg |    0.482702 | 0.485    |   0.482669 |  1200     |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.485    |
+| precision_weighted | 0.482702 |
+| recall_weighted    | 0.485    |
+| f1_weighted        | 0.482669 |
+| roc_auc_ovr        | 0.73496  |
+| log_loss           | 1.20453  |
+| gini_normalized    | 0.46992  |
+| ks_test_clase_0    | 0.246667 |
+| ks_test_clase_1    | 0.546667 |
+| ks_test_clase_2    | 0.266667 |
+| ks_test_clase_3    | 0.44     |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |      115 |       63 |       53 |       69 |
+| Real 1 |       46 |      189 |       40 |       25 |
+| Real 2 |       68 |       34 |      109 |       89 |
+| Real 3 |       53 |        9 |       69 |      169 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.566667 |
+| precision_weighted | 0.565486 |
+| recall_weighted    | 0.566667 |
+| f1_weighted        | 0.563655 |
+
+### Gradient Boosting Classifier
+
+| parámetro         | valor   |
+|:------------------|:--------|
+| learning_rate     | 0.1     |
+| max_depth         | 20      |
+| max_features      | log2    |
+| min_samples_leaf  | 10      |
+| min_samples_split | 2       |
+| n_estimators      | 100     |
+| subsample         | 1.0     |
+
+|              |   precision |   recall |   f1-score |   support |
+|:-------------|------------:|---------:|-----------:|----------:|
+| 0            |    0.37     |     0.37 |   0.37     |    300    |
+| 1            |    0.722892 |     0.6  |   0.655738 |    300    |
+| 2            |    0.375    |     0.47 |   0.41716  |    300    |
+| 3            |    0.48     |     0.44 |   0.45913  |    300    |
+| accuracy     |    0.47     |     0.47 |   0.47     |      0.47 |
+| macro avg    |    0.486973 |     0.47 |   0.475507 |   1200    |
+| weighted avg |    0.486973 |     0.47 |   0.475507 |   1200    |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.47     |
+| precision_weighted | 0.486973 |
+| recall_weighted    | 0.47     |
+| f1_weighted        | 0.475507 |
+| roc_auc_ovr        | 0.72971  |
+| log_loss           | 1.27737  |
+| gini_normalized    | 0.45942  |
+| ks_test_clase_0    | 0.22     |
+| ks_test_clase_1    | 0.565556 |
+| ks_test_clase_2    | 0.286667 |
+| ks_test_clase_3    | 0.366667 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |      111 |       46 |       81 |       62 |
+| Real 1 |       47 |      180 |       56 |       17 |
+| Real 2 |       79 |       16 |      141 |       64 |
+| Real 3 |       63 |        7 |       98 |      132 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.508333 |
+| precision_weighted | 0.538344 |
+| recall_weighted    | 0.508333 |
+| f1_weighted        | 0.516082 |
+
+### Naive Bayes
+
+| parámetro     |   valor |
+|:--------------|--------:|
+| var_smoothing |   1e-09 |
+
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.316327 | 0.103333 |   0.155779 |  300        |
+| 1            |    0.321823 | 0.776667 |   0.455078 |  300        |
+| 2            |    0.351145 | 0.153333 |   0.213457 |  300        |
+| 3            |    0.327935 | 0.27     |   0.296161 |  300        |
+| accuracy     |    0.325833 | 0.325833 |   0.325833 |    0.325833 |
+| macro avg    |    0.329307 | 0.325833 |   0.280119 | 1200        |
+| weighted avg |    0.329307 | 0.325833 |   0.280119 | 1200        |
+
+| metric             |     value |
+|:-------------------|----------:|
+| accuracy           |  0.325833 |
+| precision_weighted |  0.329307 |
+| recall_weighted    |  0.325833 |
+| f1_weighted        |  0.280119 |
+| roc_auc_ovr        |  0.588748 |
+| log_loss           | 20.8603   |
+| gini_normalized    |  0.177495 |
+| ks_test_clase_0    |  0.185556 |
+| ks_test_clase_1    |  0.242222 |
+| ks_test_clase_2    |  0.117778 |
+| ks_test_clase_3    |  0.115556 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |       31 |      164 |       29 |       76 |
+| Real 1 |       13 |      233 |       27 |       27 |
+| Real 2 |       20 |      171 |       46 |       63 |
+| Real 3 |       34 |      156 |       29 |       81 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.308333 |
+| precision_weighted | 0.302306 |
+| recall_weighted    | 0.308333 |
+| f1_weighted        | 0.241931 |
+
+### XGB Classifier
+
+
+
+
+
+
+
+
+## Modelado utilizando feature engeeniering divida las series en chunks de 100
+
+### Logistic Regression
+
+| parámetro   | valor   |
+|:------------|:--------|
+| C           | 0.0001  |
+| penalty     | l2      |
+
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.47512  | 0.493333 |   0.484056 |  600        |
+| 1            |    0.654691 | 0.546667 |   0.595822 |  600        |
+| 2            |    0.489028 | 0.52     |   0.504039 |  600        |
+| 3            |    0.485893 | 0.516667 |   0.500808 |  600        |
+| accuracy     |    0.519167 | 0.519167 |   0.519167 |    0.519167 |
+| macro avg    |    0.526183 | 0.519167 |   0.521181 | 2400        |
+| weighted avg |    0.526183 | 0.519167 |   0.521181 | 2400        |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.519167 |
+| precision_weighted | 0.526183 |
+| recall_weighted    | 0.519167 |
+| f1_weighted        | 0.521181 |
+| roc_auc_ovr        | 0.783896 |
+| log_loss           | 1.09042  |
+| gini_normalized    | 0.567791 |
+| ks_test_clase_0    | 0.401667 |
+| ks_test_clase_1    | 0.548889 |
+| ks_test_clase_2    | 0.402222 |
+| ks_test_clase_3    | 0.441111 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |      296 |       66 |       89 |      149 |
+| Real 1 |      123 |      328 |      108 |       41 |
+| Real 2 |       67 |       83 |      312 |      138 |
+| Real 3 |      137 |       24 |      129 |      310 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.554167 |
+| precision_weighted | 0.561159 |
+| recall_weighted    | 0.554167 |
+| f1_weighted        | 0.555268 |
+
+### Random Forest Classifier
+
+
+| parámetro         | valor   |
+|:------------------|:--------|
+| max_depth         | 20      |
+| max_features      | sqrt    |
+| min_samples_leaf  | 2       |
+| min_samples_split | 10      |
+| n_estimators      | 500     |
+
+|              |   precision |   recall |   f1-score |    support |
+|:-------------|------------:|---------:|-----------:|-----------:|
+| 0            |    0.463663 | 0.531667 |   0.495342 |  600       |
+| 1            |    0.682828 | 0.563333 |   0.617352 |  600       |
+| 2            |    0.475806 | 0.491667 |   0.483607 |  600       |
+| 3            |    0.530988 | 0.528333 |   0.529657 |  600       |
+| accuracy     |    0.52875  | 0.52875  |   0.52875  |    0.52875 |
+| macro avg    |    0.538321 | 0.52875  |   0.531489 | 2400       |
+| weighted avg |    0.538321 | 0.52875  |   0.531489 | 2400       |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.52875  |
+| precision_weighted | 0.538321 |
+| recall_weighted    | 0.52875  |
+| f1_weighted        | 0.531489 |
+| roc_auc_ovr        | 0.780963 |
+| log_loss           | 1.16351  |
+| gini_normalized    | 0.561925 |
+| ks_test_clase_0    | 0.376111 |
+| ks_test_clase_1    | 0.537778 |
+| ks_test_clase_2    | 0.382222 |
+| ks_test_clase_3    | 0.473889 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |      319 |       62 |       93 |      126 |
+| Real 1 |      119 |      338 |      110 |       33 |
+| Real 2 |      109 |       75 |      295 |      121 |
+| Real 3 |      141 |       20 |      122 |      317 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.545833 |
+| precision_weighted | 0.557403 |
+| recall_weighted    | 0.545833 |
+| f1_weighted        | 0.548086 |
+
+### Gradient Boosting Classifier
+
+| parámetro         | valor   |
+|:------------------|:--------|
+| learning_rate     | 0.01    |
+| max_depth         | 20      |
+| max_features      | sqrt    |
+| min_samples_leaf  | 30      |
+| min_samples_split | 2       |
+| n_estimators      | 100     |
+| subsample         | 1.0     |
+
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.46495  | 0.541667 |   0.500385 |  600        |
+| 1            |    0.681913 | 0.546667 |   0.606846 |  600        |
+| 2            |    0.492823 | 0.515    |   0.503667 |  600        |
+| 3            |    0.526138 | 0.52     |   0.523051 |  600        |
+| accuracy     |    0.530833 | 0.530833 |   0.530833 |    0.530833 |
+| macro avg    |    0.541456 | 0.530833 |   0.533487 | 2400        |
+| weighted avg |    0.541456 | 0.530833 |   0.533487 | 2400        |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.530833 |
+| precision_weighted | 0.541456 |
+| recall_weighted    | 0.530833 |
+| f1_weighted        | 0.533487 |
+| roc_auc_ovr        | 0.789092 |
+| log_loss           | 1.19036  |
+| gini_normalized    | 0.578184 |
+| ks_test_clase_0    | 0.373333 |
+| ks_test_clase_1    | 0.550556 |
+| ks_test_clase_2    | 0.415    |
+| ks_test_clase_3    | 0.485556 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |      325 |       67 |       88 |      120 |
+| Real 1 |      117 |      328 |      117 |       38 |
+| Real 2 |       97 |       71 |      309 |      123 |
+| Real 3 |      160 |       15 |      113 |      312 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.554167 |
+| precision_weighted | 0.566695 |
+| recall_weighted    | 0.554167 |
+| f1_weighted        | 0.557091 |
+
+### Naive Bayes
+
+| parámetro     |   valor |
+|:--------------|--------:|
+| var_smoothing |   1e-05 |
+
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.409314 | 0.278333 |   0.331349 |  600        |
+| 1            |    0.335532 | 0.678333 |   0.44898  |  600        |
+| 2            |    0.310263 | 0.216667 |   0.255152 |  600        |
+| 3            |    0.447222 | 0.268333 |   0.335417 |  600        |
+| accuracy     |    0.360417 | 0.360417 |   0.360417 |    0.360417 |
+| macro avg    |    0.375583 | 0.360417 |   0.342724 | 2400        |
+| weighted avg |    0.375583 | 0.360417 |   0.342724 | 2400        |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.360417 |
+| precision_weighted | 0.375583 |
+| recall_weighted    | 0.360417 |
+| f1_weighted        | 0.342724 |
+| roc_auc_ovr        | 0.649275 |
+| log_loss           | 5.06678  |
+| gini_normalized    | 0.29855  |
+| ks_test_clase_0    | 0.23     |
+| ks_test_clase_1    | 0.313889 |
+| ks_test_clase_2    | 0.187222 |
+| ks_test_clase_3    | 0.257778 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |      167 |      266 |       90 |       77 |
+| Real 1 |      100 |      407 |       35 |       58 |
+| Real 2 |       47 |      359 |      130 |       64 |
+| Real 3 |       94 |      181 |      164 |      161 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.383333 |
+| precision_weighted | 0.420908 |
+| recall_weighted    | 0.383333 |
+| f1_weighted        | 0.364589 |
+
+### XGB Classifier
+
+| parámetro             | valor          |
+|:----------------------|:---------------|
+| objective             | multi:softprob |
+| early_stopping_rounds | 500            |
+| enable_categorical    | False          |
+| eval_metric           | auc            |
+| learning_rate         | 0.1            |
+| missing               | nan            |
+| n_estimators          | 4000           |
+
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.516447 | 0.523333 |   0.519868 |  600        |
+| 1            |    0.688552 | 0.681667 |   0.685092 |  600        |
+| 2            |    0.534314 | 0.536066 |   0.535188 |  610        |
+| 3            |    0.557047 | 0.553333 |   0.555184 |  600        |
+| accuracy     |    0.573444 | 0.573444 |   0.573444 |    0.573444 |
+| macro avg    |    0.57409  | 0.5736   |   0.573833 | 2410        |
+| weighted avg |    0.573925 | 0.573444 |   0.573673 | 2410        |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.573444 |
+| precision_weighted | 0.573925 |
+| recall_weighted    | 0.573444 |
+| f1_weighted        | 0.573673 |
+| roc_auc_ovr        | 0.824416 |
+| log_loss           | 1.28027  |
+| gini_normalized    | 0.648832 |
+| ks_test_clase_0    | 0.459024 |
+| ks_test_clase_1    | 0.611123 |
+| ks_test_clase_2    | 0.447823 |
+| ks_test_clase_3    | 0.500985 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |      314 |      107 |       64 |      115 |
+| Real 1 |       89 |      409 |       85 |       17 |
+| Real 2 |       90 |       61 |      327 |      132 |
+| Real 3 |      115 |       17 |      136 |      332 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.593361 |
+| precision_weighted | 0.594469 |
+| recall_weighted    | 0.593361 |
+| f1_weighted        | 0.593719 |
+
+Modelos que se realizaron, tiempos de ejecución de modelos, comparación de modelos.
+
+# 6 Resultados
+
+Resultados obtenidos en los modelos, en relación al punto 5 y resultados de análisis exploratorio con respecto al objetivo el proyecto.
+
+# 7 Conclusiones
