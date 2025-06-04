@@ -558,41 +558,690 @@ Para la evaluación de modelos tomamos en consideración las métricas de *accur
 | Real 2 |       22 |       16 |       60 |       22 |
 | Real 3 |       22 |        6 |       25 |       67 |
 
-##
+## Modelado utilizando valores de series en chunks de 100
 
 ### Logistic Regression
 
+| parámetro   | valor   |
+|:------------|:--------|
+| C           | 0.001   |
+| penalty     | l2      |
+
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.236749 | 0.223333 |   0.229846 |  300        |
+| 1            |    0.27551  | 0.27     |   0.272727 |  300        |
+| 2            |    0.257329 | 0.263333 |   0.260297 |  300        |
+| 3            |    0.256329 | 0.27     |   0.262987 |  300        |
+| accuracy     |    0.256667 | 0.256667 |   0.256667 |    0.256667 |
+| macro avg    |    0.256479 | 0.256667 |   0.256464 | 1200        |
+| weighted avg |    0.256479 | 0.256667 |   0.256464 | 1200        |
+
+| metric             |       value |
+|:-------------------|------------:|
+| accuracy           | 0.256667    |
+| precision_weighted | 0.256479    |
+| recall_weighted    | 0.256667    |
+| f1_weighted        | 0.256464    |
+| roc_auc_ovr        | 0.500283    |
+| log_loss           | 1.39063     |
+| gini_normalized    | 0.000566667 |
+| ks_test_clase_0    | 0.0711111   |
+| ks_test_clase_1    | 0.06        |
+| ks_test_clase_2    | 0.0388889   |
+| ks_test_clase_3    | 0.03        |
+
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.236749 | 0.223333 |   0.229846 |  300        |
+| 1            |    0.27551  | 0.27     |   0.272727 |  300        |
+| 2            |    0.257329 | 0.263333 |   0.260297 |  300        |
+| 3            |    0.256329 | 0.27     |   0.262987 |  300        |
+| accuracy     |    0.256667 | 0.256667 |   0.256667 |    0.256667 |
+| macro avg    |    0.256479 | 0.256667 |   0.256464 | 1200        |
+| weighted avg |    0.256479 | 0.256667 |   0.256464 | 1200        |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.333333 |
+| precision_weighted | 0.340975 |
+| recall_weighted    | 0.333333 |
+| f1_weighted        | 0.335172 |
+
+
+
 ### Random Forest Classifier
+
+| parámetro         | valor   |
+|:------------------|:--------|
+| max_depth         | 20      |
+| max_features      | sqrt    |
+| min_samples_leaf  | 2       |
+| min_samples_split | 10      |
+| n_estimators      | 500     |
+
+
+|              |   precision |   recall |   f1-score |   support |
+|:-------------|------------:|---------:|-----------:|----------:|
+| 0            |    0.407801 | 0.383333 |   0.395189 |   300     |
+| 1            |    0.640678 | 0.63     |   0.635294 |   300     |
+| 2            |    0.402214 | 0.363333 |   0.381786 |   300     |
+| 3            |    0.480114 | 0.563333 |   0.518405 |   300     |
+| accuracy     |    0.485    | 0.485    |   0.485    |     0.485 |
+| macro avg    |    0.482702 | 0.485    |   0.482669 |  1200     |
+| weighted avg |    0.482702 | 0.485    |   0.482669 |  1200     |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.485    |
+| precision_weighted | 0.482702 |
+| recall_weighted    | 0.485    |
+| f1_weighted        | 0.482669 |
+| roc_auc_ovr        | 0.73496  |
+| log_loss           | 1.20453  |
+| gini_normalized    | 0.46992  |
+| ks_test_clase_0    | 0.246667 |
+| ks_test_clase_1    | 0.546667 |
+| ks_test_clase_2    | 0.266667 |
+| ks_test_clase_3    | 0.44     |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |      115 |       63 |       53 |       69 |
+| Real 1 |       46 |      189 |       40 |       25 |
+| Real 2 |       68 |       34 |      109 |       89 |
+| Real 3 |       53 |        9 |       69 |      169 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.566667 |
+| precision_weighted | 0.565486 |
+| recall_weighted    | 0.566667 |
+| f1_weighted        | 0.563655 |
 
 ### Gradient Boosting Classifier
 
+| parámetro         | valor   |
+|:------------------|:--------|
+| learning_rate     | 0.1     |
+| max_depth         | 20      |
+| max_features      | sqrt    |
+| min_samples_leaf  | 30      |
+| min_samples_split | 2       |
+| n_estimators      | 100     |
+| subsample         | 1.0     |
+
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.422222 | 0.443333 |   0.43252  |  300        |
+| 1            |    0.732    | 0.61     |   0.665455 |  300        |
+| 2            |    0.402299 | 0.466667 |   0.432099 |  300        |
+| 3            |    0.498258 | 0.476667 |   0.487223 |  300        |
+| accuracy     |    0.499167 | 0.499167 |   0.499167 |    0.499167 |
+| macro avg    |    0.513695 | 0.499167 |   0.504324 | 1200        |
+| weighted avg |    0.513695 | 0.499167 |   0.504324 | 1200        |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.499167 |
+| precision_weighted | 0.513695 |
+| recall_weighted    | 0.499167 |
+| f1_weighted        | 0.504324 |
+| roc_auc_ovr        | 0.746159 |
+| log_loss           | 1.19023  |
+| gini_normalized    | 0.492319 |
+| ks_test_clase_0    | 0.272222 |
+| ks_test_clase_1    | 0.563333 |
+| ks_test_clase_2    | 0.301111 |
+| ks_test_clase_3    | 0.416667 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |      133 |       48 |       65 |       54 |
+| Real 1 |       53 |      183 |       46 |       18 |
+| Real 2 |       73 |       15 |      140 |       72 |
+| Real 3 |       56 |        4 |       97 |      143 |
+
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.533333 |
+| precision_weighted | 0.557202 |
+| recall_weighted    | 0.533333 |
+| f1_weighted        | 0.540249 |
+
 ### Naive Bayes
+
+| parámetro     |   valor |
+|:--------------|--------:|
+| var_smoothing |   1e-09 |
+
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.316327 | 0.103333 |   0.155779 |  300        |
+| 1            |    0.321823 | 0.776667 |   0.455078 |  300        |
+| 2            |    0.351145 | 0.153333 |   0.213457 |  300        |
+| 3            |    0.327935 | 0.27     |   0.296161 |  300        |
+| accuracy     |    0.325833 | 0.325833 |   0.325833 |    0.325833 |
+| macro avg    |    0.329307 | 0.325833 |   0.280119 | 1200        |
+| weighted avg |    0.329307 | 0.325833 |   0.280119 | 1200        |
+
+| metric             |     value |
+|:-------------------|----------:|
+| accuracy           |  0.325833 |
+| precision_weighted |  0.329307 |
+| recall_weighted    |  0.325833 |
+| f1_weighted        |  0.280119 |
+| roc_auc_ovr        |  0.588748 |
+| log_loss           | 20.8603   |
+| gini_normalized    |  0.177495 |
+| ks_test_clase_0    |  0.185556 |
+| ks_test_clase_1    |  0.242222 |
+| ks_test_clase_2    |  0.117778 |
+| ks_test_clase_3    |  0.115556 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |       31 |      164 |       29 |       76 |
+| Real 1 |       13 |      233 |       27 |       27 |
+| Real 2 |       20 |      171 |       46 |       63 |
+| Real 3 |       34 |      156 |       29 |       81 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.308333 |
+| precision_weighted | 0.302306 |
+| recall_weighted    | 0.308333 |
+| f1_weighted        | 0.241931 |
 
 ### XGB Classifier
 
-##
+| parámetro             | valor          |
+|:----------------------|:---------------|
+| objective             | multi:softprob |
+| early_stopping_rounds | 500            |
+| enable_categorical    | False          |
+| eval_metric           | auc            |
+| learning_rate         | 0.1            |
+| missing               | nan            |
+| n_estimators          | 4000           |
+
+|              |   precision |   recall |   f1-score |    support |
+|:-------------|------------:|---------:|-----------:|-----------:|
+| 0            |    0.444816 | 0.443333 |   0.444073 |  300       |
+| 1            |    0.732824 | 0.64     |   0.683274 |  300       |
+| 2            |    0.412698 | 0.419355 |   0.416    |  310       |
+| 3            |    0.5      | 0.556667 |   0.526814 |  300       |
+| accuracy     |    0.51405  | 0.51405  |   0.51405  |    0.51405 |
+| macro avg    |    0.522585 | 0.514839 |   0.51754  | 1210       |
+| weighted avg |    0.521677 | 0.51405  |   0.516701 | 1210       |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.51405  |
+| precision_weighted | 0.521677 |
+| recall_weighted    | 0.51405  |
+| f1_weighted        | 0.516701 |
+| roc_auc_ovr        | 0.767521 |
+| log_loss           | 1.12188  |
+| gini_normalized    | 0.535042 |
+| ks_test_clase_0    | 0.344286 |
+| ks_test_clase_1    | 0.597143 |
+| ks_test_clase_2    | 0.302043 |
+| ks_test_clase_3    | 0.459304 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |      133 |       45 |       71 |       51 |
+| Real 1 |       49 |      192 |       37 |       22 |
+| Real 2 |       69 |       17 |      130 |       94 |
+| Real 3 |       48 |        8 |       77 |      167 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.528926 |
+| precision_weighted | 0.537967 |
+| recall_weighted    | 0.528926 |
+| f1_weighted        | 0.532205 |
+
+## Modelado utilizando valores de series en chunks de 5
 
 ### Logistic Regression
 
+| parámetro   | valor   |
+|:------------|:--------|
+| C           | 0.001   |
+| penalty     | l2      |
+
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.236749 | 0.223333 |   0.229846 |  300        |
+| 1            |    0.27551  | 0.27     |   0.272727 |  300        |
+| 2            |    0.257329 | 0.263333 |   0.260297 |  300        |
+| 3            |    0.256329 | 0.27     |   0.262987 |  300        |
+| accuracy     |    0.256667 | 0.256667 |   0.256667 |    0.256667 |
+| macro avg    |    0.256479 | 0.256667 |   0.256464 | 1200        |
+| weighted avg |    0.256479 | 0.256667 |   0.256464 | 1200        |
+
+| metric             |       value |
+|:-------------------|------------:|
+| accuracy           | 0.256667    |
+| precision_weighted | 0.256479    |
+| recall_weighted    | 0.256667    |
+| f1_weighted        | 0.256464    |
+| roc_auc_ovr        | 0.500283    |
+| log_loss           | 1.39063     |
+| gini_normalized    | 0.000566667 |
+| ks_test_clase_0    | 0.0711111   |
+| ks_test_clase_1    | 0.06        |
+| ks_test_clase_2    | 0.0388889   |
+| ks_test_clase_3    | 0.03        |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |       67 |       61 |       82 |       90 |
+| Real 1 |       68 |       81 |       77 |       74 |
+| Real 2 |       82 |       68 |       79 |       71 |
+| Real 3 |       66 |       84 |       69 |       81 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.333333 |
+| precision_weighted | 0.340975 |
+| recall_weighted    | 0.333333 |
+| f1_weighted        | 0.335172 |
+
 ### Random Forest Classifier
+
+| parámetro         | valor   |
+|:------------------|:--------|
+| max_depth         | 20      |
+| max_features      | sqrt    |
+| min_samples_leaf  | 2       |
+| min_samples_split | 10      |
+| n_estimators      | 500     |
+
+|              |   precision |   recall |   f1-score |   support |
+|:-------------|------------:|---------:|-----------:|----------:|
+| 0            |    0.407801 | 0.383333 |   0.395189 |   300     |
+| 1            |    0.640678 | 0.63     |   0.635294 |   300     |
+| 2            |    0.402214 | 0.363333 |   0.381786 |   300     |
+| 3            |    0.480114 | 0.563333 |   0.518405 |   300     |
+| accuracy     |    0.485    | 0.485    |   0.485    |     0.485 |
+| macro avg    |    0.482702 | 0.485    |   0.482669 |  1200     |
+| weighted avg |    0.482702 | 0.485    |   0.482669 |  1200     |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.485    |
+| precision_weighted | 0.482702 |
+| recall_weighted    | 0.485    |
+| f1_weighted        | 0.482669 |
+| roc_auc_ovr        | 0.73496  |
+| log_loss           | 1.20453  |
+| gini_normalized    | 0.46992  |
+| ks_test_clase_0    | 0.246667 |
+| ks_test_clase_1    | 0.546667 |
+| ks_test_clase_2    | 0.266667 |
+| ks_test_clase_3    | 0.44     |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |      115 |       63 |       53 |       69 |
+| Real 1 |       46 |      189 |       40 |       25 |
+| Real 2 |       68 |       34 |      109 |       89 |
+| Real 3 |       53 |        9 |       69 |      169 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.566667 |
+| precision_weighted | 0.565486 |
+| recall_weighted    | 0.566667 |
+| f1_weighted        | 0.563655 |
 
 ### Gradient Boosting Classifier
 
+| parámetro         | valor   |
+|:------------------|:--------|
+| learning_rate     | 0.1     |
+| max_depth         | 20      |
+| max_features      | log2    |
+| min_samples_leaf  | 10      |
+| min_samples_split | 2       |
+| n_estimators      | 100     |
+| subsample         | 1.0     |
+
+|              |   precision |   recall |   f1-score |   support |
+|:-------------|------------:|---------:|-----------:|----------:|
+| 0            |    0.37     |     0.37 |   0.37     |    300    |
+| 1            |    0.722892 |     0.6  |   0.655738 |    300    |
+| 2            |    0.375    |     0.47 |   0.41716  |    300    |
+| 3            |    0.48     |     0.44 |   0.45913  |    300    |
+| accuracy     |    0.47     |     0.47 |   0.47     |      0.47 |
+| macro avg    |    0.486973 |     0.47 |   0.475507 |   1200    |
+| weighted avg |    0.486973 |     0.47 |   0.475507 |   1200    |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.47     |
+| precision_weighted | 0.486973 |
+| recall_weighted    | 0.47     |
+| f1_weighted        | 0.475507 |
+| roc_auc_ovr        | 0.72971  |
+| log_loss           | 1.27737  |
+| gini_normalized    | 0.45942  |
+| ks_test_clase_0    | 0.22     |
+| ks_test_clase_1    | 0.565556 |
+| ks_test_clase_2    | 0.286667 |
+| ks_test_clase_3    | 0.366667 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |      111 |       46 |       81 |       62 |
+| Real 1 |       47 |      180 |       56 |       17 |
+| Real 2 |       79 |       16 |      141 |       64 |
+| Real 3 |       63 |        7 |       98 |      132 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.508333 |
+| precision_weighted | 0.538344 |
+| recall_weighted    | 0.508333 |
+| f1_weighted        | 0.516082 |
+
 ### Naive Bayes
+
+| parámetro     |   valor |
+|:--------------|--------:|
+| var_smoothing |   1e-09 |
+
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.316327 | 0.103333 |   0.155779 |  300        |
+| 1            |    0.321823 | 0.776667 |   0.455078 |  300        |
+| 2            |    0.351145 | 0.153333 |   0.213457 |  300        |
+| 3            |    0.327935 | 0.27     |   0.296161 |  300        |
+| accuracy     |    0.325833 | 0.325833 |   0.325833 |    0.325833 |
+| macro avg    |    0.329307 | 0.325833 |   0.280119 | 1200        |
+| weighted avg |    0.329307 | 0.325833 |   0.280119 | 1200        |
+
+| metric             |     value |
+|:-------------------|----------:|
+| accuracy           |  0.325833 |
+| precision_weighted |  0.329307 |
+| recall_weighted    |  0.325833 |
+| f1_weighted        |  0.280119 |
+| roc_auc_ovr        |  0.588748 |
+| log_loss           | 20.8603   |
+| gini_normalized    |  0.177495 |
+| ks_test_clase_0    |  0.185556 |
+| ks_test_clase_1    |  0.242222 |
+| ks_test_clase_2    |  0.117778 |
+| ks_test_clase_3    |  0.115556 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |       31 |      164 |       29 |       76 |
+| Real 1 |       13 |      233 |       27 |       27 |
+| Real 2 |       20 |      171 |       46 |       63 |
+| Real 3 |       34 |      156 |       29 |       81 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.308333 |
+| precision_weighted | 0.302306 |
+| recall_weighted    | 0.308333 |
+| f1_weighted        | 0.241931 |
 
 ### XGB Classifier
 
-##
+
+
+
+
+
+
+
+## Modelado utilizando feature engeeniering divida las series en chunks de 100
 
 ### Logistic Regression
 
+| parámetro   | valor   |
+|:------------|:--------|
+| C           | 0.0001  |
+| penalty     | l2      |
+
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.47512  | 0.493333 |   0.484056 |  600        |
+| 1            |    0.654691 | 0.546667 |   0.595822 |  600        |
+| 2            |    0.489028 | 0.52     |   0.504039 |  600        |
+| 3            |    0.485893 | 0.516667 |   0.500808 |  600        |
+| accuracy     |    0.519167 | 0.519167 |   0.519167 |    0.519167 |
+| macro avg    |    0.526183 | 0.519167 |   0.521181 | 2400        |
+| weighted avg |    0.526183 | 0.519167 |   0.521181 | 2400        |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.519167 |
+| precision_weighted | 0.526183 |
+| recall_weighted    | 0.519167 |
+| f1_weighted        | 0.521181 |
+| roc_auc_ovr        | 0.783896 |
+| log_loss           | 1.09042  |
+| gini_normalized    | 0.567791 |
+| ks_test_clase_0    | 0.401667 |
+| ks_test_clase_1    | 0.548889 |
+| ks_test_clase_2    | 0.402222 |
+| ks_test_clase_3    | 0.441111 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |      296 |       66 |       89 |      149 |
+| Real 1 |      123 |      328 |      108 |       41 |
+| Real 2 |       67 |       83 |      312 |      138 |
+| Real 3 |      137 |       24 |      129 |      310 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.554167 |
+| precision_weighted | 0.561159 |
+| recall_weighted    | 0.554167 |
+| f1_weighted        | 0.555268 |
+
 ### Random Forest Classifier
+
+
+| parámetro         | valor   |
+|:------------------|:--------|
+| max_depth         | 20      |
+| max_features      | sqrt    |
+| min_samples_leaf  | 2       |
+| min_samples_split | 10      |
+| n_estimators      | 500     |
+
+|              |   precision |   recall |   f1-score |    support |
+|:-------------|------------:|---------:|-----------:|-----------:|
+| 0            |    0.463663 | 0.531667 |   0.495342 |  600       |
+| 1            |    0.682828 | 0.563333 |   0.617352 |  600       |
+| 2            |    0.475806 | 0.491667 |   0.483607 |  600       |
+| 3            |    0.530988 | 0.528333 |   0.529657 |  600       |
+| accuracy     |    0.52875  | 0.52875  |   0.52875  |    0.52875 |
+| macro avg    |    0.538321 | 0.52875  |   0.531489 | 2400       |
+| weighted avg |    0.538321 | 0.52875  |   0.531489 | 2400       |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.52875  |
+| precision_weighted | 0.538321 |
+| recall_weighted    | 0.52875  |
+| f1_weighted        | 0.531489 |
+| roc_auc_ovr        | 0.780963 |
+| log_loss           | 1.16351  |
+| gini_normalized    | 0.561925 |
+| ks_test_clase_0    | 0.376111 |
+| ks_test_clase_1    | 0.537778 |
+| ks_test_clase_2    | 0.382222 |
+| ks_test_clase_3    | 0.473889 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |      319 |       62 |       93 |      126 |
+| Real 1 |      119 |      338 |      110 |       33 |
+| Real 2 |      109 |       75 |      295 |      121 |
+| Real 3 |      141 |       20 |      122 |      317 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.545833 |
+| precision_weighted | 0.557403 |
+| recall_weighted    | 0.545833 |
+| f1_weighted        | 0.548086 |
 
 ### Gradient Boosting Classifier
 
+| parámetro         | valor   |
+|:------------------|:--------|
+| learning_rate     | 0.01    |
+| max_depth         | 20      |
+| max_features      | sqrt    |
+| min_samples_leaf  | 30      |
+| min_samples_split | 2       |
+| n_estimators      | 100     |
+| subsample         | 1.0     |
+
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.46495  | 0.541667 |   0.500385 |  600        |
+| 1            |    0.681913 | 0.546667 |   0.606846 |  600        |
+| 2            |    0.492823 | 0.515    |   0.503667 |  600        |
+| 3            |    0.526138 | 0.52     |   0.523051 |  600        |
+| accuracy     |    0.530833 | 0.530833 |   0.530833 |    0.530833 |
+| macro avg    |    0.541456 | 0.530833 |   0.533487 | 2400        |
+| weighted avg |    0.541456 | 0.530833 |   0.533487 | 2400        |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.530833 |
+| precision_weighted | 0.541456 |
+| recall_weighted    | 0.530833 |
+| f1_weighted        | 0.533487 |
+| roc_auc_ovr        | 0.789092 |
+| log_loss           | 1.19036  |
+| gini_normalized    | 0.578184 |
+| ks_test_clase_0    | 0.373333 |
+| ks_test_clase_1    | 0.550556 |
+| ks_test_clase_2    | 0.415    |
+| ks_test_clase_3    | 0.485556 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |      325 |       67 |       88 |      120 |
+| Real 1 |      117 |      328 |      117 |       38 |
+| Real 2 |       97 |       71 |      309 |      123 |
+| Real 3 |      160 |       15 |      113 |      312 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.554167 |
+| precision_weighted | 0.566695 |
+| recall_weighted    | 0.554167 |
+| f1_weighted        | 0.557091 |
+
 ### Naive Bayes
 
+| parámetro     |   valor |
+|:--------------|--------:|
+| var_smoothing |   1e-05 |
+
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.409314 | 0.278333 |   0.331349 |  600        |
+| 1            |    0.335532 | 0.678333 |   0.44898  |  600        |
+| 2            |    0.310263 | 0.216667 |   0.255152 |  600        |
+| 3            |    0.447222 | 0.268333 |   0.335417 |  600        |
+| accuracy     |    0.360417 | 0.360417 |   0.360417 |    0.360417 |
+| macro avg    |    0.375583 | 0.360417 |   0.342724 | 2400        |
+| weighted avg |    0.375583 | 0.360417 |   0.342724 | 2400        |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.360417 |
+| precision_weighted | 0.375583 |
+| recall_weighted    | 0.360417 |
+| f1_weighted        | 0.342724 |
+| roc_auc_ovr        | 0.649275 |
+| log_loss           | 5.06678  |
+| gini_normalized    | 0.29855  |
+| ks_test_clase_0    | 0.23     |
+| ks_test_clase_1    | 0.313889 |
+| ks_test_clase_2    | 0.187222 |
+| ks_test_clase_3    | 0.257778 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |      167 |      266 |       90 |       77 |
+| Real 1 |      100 |      407 |       35 |       58 |
+| Real 2 |       47 |      359 |      130 |       64 |
+| Real 3 |       94 |      181 |      164 |      161 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.383333 |
+| precision_weighted | 0.420908 |
+| recall_weighted    | 0.383333 |
+| f1_weighted        | 0.364589 |
+
 ### XGB Classifier
+
+| parámetro             | valor          |
+|:----------------------|:---------------|
+| objective             | multi:softprob |
+| early_stopping_rounds | 500            |
+| enable_categorical    | False          |
+| eval_metric           | auc            |
+| learning_rate         | 0.1            |
+| missing               | nan            |
+| n_estimators          | 4000           |
+
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.516447 | 0.523333 |   0.519868 |  600        |
+| 1            |    0.688552 | 0.681667 |   0.685092 |  600        |
+| 2            |    0.534314 | 0.536066 |   0.535188 |  610        |
+| 3            |    0.557047 | 0.553333 |   0.555184 |  600        |
+| accuracy     |    0.573444 | 0.573444 |   0.573444 |    0.573444 |
+| macro avg    |    0.57409  | 0.5736   |   0.573833 | 2410        |
+| weighted avg |    0.573925 | 0.573444 |   0.573673 | 2410        |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.573444 |
+| precision_weighted | 0.573925 |
+| recall_weighted    | 0.573444 |
+| f1_weighted        | 0.573673 |
+| roc_auc_ovr        | 0.824416 |
+| log_loss           | 1.28027  |
+| gini_normalized    | 0.648832 |
+| ks_test_clase_0    | 0.459024 |
+| ks_test_clase_1    | 0.611123 |
+| ks_test_clase_2    | 0.447823 |
+| ks_test_clase_3    | 0.500985 |
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |      314 |      107 |       64 |      115 |
+| Real 1 |       89 |      409 |       85 |       17 |
+| Real 2 |       90 |       61 |      327 |      132 |
+| Real 3 |      115 |       17 |      136 |      332 |
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.593361 |
+| precision_weighted | 0.594469 |
+| recall_weighted    | 0.593361 |
+| f1_weighted        | 0.593719 |
+
 Modelos que se realizaron, tiempos de ejecución de modelos, comparación de modelos.
 
 # 6 Resultados
