@@ -349,11 +349,20 @@ Classifier
         objective="multi:softprob"
 ```
 
+Es importante mencionar que por costos computacionales no todos las pruebas se evaluaron con el mismo conjunto de datos, en algunos casos se redujo esta búsqueda.
 
 
 Para la evaluación de modelos tomamos en consideración las métricas de *accuracy*, *recall_weighted*, *f1_weighted* y *roc_auc_ovr.* Con base en estas métricas se evaluó que modelo que desempeñó de mejor manera. Para los modelos que se dividieron en *chunks* adicional de estas métricas, tomamos en consideración la moda de las predicciones de los *chunks* y así obtuvimos las métricas de *accuracy*, *precision_weighted*, *recall_weighted* y *f1_weighted.*
 
 ## Modelado utilizando feature engeeniering
+
+| metric              | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
+|---------------------|---------------------:|--------------------------:|-----------------------------:|------------:|---------------:|
+| accuracy            |             0.527083 |                 0.483333 |                    0.5       |     0.335417 |       0.514583 |
+| precision_weighted  |             0.528874 |                 0.481121 |                    0.501884  |     0.374984 |       0.516245 |
+| recall_weighted     |             0.527083 |                 0.483333 |                    0.5       |     0.335417 |       0.514583 |
+| f1_weighted         |             0.527638 |                 0.48103  |                    0.500224  |     0.287205 |       0.515084 |
+| roc_auc_ovr         |             0.790475 |                 0.751476 |                    0.751817  |     0.616916 |       0.762303 |
 
 ### Logistic Regression
 
@@ -995,11 +1004,57 @@ Para la evaluación de modelos tomamos en consideración las métricas de *accur
 
 ### XGB Classifier
 
+| parámetro             | valor          |
+|:----------------------|:---------------|
+| objective             | multi:softprob |
+| early_stopping_rounds | 500            |
+| enable_categorical    | False          |
+| eval_metric           | auc            |
+| learning_rate         | 0.1            |
+| missing               | nan            |
+| n_estimators          | 4000           |
 
 
+|              |   precision |   recall |   f1-score |    support |
+|:-------------|------------:|---------:|-----------:|-----------:|
+| 0            |    0.444816 | 0.443333 |   0.444073 |  300       |
+| 1            |    0.732824 | 0.64     |   0.683274 |  300       |
+| 2            |    0.412698 | 0.419355 |   0.416    |  310       |
+| 3            |    0.5      | 0.556667 |   0.526814 |  300       |
+| accuracy     |    0.51405  | 0.51405  |   0.51405  |    0.51405 |
+| macro avg    |    0.522585 | 0.514839 |   0.51754  | 1210       |
+| weighted avg |    0.521677 | 0.51405  |   0.516701 | 1210       |
 
 
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.51405  |
+| precision_weighted | 0.521677 |
+| recall_weighted    | 0.51405  |
+| f1_weighted        | 0.516701 |
+| roc_auc_ovr        | 0.767521 |
+| log_loss           | 1.12188  |
+| gini_normalized    | 0.535042 |
+| ks_test_clase_0    | 0.344286 |
+| ks_test_clase_1    | 0.597143 |
+| ks_test_clase_2    | 0.302043 |
+| ks_test_clase_3    | 0.459304 |
 
+
+|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
+|:-------|---------:|---------:|---------:|---------:|
+| Real 0 |      133 |       45 |       71 |       51 |
+| Real 1 |       49 |      192 |       37 |       22 |
+| Real 2 |       69 |       17 |      130 |       94 |
+| Real 3 |       48 |        8 |       77 |      167 |
+
+
+| metric             |    value |
+|:-------------------|---------:|
+| accuracy           | 0.528926 |
+| precision_weighted | 0.537967 |
+| recall_weighted    | 0.528926 |
+| f1_weighted        | 0.532205 |
 
 
 ## Modelado utilizando feature engeeniering divida las series en chunks de 100
