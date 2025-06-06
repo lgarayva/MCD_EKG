@@ -357,6 +357,71 @@ Para la evaluación de modelos tomamos en consideración las métricas de *accur
 ## Modelado utilizando feature engeeniering
 
 | metric              | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
+|---------------------|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
+| accuracy            |            0.527083 |                 0.483333 |                    0.5       |    0.335417 |       0.514583 |
+| precision_weighted  |            0.528874 |                 0.481121 |                    0.501884  |    0.374984 |       0.516245 |
+| f1_weighted         |            0.527638 |                 0.48103  |                    0.500224  |    0.287205 |       0.515084 |
+| roc_auc_ovr         |            0.790475 |                 0.751476 |                    0.751817  |    0.616916 |       0.762303 |
+
+## Modelado utilizando valores de series en chunks de 100
+
+| metric                    | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
+|---------------------------|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
+| accuracy                  |            0.256667 |                0.485     |                    0.499167  |    0.325833 |       0.51405  |
+| precision_weighted        |            0.256479 |                0.482702  |                    0.513695  |    0.329307 |       0.521677 |
+| f1_weighted               |            0.256464 |                0.482669  |                    0.504324  |    0.280119 |       0.516701 |
+| roc_auc_ovr               |            0.500283 |                0.73496   |                    0.746159  |    0.588748 |       0.767521 |
+| accuracy mode             |            0.333333 |                0.566667  |                    0.533333       0.308333 |       0.528926 |
+| precision weighted mode   |            0.340975 |                0.565486  |                    0.557202 |     0.302306 |       0.537967 |
+| f1 weighted mode          |            0.335172 |                0.563655  |                    0.540249 |     0.241931 |       0.532205 |
+
+## Modelado utilizando valores de series en chunks de 5
+
+| metric                    | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
+|---------------------------|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
+| accuracy                  |            0.256667 |                0.485     |                    0.47      |    0.325833 |       0.51405  |
+| precision_weighted        |            0.256479 |                0.482702  |                    0.486973  |    0.329307 |       0.521677 |
+| f1_weighted               |            0.256464 |                0.482669  |                    0.475507  |    0.280119 |       0.516701 |
+| roc_auc_ovr               |            0.500283 |                0.73496   |                    0.72971   |    0.588748 |       0.767521 |
+| accuracy mode             |            0.333333 |                0.566667  |                    0.508333  |    0.308333 |       0.528926 |
+| precision weighted mode   |            0.340975 |                0.565486  |                    0.538344  |    0.302306 |       0.537967 |
+| f1 weighted mode          |            0.335172 |                0.563655  |                    0.516082  |    0.241931 |       0.532205 |
+
+## Modelado utilizando feature engeeniering divida las series en chunks de 100
+
+| metric                    | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
+|---------------------------|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
+| accuracy                  |            0.519167 |                0.52875   |                    0.530833  |    0.360417 |       0.573444 |
+| precision_weighted        |            0.526183 |                0.538321  |                    0.541456  |    0.375583 |       0.573925 |
+| f1_weighted               |            0.521181 |                0.531489  |                    0.533487  |    0.342724 |       0.573673 |
+| roc_auc_ovr               |            0.783896 |                0.780963  |                    0.789092  |    0.649275 |       0.824416 |
+| accuracy mode             |            0.554167 |                0.545833  |                    0.554167  |    0.383333 |       0.593361 |
+| precision weighted mode   |            0.561159 |                0.557403  |                    0.566695  |    0.420908 |       0.594469 |
+| f1 weighted mode          |            0.555268 |                0.548086  |                    0.557091  |    0.364589 |       0.593719 |
+
+## Tiempos de ejecución
+
+| Versión                        | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
+|--------------------------------|---------------------|--------------------------|------------------------------|-------------|----------------|
+| Feature Engineering            | 0.05                | 3.99                     | 15.85                        | 0.03        | 0.65           |
+| 100 Chunks                     | 0.40                | 68.93                    | 72.28                        | 0.06        | 3.25           |
+| 5 Chunks                       | 0.38                | 89.37                    | 17.16                        | 0.06        | 3.22           |
+| Feature Engineering 100 Chunks | 0.13                | 36.52                    | 40.29                        | 0.01        | 1.41           |
+
+Modelos que se realizaron, tiempos de ejecución de modelos, comparación de modelos.
+
+# 6 Resultados
+
+Resultados obtenidos en los modelos, en relación al punto 5 y resultados de análisis exploratorio con respecto al objetivo el proyecto.
+
+# 7 Conclusiones
+
+
+# 8 Anexo resultados modelos
+
+## Modelado utilizando feature engeeniering
+
+| metric              | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
 |---------------------|---------------------:|--------------------------:|-----------------------------:|------------:|---------------:|
 | accuracy            |             0.527083 |                 0.483333 |                    0.5       |     0.335417 |       0.514583 |
 | precision_weighted  |             0.528874 |                 0.481121 |                    0.501884  |     0.374984 |       0.516245 |
@@ -1297,19 +1362,3 @@ Para la evaluación de modelos tomamos en consideración las métricas de *accur
 | recall_weighted    | 0.593361 |
 | f1_weighted        | 0.593719 |
 
-## Tiempos de ejecución
-
-| Versión                        | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
-|--------------------------------|---------------------|--------------------------|------------------------------|-------------|----------------|
-| Feature Engineering            | 0.05                | 3.99                     | 15.85                        | 0.03        | 0.65           |
-| 100 Chunks                     | 0.40                | 68.93                    | 72.28                        | 0.06        | 3.25           |
-| 5 Chunks                       | 0.38                | 89.37                    | 17.16                        | 0.06        | 3.22           |
-| Feature Engineering 100 Chunks | 0.13                | 36.52                    | 40.29                        | 0.01        | 1.41           |
-
-Modelos que se realizaron, tiempos de ejecución de modelos, comparación de modelos.
-
-# 6 Resultados
-
-Resultados obtenidos en los modelos, en relación al punto 5 y resultados de análisis exploratorio con respecto al objetivo el proyecto.
-
-# 7 Conclusiones
