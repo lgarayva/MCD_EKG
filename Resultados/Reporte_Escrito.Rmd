@@ -291,7 +291,7 @@ $$\binom{12 + 2 - 1}{2} = 78$$
 ## Análisis de Componentes Principales
 
 
-Se aplicó PCA sobre el conjunto de variables generadas para reducir la dimensionalidad y evitar la multicolinealidad. Inicialmente se tenían $120+72+703 = 905$ variables de todos los bloques. Se seleccionaron los primeros k componentes principales que explicaban al menos el 95% de la varianza. Resultando en 285 componentes principales.
+Se aplicó PCA sobre el conjunto de variables generadas para reducir la dimensionalidad y evitar la multicolinealidad. Inicialmente se tenían $120+72+703 = 905$ variables de todos los bloques. Se seleccionaron los primeros k componentes principales que explicaban al menos el $95\%$ de la varianza. Resultando en $285$ componentes principales.
 
 # 5 Modelo
 
@@ -362,6 +362,10 @@ Para la evaluación de modelos tomamos en consideración las métricas de *accur
 | precision_weighted  |            0.528874 |                 0.481121 |                    0.501884  |    0.374984 |       0.516245 |
 | f1_weighted         |            0.527638 |                 0.48103  |                    0.500224  |    0.287205 |       0.515084 |
 | roc_auc_ovr         |            0.790475 |                 0.751476 |                    0.751817  |    0.616916 |       0.762303 |
+
+Una de las complicaciones que se tenía en esta primera serie de modelos es la cantidad de datos, esta primera serie de modelos se utilizó un set de entrenamiento del $30\%$ para train, $20\%$ para test y $10\%$ para validación, sin embargo, nos quedábamos con muy pocos registros ya que la base original es únicamente de $2,400$ y $285$ rasultantes del PCA lo que llevaría a modelos con sobreajuste y modelos inestables. Por estas complicaciones se planteó la idea de realizar los modelos fragmentando la series originales. 
+
+Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes, en fragmentos de 100 registros y en fragmentos de 5 registros. Estos fragmentos se eligieron en 100 por ser el número de registros que contemplaba un segundo en la serie y fragmentos de 5 por el análisis de autocorrelaciones, en este análisis observamos que las primeras 5 autocorrelaciones eran significativas.
 
 ## Modelado utilizando valores de series en chunks de 100
 
