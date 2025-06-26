@@ -416,6 +416,21 @@ Modelos que se realizaron, tiempos de ejecución de modelos, comparación de mod
 
 # 6 Resultados
 
+En los primeros resultados de los modelos, el algoritmo que obtuvo un mejor desempeño fue la regresión logística, logrando un ROC AUC mayor que los otros algoritmos, con un ROC de $0.790575$ y un accuracy de $0.527083$. Una posible causa de este mejor desempeño fue el número limitado de registros y la gran cantidad de variables con las que se entrenó el modelo.
+
+Buscando soluciones a tener una cantidad limitada de registros se optó por dividir el datasets en chunks, es decir, cada serie se dividía en pedazos para poder tener una mayor cantidad de regitros. Para esta parte se tomaron dos particiones. La primera partición se tomó el número de retrazos obtenidos en la función de autocorrelación, cinco retrazos, y la segunda partición fue una partición arbitraria de 100 regitros, es decir, tomando cada registro como un segundo de la serie.
+
+Para la división de la serie temporal en 5 segmentos ("chunks"), el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de $0.7675$, accuracy global de $0.5141$ y un accuracy promedio por paciente de $0.5289$.
+Aunque el ROC AUC es ligeramente inferior al obtenido con la regresión logística, el accuracy por paciente es ligeramente superior.
+Cabe destacar que, al dividir la serie en chunks, cada uno recibe una predicción individual. Para calcular el accuracy por paciente, se tomó la moda de las predicciones de los chunks correspondientes a cada serie y se comparó con la etiqueta real de dicha serie.
+
+Por otro lado, para la división de la serie temporal en 100 segmentos ("chunks"), el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de xxxxxxx, accuracy global de xxxxxxx y un accuracy promedio por paciente de xxxxxxx. Dando el mejor desempeño de los modelos probados hasta ese momento, superando a todos los modelos tanto en ROC AUC como en accuracy.
+
+Otra análisis que se realizó fue aplicar ingeniería de variables a la serie dividida por chunks, en esta parte únicamente se tomó la partición de 100 chunks debido a que la ingeniería de variables no era posible únicamente con 5 valores de la serie.
+
+Para la división de la serie temporal en 100 segmentos ("chunks") utilizando ingeniería de variables, el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de $0.824416$, accuracy global de $0.573444$ y un accuracy promedio por paciente de $0.593361$. Dando el mejor desempeño de los modelos probados, superando a todos los modelos tanto en ROC AUC como en accuracy.
+
+
 Resultados obtenidos en los modelos, en relación al punto 5 y resultados de análisis exploratorio con respecto al objetivo el proyecto.
 
 # 7 Conclusiones
