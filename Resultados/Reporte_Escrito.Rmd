@@ -28,7 +28,7 @@ El conjunto de datos tiene las siguientes características:
 * tiene un volumen de 21,837 registros de 12 señales, cada una de 10 segundos, provenientes de 18,885 pacientes.
 * El conjunto de datos está balanceado respecto al género: 52% hombres y 48% mujeres. Presenta un amplio rango de edades, desde 0 hasta 95 años, con una mediana de 62 y un rango intercuartílico de 22.
 * Los electrocardiogramas fueron validados por hasta 2 cardiólogos, los registros incluyen información sobre ritmo, forma y diagnóstico del ECG.
-* Los diagnósticos se clasificaron en formato de múltiples etiquetas, organizados en 5 superclases y 24 subclases.
+* Los diagnósticos se clasificaron en formato de múltiples etiquetas, organizados en 5 súperclases y 24 subclases.
 
 Para los datos se realizó un proceso de adquisición de datos y procesamiento de datos.
 
@@ -42,7 +42,7 @@ Para los datos se realizó un proceso de adquisición de datos y procesamiento d
 
 ### Procesamiento de datos
 
-Las señales fueron convertidas del formato original a un formato binario con 16bits de precisión a una resolución de 1 $\mu$ V /LSB. Las señales pasaron por un proceso en el que se eliminaron picos de encendido y apagado en los dispositivos, estos picos se encontraban al inicio y final de los registros, además, las señales fueron re muestradas a una señal de 500 Hz, también se generó una versión de 100 Hz.
+Las señales fueron convertidas del formato original a un formato binario con 16bits de precisión a una resolución de 1 $\mu$ V /LSB. Las señales pasaron por un proceso en el que se eliminaron picos de encendido y apagado en los dispositivos, estos picos se encontraban al inicio y final de los registros, además, las señales fueron re muestreadas a una señal de 500 Hz, también se generó una versión de 100 Hz.
 
 dónde se obtuvieron los datos, organización de datos. origen de datos. clases de datos, etc.
 
@@ -159,7 +159,7 @@ Para este estudio realizamos un análisis de las señales de la misma cara con s
 
 ### Análisis de correlación cruzada de las series originales
 
-En este primer análisis buscábamos encontrar relaciones entre las señales con respecto a las clases, como ejeplo utilizaremos la cara interior la cual contiene la señal II.
+En este primer análisis buscábamos encontrar relaciones entre las señales con respecto a las clases, como ejemplo utilizaremos la cara interior la cual contiene la señal II.
 
 ![CCF II III](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III.png)
 
@@ -255,7 +255,7 @@ En las gráficas se puede observar que con este suavizamiento se elimina variabi
 
 ### Promedio de series con suavizamiento promedio e intervalos de desviación estándar.
 
-El último análisis realizdo fue el promedio de las series suavizadas con una ventana promedio para cada señal con intervalos de desviación estándar, sin embargo, visualmente no se encontraron relaciones directas para separar las clases.
+El último análisis realizado fue el promedio de las series suavizadas con una ventana promedio para cada señal con intervalos de desviación estándar, sin embargo, visualmente no se encontraron relaciones directas para separar las clases.
 
 ![SIGNAL II MEAN SMOOTH](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth_mean.png)
 
@@ -299,7 +299,7 @@ Para el modelado se utilizaron distintas arquitecturas de modelos de aprendizaje
 
 * Modelado utilizando feature engeeniering
 * Modelado utilizando los valores de las series dividido en partes la serie (chunks).
-* Modelado utilizando feature engeeniering diviendo la serie en partes (chunks). 
+* Modelado utilizando feature engeeniering dividiendo la serie en partes (chunks). 
 
 Los modelos que se utilizaron en estas pruebas fueron los siguientes:
 
@@ -309,7 +309,7 @@ Los modelos que se utilizaron en estas pruebas fueron los siguientes:
 * Naive Bayes
 * XGB Classifier
 
-Para estos modelos se realizó una búsqueda de hiperparámetros con técnicas de *grid seacrh* a excepción del modelo de XGB Classifier. 
+Para estos modelos se realizó una búsqueda de hiperparámetros con técnicas de *grid search* a excepción del modelo de XGB Classifier. 
 
 Se utilizaron los siguientes diccionarios en la búsqueda de hiperparámetros:
 
@@ -363,7 +363,7 @@ Para la evaluación de modelos tomamos en consideración las métricas de *accur
 | f1_weighted         |            0.527638 |                 0.48103  |                    0.500224  |    0.287205 |       0.515084 |
 | roc_auc_ovr         |            0.790475 |                 0.751476 |                    0.751817  |    0.616916 |       0.762303 |
 
-Una de las complicaciones que se tenía en esta primera serie de modelos es la cantidad de datos, esta primera serie de modelos se utilizó un set de entrenamiento del $30\%$ para train, $20\%$ para test y $10\%$ para validación, sin embargo, nos quedábamos con muy pocos registros ya que la base original es únicamente de $2,400$ y $285$ rasultantes del PCA lo que llevaría a modelos con sobreajuste y modelos inestables. Por estas complicaciones se planteó la idea de realizar los modelos fragmentando la series originales. 
+Una de las complicaciones que se tenía en esta primera serie de modelos es la cantidad de datos, esta primera serie de modelos se utilizó un set de entrenamiento del $30\%$ para train, $20\%$ para test y $10\%$ para validación, sin embargo, nos quedábamos con muy pocos registros ya que la base original es únicamente de $2,400$ y $285$ resultantes del PCA lo que llevaría a modelos con sobreajuste y modelos inestables. Por estas complicaciones se planteó la idea de realizar los modelos fragmentando la series originales. 
 
 Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes, en fragmentos de 100 registros y en fragmentos de 5 registros. Estos fragmentos se eligieron en 100 por ser el número de registros que contemplaba un segundo en la serie y fragmentos de 5 por el análisis de autocorrelaciones, en este análisis observamos que las primeras 5 autocorrelaciones eran significativas.
 
@@ -416,7 +416,7 @@ Modelos que se realizaron, tiempos de ejecución de modelos, comparación de mod
 
 # 6 Resultados
 
-En los primeros resultados de los modelos, el algoritmo que obtuvo un mejor desempeño fue la regresión logística, logrando un ROC AUC mayor que los otros algoritmos, con un ROC de $0.790575$ y un accuracy de $0.527083$. Una posible causa de este mejor desempeño fue el número limitado de registros y la gran cantidad de variables con las que se entrenó el modelo.
+En los primeros resultados de los modelos, el algoritmo que obtuvo un mejor desempeño fue la regresión logística, logrando un *ROC AUC* mayor que los otros algoritmos, con un *ROC* de $0.790575$ y un accuracy de $0.527083$. Una posible causa de este mejor desempeño fue el número limitado de registros y la gran cantidad de variables con las que se entrenó el modelo.
 
 Buscando soluciones a tener una cantidad limitada de registros se optó por dividir el datasets en chunks, es decir, cada serie se dividía en pedazos para poder tener una mayor cantidad de regitros. Para esta parte se tomaron dos particiones. La primera partición se tomó el número de retrazos obtenidos en la función de autocorrelación, cinco retrazos, y la segunda partición fue una partición arbitraria de 100 regitros, es decir, tomando cada registro como un segundo de la serie.
 
@@ -430,6 +430,7 @@ Otra análisis que se realizó fue aplicar ingeniería de variables a la serie d
 
 Para la división de la serie temporal en 100 segmentos ("chunks") utilizando ingeniería de variables, el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de $0.824416$, accuracy global de $0.573444$ y un accuracy promedio por paciente de $0.593361$. Dando el mejor desempeño de los modelos probados, superando a todos los modelos tanto en ROC AUC como en accuracy.
 
+Otro punto a analizar son los tiempos de ejecución de entrenamiento de los modelos. De la tabla de ejecución de modelos, podemos observar que el entrenamiento de 
 
 Resultados obtenidos en los modelos, en relación al punto 5 y resultados de análisis exploratorio con respecto al objetivo el proyecto.
 
