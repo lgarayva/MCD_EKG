@@ -8,9 +8,9 @@ output: word_document
 
 # 1. Introducción
 
-El electrocardiograma (ECG) es un estudio no invasivo que registra la actividad eléctrica del corazón. Es fundamental para detectar alteraciones en el ritmo cardiacto, conducción eléctrica y morfología cardíaca.
-
 Las enfermedades cardiovasculares son la principal causa de muerte a nivel mundial, incluso en países con ingresos altos, donde solo el cáncer las supera. Un diagnóstico temprano y preciso mediante ECG ayuda a prevenir complicaciones graves como el infarto agudo de miocardio.
+
+El electrocardiograma (ECG) es un estudio no invasivo que registra la actividad eléctrica del corazón. Es fundamental para detectar alteraciones en el ritmo cardiacto, conducción eléctrica y morfología cardíaca.
 
 Interpretar un ECG requiere experiencia clínica y puede variar entre especialistas. Por eso, se han buscado modelos automatizados de interpretación usando machine learning. El dataset PTB-XL, que tiene más de 21,000 registros validados por cardiólogos, permite explorar estas aplicaciones.
 
