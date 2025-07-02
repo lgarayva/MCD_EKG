@@ -8,11 +8,13 @@ output: word_document
 
 # 1. Introducción
 
-Planteamiento del problema, que se busca realizar. Origen de los datos. Importancia del proyecto.
+Las enfermedades cardiovasculares son la principal causa de muerte a nivel mundial, incluso en países con ingresos altos, donde solo el cáncer las supera. Un diagnóstico temprano y preciso mediante ECG ayuda a prevenir complicaciones graves como el infarto agudo de miocardio.
 
-Un electrocardiograma (ECG) es un indicador no intrusivo que sirve como diagnóstico para identificar enfermedades cardiovasculares
+El electrocardiograma (ECG) es un estudio no invasivo que registra la actividad eléctrica del corazón. Es fundamental para detectar alteraciones en el ritmo cardiacto, conducción eléctrica y morfología cardíaca.
 
-Las enfermedades cardiovasculares son la principal causa de muerte a nivel mundial, incluso en países con ingresos altos solo por debajo del cáncer. El electrocardiograma es una herramienta útil para evaluar el estado clínico cardíaco del paciente.
+Interpretar un ECG requiere experiencia clínica y puede variar entre especialistas. Por eso, se han buscado modelos automatizados de interpretación usando machine learning. El dataset PTB-XL, que tiene más de 21,000 registros validados por cardiólogos, permite explorar estas aplicaciones.
+
+Este proyecto busca desarrollar un modelo de clasificación multiclase de ECG para diferenciar distintas patologías cardíacas, usando ingeniería de variables, análisis de series temporales y algoritmos de machine learning, y evaluar su desempeño y utilidad clínica.
 
 # 2. Datos
 
