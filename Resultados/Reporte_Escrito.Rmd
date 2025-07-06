@@ -20,34 +20,21 @@ Este proyecto busca desarrollar un modelo de clasificación multiclase de ECG pa
 
 ### 2.1 Descricpión del dataset
 
-Los datos fueron obtenidos de PTB-XL, el cual es el mayor conjunto de datos clínicos de ECG disponible públicamente hasta la fecha. Estos datos fueron desarrollados con el objetivo de ser utilizados en métodos de aprendizaje de máquina con el fin de generar un sistema de decisiones automatizado para la interpretación de ECG. Este conjunto de datos fue desarrollado con contrarrestar dos grandes obstáculos que se tenían con datos de ECG.
+Los datos fueron obtenidos de PTB-XL, el cual es el mayor conjunto de datos clínicos de ECG disponible públicamente hasta la fecha. Contiene registros de 12 derivaciones de pacientes con distintas patologías cardiacas. Estos datos fueron desarrollados con el objetivo de ser utilizados en métodos de aprendizaje de máquina con el fin de generar un sistema de decisiones automatizado para la interpretación de ECG. Este conjunto de datos fue desarrollado con contrarrestar dos grandes obstáculos que se tenían con datos de ECG.
 
-* El primer obstáculo que se tenía era que no existía un conjunto de datos para entrenamiento y validación público que pudiera utilizarse para entrenar los modelos.
-* El segundo obstáculo fue la falta de procedimientos definidos para evaluar los algoritmos.
+Antes de la creación del PTB-XL existían dos grandes limitaciones en los datos para la investigación de ECG. En primer lugar no se tenía un conjunto de datos para entrenamiento y validación de dominio público que se puediera usar para entrenar y validar los modelos. En segundo luhar, existía una falta de procedimientos definidos para evaluar los algoritmos.
 
-Los datos de *PTB-XL* fue registrada mediante dispositivos *Schiller AG* de octubre de 1989 a junio de 1966.
+Antes de la creación de PTB-XL, había dos grandes limitaciones en los datos para investigación de ECG. En Primer lugar, no existía un conjunto de datos público con la cantidad y calidad necesarias para entrenar y validar modelos de aprendizaje de máquina. En segundo lugar, no había procedimientos estandarizados para evaluar los algoritmos, lo que dificultaba comparar su desempeño de manera consistente.
 
 ### 2.2 características de los datos
 
-El conjunto de datos tiene las siguientes características:
+El conjunto de datos tiene un volumen de 21,837 registros de 12 señales, cada una de 10 segundos, provemientes de 18,885 pacientes. El conjunto está balanceado respecto al género (52% hombres y 48% mujeres) y presenta un aplio rango de edades, desde 0 hasta 95 años (mediana de 62 y un rango intercuartílico de 22). Los electrocardiogramas fueron validados por hasta 2 cardiólogos, los registros incluyen información sobre ritmo, forma y diagnóstico del ECG. Los diagnósticos se clasificaron en formato de múltiples etiquetas, organizados en 5 súperclases y 24 subclases.
 
-* tiene un volumen de 21,837 registros de 12 señales, cada una de 10 segundos, provenientes de 18,885 pacientes.
-* El conjunto de datos está balanceado respecto al género: 52% hombres y 48% mujeres. Presenta un amplio rango de edades, desde 0 hasta 95 años, con una mediana de 62 y un rango intercuartílico de 22.
-* Los electrocardiogramas fueron validados por hasta 2 cardiólogos, los registros incluyen información sobre ritmo, forma y diagnóstico del ECG.
-* Los diagnósticos se clasificaron en formato de múltiples etiquetas, organizados en 5 súperclases y 24 subclases.
+### 2.3 Adquisición y procesamiento de datos
 
-Para los datos se realizó un proceso de adquisición de datos y procesamiento de datos.
+Para los datos se realizó un proceso de adquisición de datos y procesamiento de datos. Los datos de PTB-XL fueron registrados mediante dispositivos Schiller AG de octubre de 1989 a junio de 1966. La información fue registrada en la base de datos por una enfermera. Cada registro fue interpretado en un 67.13% de manera manual por un cardiólogo, 31.2% de manera automática por un dispositivo de ECG con validaciones posteriores por un cardiólogo y un 1.67% sin reporte inicial. Finalmente, todos los reportes volvieron a ser anotados de manera manual por un experto basado principalmente en características cuantitativas de las señales.
 
-### 2.3 Procesamiento y adquisición de datos
-
-1. Las señales se recortaron en segmentos de 10 segundos y guardado en un formato comprimido de 400 Hz. Para todas las señales, se usó el estándar de las 12 caras (I, II, III, aVL, aVR, aVF, V1, V2, V3, V4, V5 y V6) con referencia al brazo derecho.
-2. La información fue registrada en la base de datos por una enfermera.
-3. Cada registro fue interpretado en un 67.13% de manera manual por un cardiólogo, 31.2% de manera automática por un dispositivo de ECG con validaciones posteriores por un cardiólogo y un 1.67% sin reporte inicial.
-4. Finalmente, todos los reportes volvieron a ser anotados de manera manual por un experto basado principalmente en características cuantitativas de las señales.
-
-Las señales fueron convertidas del formato original a un formato binario con 16bits de precisión a una resolución de 1 $\mu$ V /LSB. Las señales pasaron por un proceso en el que se eliminaron picos de encendido y apagado en los dispositivos, estos picos se encontraban al inicio y final de los registros, además, las señales fueron re muestreadas a una señal de 500 Hz, también se generó una versión de 100 Hz.
-
-dónde se obtuvieron los datos, organización de datos. origen de datos. clases de datos, etc.
+Las señales se recortaron en segmentos de 10 segundos y guardado en un formato comprimido de 400 Hz. Para todas las señales, se usó el estándar de las 12 caras (I, II, III, aVL, aVR, aVF, V1, V2, V3, V4, V5 y V6) con referencia al brazo derecho. Las señales fueron convertidas del formato original a un formato binario con 16bits de precisión a una resolución de 1 $\mu$ V /LSB. Las señales pasaron por un proceso en el que se eliminaron picos de encendido y apagado en los dispositivos, estos picos se encontraban al inicio y final de los registros, además, las señales fueron re muestreadas a una señal de 500 Hz, también se generó una versión de 100 Hz.
 
 # 3 Análisis exploratorio y Procesamiento
 
