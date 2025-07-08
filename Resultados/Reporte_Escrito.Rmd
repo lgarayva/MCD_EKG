@@ -269,14 +269,7 @@ En resumen, aunque los distintos métodos de suavizado redujeron la variabilidad
 
 # 4 Ingeniería de variables
 
-Variables que se crearon, orígenes de variables.
-
-En este apartado se trabajó, con base en los resultados del análisis exploratorio de datos, la creación de variables para el modelo. Se trabajaron tres bloques de variables y una reducción de dimensionalidad:
-
-* Variables de acf y pacf.
-* variables estadísticas de la serie y descomposición de la serie.
-* Variables de ccf.
-* Análisis de Componentes Principales (PCA)
+La ingeniería de variables tuvo como objetivo generar variables que capturaran la estructura temporal, la variabilidad y la relación entre señales del ECG, con el fin de generar un modelo de clasificación multiclase. Se generaron variables basadas en autocorrelaciones, estadística descriptiva y correlaciones cruzadas. Además, se aplicó un análisis de componentes principales para reducir dimensionalidad en los datos.
 
 ## 4.1 Variables de autocorrelaciones
 
@@ -298,6 +291,8 @@ $$\binom{12 + 2 - 1}{2} = 78$$
 
 
 Se aplicó PCA sobre el conjunto de variables generadas para reducir la dimensionalidad y evitar la multicolinealidad. Inicialmente se tenían $120+72+703 = 905$ variables de todos los bloques. Se seleccionaron los primeros k componentes principales que explicaban al menos el $95\%$ de la varianza. Resultando en $285$ componentes principales.
+
+En total, se generaron 285 variables por serie. Estas features se usaron como entrada en los modelos de clasificación. Sin embargo, al aplicar PCA para reducir la dimensionalidad, no se evaluó directamente la importancia de cada variable, ya que los modelos utilizaron las combinaciones de componentes principales.
 
 # 5 Modelo
 
@@ -421,6 +416,8 @@ Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes,
 Modelos que se realizaron, tiempos de ejecución de modelos, comparación de modelos.
 
 # 6 Resultados
+
+En esta sección se presentan los resultados de los modelos de clasificación multiclase desarrollados, comparando su desempeño con diferentes combinaciones de features, chunks de series y arquitecturas de modelos. Se reportan las métricas de accuracy, f1-score y ROC AUC.
 
 En los primeros resultados de los modelos, el algoritmo que obtuvo un mejor desempeño fue la regresión logística, logrando un *ROC AUC* mayor que los otros algoritmos, con un *ROC* de $0.790575$ y un accuracy de $0.527083$. Una posible causa de este mejor desempeño fue el número limitado de registros y la gran cantidad de variables con las que se entrenó el modelo.
 
