@@ -10,7 +10,7 @@ output: word_document
 
 Las enfermedades cardiovasculares son la principal causa de muerte a nivel mundial, incluso en países con ingresos altos, donde solo el cáncer las supera. Un diagnóstico temprano y preciso mediante ECG ayuda a prevenir complicaciones graves como el infarto agudo de miocardio.
 
-El electrocardiograma (ECG) es un estudio no invasivo que registra la actividad eléctrica del corazón. Es fundamental para detectar alteraciones en el ritmo cardiacto, conducción eléctrica y morfología cardíaca.
+El electrocardiograma (ECG) es un estudio no invasivo que registra la actividad eléctrica del corazón. Es fundamental para detectar alteraciones en el ritmo cardíaco, conducción eléctrica y morfología cardíaca.
 
 Interpretar un ECG requiere experiencia clínica y puede variar entre especialistas. Por eso, se han buscado modelos automatizados de interpretación usando machine learning. El dataset PTB-XL, que tiene más de 21,000 registros validados por cardiólogos, permite explorar estas aplicaciones.
 
@@ -72,7 +72,7 @@ Es importante mencionar que en este apartado analizaremos únicamente la señal 
 
 ![ACF PACF II 30 lags](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_2.png)
 
-De las gráficas de de autocorrelación, podemos notar que estas no descienden a cero, mientras que las gráficas de autocorrelación parciales tienden a decrecer a cero confirme aumentan los retrazos. Este comportamiento indica que existe no estacionariedad en la serie o incluso que existe una raíz unitaria. Que la PACF tienda a cero podría indicar que existe un componente autorregresivo en la serie, es decir, la serie podría analizarse con un modelo AR.
+De las gráficas de de autocorrelación, podemos notar que estas no descienden a cero, mientras que las gráficas de autocorrelación parciales tienden a decrecer a cero confirme aumentan los retrasos. Este comportamiento indica que existe no estacionariedad en la serie o incluso que existe una raíz unitaria. Que la PACF tienda a cero podría indicar que existe un componente autorregresivo en la serie, es decir, la serie podría analizarse con un modelo AR.
 
 Para analizar más a fondo, estudiaremos la existencia de raíces unitarias y de no estacionariedad aplicando diferencias a la serie y aplicando la prueba de Dickey-Fuller.
 
@@ -267,7 +267,7 @@ En las gráficas se puede observar que con este suavizamiento se elimina variabi
 
 En resumen, aunque los distintos métodos de suavizado redujeron la variabilidad de las señales, no se encontraron diferencias visuales claras entre clases. Esto sugiere que estos promedios suavizados no contienen información suficiente para separarlos, aunque sus estadísticas se considerarán como posibles variables en el modelo.
 
-# 4 Ingenieria de variables
+# 4 Ingeniería de variables
 
 Variables que se crearon, orígenes de variables.
 
@@ -424,7 +424,7 @@ Modelos que se realizaron, tiempos de ejecución de modelos, comparación de mod
 
 En los primeros resultados de los modelos, el algoritmo que obtuvo un mejor desempeño fue la regresión logística, logrando un *ROC AUC* mayor que los otros algoritmos, con un *ROC* de $0.790575$ y un accuracy de $0.527083$. Una posible causa de este mejor desempeño fue el número limitado de registros y la gran cantidad de variables con las que se entrenó el modelo.
 
-Buscando soluciones a tener una cantidad limitada de registros se optó por dividir el datasets en chunks, es decir, cada serie se dividía en pedazos para poder tener una mayor cantidad de regitros. Para esta parte se tomaron dos particiones. La primera partición se tomó el número de retrazos obtenidos en la función de autocorrelación, cinco retrazos, y la segunda partición fue una partición arbitraria de 100 regitros, es decir, tomando cada registro como un segundo de la serie.
+Buscando soluciones a tener una cantidad limitada de registros se optó por dividir el datasets en chunks, es decir, cada serie se dividía en pedazos para poder tener una mayor cantidad de registros. Para esta parte se tomaron dos particiones. La primera partición se tomó el número de retrasos obtenidos en la función de autocorrelación, cinco retrasos, y la segunda partición fue una partición arbitraria de 100 registros, es decir, tomando cada registro como un segundo de la serie.
 
 Para la división de la serie temporal en 5 segmentos ("chunks"), el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de $0.7675$, accuracy global de $0.5141$ y un accuracy promedio por paciente de $0.5289$.
 Aunque el ROC AUC es ligeramente inferior al obtenido con la regresión logística, el accuracy por paciente es ligeramente superior.
