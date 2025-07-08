@@ -50,15 +50,15 @@ dónde se obtuvieron los datos, organización de datos. origen de datos. clases 
 
 # 3 Análisis exploratorio y Procesamiento
 
-Para el análisis exploratorio de datos exploramos distintas opciones. 
+El análisis exploratorio de datos tuvo como objetivo identificar patrones temporales y relaciones entre señales del ECG que pudieran ser útiles para la clasificación de patologías cardíacas, así como evaluar la estacionariedad de las señales y su estructura de autocorrelación.
 
-En primer lugar analizamos las autocorrelaciones, ACF, y autocorrelaciones parciales, PACF. Para este primer análisis, se revisó la ACF de las series originales y obteniendo el agregado de estas; también se analizó el agregado de las series y posteriormente se obtuvo la ACF y PACF. Para el análisis de la ACF y PACF se dividió el análisis por clase y por señal.
+Como primer análisis estudiamos las autocorrelaciones (ACF) y autocorrelaciones parciales (PACF). Para este primer análisis, se revisó la ACF de las series originales y obteniendo el agregado de estas; también se analizó el agregado de las series y posteriormente se obtuvo la ACF y PACF. Para el análisis de la ACF y PACF se dividió el análisis por clase y por señal.
 
-El segundo análisis que se realizó fue el análisis de identificación de raíces unitarios por medio de la prueba de Dickey-Fuller, esto para identificar si las series presentaban una raíz unitario que podría afectar la estacionalidad de las series. Este análisis fue de vital importancia ya que logramos identificar que la mayoría de las series eran no estacionarias lo que afectaba la identificación de la ACF, posterior a aplicar diferencia pudimos encontrar patrones más claros en esta.
+El segundo análisis que se realizó fue la identificación de raíces unitarios por medio de la prueba de Dickey-Fuller, esto para identificar si las series presentaban una raíz unitario que podría afectar la estacionalidad de las series. Este análisis fue de vital importancia ya que logramos identificar que la mayoría de las series eran no estacionarias lo que afectaba la identificación de la ACF, posterior a aplicar diferencia pudimos encontrar patrones más claros en esta.
 
-El tercer análisis que realizamos fue la descomposición de la serie, para este análisis nos enfocamos específicamente en el componente estacional, esto con el objetivo de encontrar patrones y periodicidades. Una vez encontrado estos patrones obtuvimos un patrón de picos en la serie el que utilizamos posteriormente para suavizar la serie, con el objetivo de encontrar posibles patrones en las series eliminando ruido en esta.
+El tercer análisis realizado fue la descomposición de la serie, para este análisis nos enfocamos específicamente en el componente estacional, esto con el objetivo de encontrar patrones y periodicidades. Una vez encontrado estos patrones obtuvimos un patrón de picos en la serie el que utilizamos posteriormente para suavizar la serie, con el objetivo de encontrar posibles patrones en las series eliminando ruido en esta.
 
-El cuatro análisis que realizamos fue el análisis de *cross-correlation*, en este análisis ya no nos centramos en las señales particulares, sino que analizamos combinaciones de señales, con el objetivo de encontrar relaciones entre pares. En este apartado analizamos las series originales y el promedio de las series.
+El cuatro análisis realizado fue el análisis de cross-correlation, en este análisis ya no nos centramos en las señales particulares, sino que analizamos combinaciones de señales, con el objetivo de encontrar relaciones entre pares. En este apartado analizamos las series originales y el promedio de las series.
 
 El quinto análisis fue el promedio de las series con intervalos de desviación estándar. Este análisis se realizó tanto para la serie original como a la serie suavizada con los resultados obtenidos en el análisis tres.
 
@@ -72,11 +72,11 @@ Es importante mencionar que en este apartado analizaremos únicamente la señal 
 
 ![ACF PACF II 30 lags](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_2.png)
 
-De las gráficas de de autocorrelación, podemos notar que estas no descienden a cero, mientras que las gráficas de autocorrelación parciales tienden a decrecer a cero confirme aumentan los lags. De esto podemos pensar que existe no estacionariedad en la serie o incluso que existe una raíz unitaria. Que la PACF tienda a cero podría indicar que existe un componente AR en la serie, es decir, la serie podría analizarse con un modelo $ARIMA(p,d,0)$.
+De las gráficas de de autocorrelación, podemos notar que estas no descienden a cero, mientras que las gráficas de autocorrelación parciales tienden a decrecer a cero confirme aumentan los retrazos. Este comportamiento indica que existe no estacionariedad en la serie o incluso que existe una raíz unitaria. Que la PACF tienda a cero podría indicar que existe un componente autorregresivo en la serie, es decir, la serie podría analizarse con un modelo AR.
 
 Para analizar más a fondo, estudiaremos la existencia de raíces unitarias y de no estacionariedad aplicando diferencias a la serie y aplicando la prueba de Dickey-Fuller.
 
-## Raíces unitarias
+## 3.2 Raíces unitarias
 
 Realizando la prueba de Dickey-Fuller por señal y por clase obtenemos los siguientes resultados:
 
@@ -95,7 +95,8 @@ Realizando la prueba de Dickey-Fuller por señal y por clase obtenemos los sigui
 | AVF     | 0.785    |  0.84     | 0.733333 | 0.733333 |
 | I       | 0.891667 |  0.9      | 0.888333 | 0.906667 |
 
-de la tabla podemos ver que existe una parte de señales y clases que tienen una raíz unitaria, sin embargo no es la mayoría (menos del 50%), sin embargo las series no son estacionarios, por lo que para volver estacionaria la serie es necesario aplicar una diferencia.
+De la tabla podemos observar que aunque no todas las series presentan raíz unitaria, existe no estacionaridad en la serie lo que afecta en la confiabilidad de las autocorrelaciones y en los supuestos de series de tiempo, por lo que es necesario aplicar una diferencia para volver estacionaria la serie.
+
 
 | Señal   |       MI |   STTC MI |     STTC |   OTHER |
 |:--------|---------:|----------:|---------:|--------:|
@@ -112,13 +113,13 @@ de la tabla podemos ver que existe una parte de señales y clases que tienen una
 | AVF     | 0.998333 |         1 | 1        |       1 |
 | I       | 0.998333 |         1 | 1        |       1 |
 
-Realizando la prueba para analizar si es necesario aplicar una diferencia adicional a la serie, vemos que menos del 1% de las series presenta raíz unitaria, por lo que únicamente aplicaremos una diferencia.
+Al realizar una segunda prueba para analizar si es necesario aplicar una diferencia adicional a la serie, observamos que menos del 1% de las series presenta raíz unitaria, por lo que únicamente aplicaremos una diferencia.
 
 ![ACF PACF II diff](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_diff_MI.png)
 
 Aplicando una diferencia a la serie y obteniendo la ACF y PACF, podemos observar que únicamente las primeras 5 autocorrelaciones de la ACF son significativamente distintas de cero, mientras que la PACF conserva el comportamiento decreciente a cero, lo que nos lleva a pensar que nuestra suposición fue correcta de que las series eran no estacionarias y presentan un componente autorregresivo.
 
-## Descomposición de la serie
+## 3.3 Descomposición de la serie
 
 En el análisis de descomposición de la serie, analizamos únicamente la parte estacional de la serie. Para este análisis utilizamos el promedio de la serie para obtener esta descomposición. Una vez obtenido el componente estacional del promedio de las series obtuvimos los saltos dentro de la serie tomando en cuenta un salto por encima de dos desviaciones estándar. Con los saltos obtenemos una estadística de cada cuantos periodos se dan estos y obtuvimos los siguientes resultados:
 
@@ -145,7 +146,9 @@ Teniendo en promedio los picos cada $46.805166$ en todas las señales.
 
 De las gráficas de componente estacional, podemos observar que para las señales MI presenta menos variabilidad o desviación, y vemos que existen tendencias de picos más marcadas.
 
-## Análisis de correlación cruzada
+La presencia de estos picos en el componente estacional sugiere que las señales presentan periodicidades asociadas al ritmo cardíaco, lo cual puede reflejar patologías. Esta información se utilizó en la ingeniería de variables para contemplar la periodicidad de cada señal.
+
+## 3.4 Análisis de correlación cruzada
 
 Para el análisis de correlación cruzada analizamos distintas variantes de estas:
 
@@ -159,7 +162,7 @@ Para el análisis de correlación cruzada analizamos distintas variantes de esta
 Para este estudio realizamos un análisis de las señales de la misma cara con sus respectivas combinaciones.
 
 
-### Análisis de correlación cruzada de las series originales
+### 3.4.1 Análisis de correlación cruzada de las series originales
 
 En este primer análisis buscábamos encontrar relaciones entre las señales con respecto a las clases, como ejemplo utilizaremos la cara interior la cual contiene la señal II.
 
@@ -167,9 +170,9 @@ En este primer análisis buscábamos encontrar relaciones entre las señales con
 
 ![CCF II AVF](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF.png)
 
-De las gráficas podemos observar que existen correlaciones cruzadas notables en los retrasos $[-75, 0, 75]$ y unos picos menores dentro de ese intervalo, sin embargo, visualmente no logramos encontrar una diferenciación clara entre las clases.
+De las gráficas podemos observar que existen correlaciones cruzadas notables en los retrasos $[-75, 0, 75]$ y unos picos menores dentro de ese intervalo. Sin embargo, visualmente no logramos encontrar una diferenciación clara entre las clases.
 
-### Análisis de correlación cruzada de las series originales con intervalos de desviación estándar.
+### 3.4.2 de correlación cruzada de las series originales con intervalos de desviación estándar.
 
 En este segundo análisis estudiamos como se comporta el promedio de las correlaciones cruzadas en conjunto con la desviación estándar. 
 
@@ -177,41 +180,38 @@ En este segundo análisis estudiamos como se comporta el promedio de las correla
 
 ![CCF II AVF SD](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd.png)
 
-De este análisis vemos que en promedio la correlación cruzada tiene un máximo en el retraso 0, sin embargo, en los demás retrasos no parece existir una correlación cruzada significativa.
+De este análisis vemos que en promedio la correlación cruzada tiene un máximo en el retraso 0. Sin embargo, en los demás retrasos no parece existir una correlación cruzada significativa.
 
-### Análisis de correlación cruzada promedio de las series originales con intervalos de desviación estándar.
+### 3.4.3 Análisis de correlación cruzada promedio de las series originales con intervalos de desviación estándar.
 
 ![CCF MEAN II III SD](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_mean_II_III_sd.png)
 
 ![CCF MEAN II AVF SD](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_mean_II_AVF_sd.png)
 
-En relación con el análisis interior, vemos que en promedio la correlación cruzada tiene un máximo en el retraso 0, sin embargo, en los demás retrasos no parece existir una correlación cruzada significativa.
+En relación con el análisis anterior, vemos que en promedio la correlación cruzada tiene un máximo en el retraso 0. Sin embargo, en los demás retrasos no parece existir una correlación cruzada significativa.
 
-### Análisis de cross-correlation del promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
+### 3.4.4 Análisis de cross-correlation del promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
 
-Otro análisis realizado fue el análisis de correlación cruzada del promedio de la serie suavizada con una ventana arbitraria de 50 periodos.
-
+Otro análisis realizado fue el análisis de correlación cruzada del promedio de la serie suavizada con una ventana arbitraria de 50 periodos. El objetivo de utilizar un suavizamiento fue eliminar ruido y evaluar patrones generales.
 
 ![SIGNAL II III SMOOTH 50](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd_smooth_50.png)
 
 ![SIGNAL II AVF SMOOTH 50](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd_smooth_50.png)
 
-De las gráficas podemos notar que no existe una notable diferencia entre las clases, además que no se encuentra una diferencia notable con respecto a la correlación cruzada de la serie original.
 
+Las gráficas muestran picos similares al análisis original, sin diferenciación clara entre clases. Por lo tanto, este suavizado no aporta mejoras visuales evidentes.
 
-### Análisis de cross-correlation window particular.
+### 3.4.5 Análisis de cross-correlation window particular.
 
-Otro análisis realizado fue el análisis de correlación cruzada utilizando como suavizamiento ventanas con periodos obtenidos en la descomposición de la serie. Este suavizamiento se hizo con los valores particulares de cada señal.
+Otro análisis realizado fue el análisis de correlación cruzada utilizando como suavizamiento ventanas con periodos obtenidos en la descomposición de la serie. Este suavizamiento se hizo con los valores particulares de cada señal, al igual que el análisis anterior el objetivo fue eliminar ruido y evaluar patrones generales.
 
 ![SIGNAL II III SMOOTH PART](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd_smooth_part.png)                        
 
 ![SIGNAL II AVF SMOOTH PART](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd_smooth_part.png)
 
-Podemos observar que utilizar una ventana de suavizamiento particular tenemos una gráfica de correlación cruzada más suave, y podemos notar los picos en otros puntos además del retraso cero.
+Podemos observar que utilizar una ventana de suavizamiento particular tenemos una gráfica de correlación cruzada más suave, y podemos notar los picos en otros puntos además del retraso cero. Sin embargo, tampoco existe una relación clara para separar las clases de las señales.
 
-Sin embargo, tampoco existe una relación clara para separar las clases de las señales.
-
-### Análisis de cross-correlation con ventana (window) promedio
+### 3.4.6 Análisis de cross-correlation con ventana (window) promedio
 
 El último análisis de suavizamiento que se realizó con las correlaciones cruzadas fue analizar si el promedio de los saltos que encontramos en la descomposición de la serie de todas las clases.
 
@@ -221,17 +221,19 @@ El último análisis de suavizamiento que se realizó con las correlaciones cruz
 
 Podemos notar que aplicar un suavizamiento particular o promedio nos ayuda a encontrar picos en la gráfica de correlación cruzada que no era fácilmente ver en la gráfica del promedio de las series. Sin embargo, no encontramos una relación clara para poder separarlos.
 
-## Análisis de serie con intervalos de desviación estándar
+## 3.5 Análisis de serie con intervalos de desviación estándar
 
-### Promedio de series con intervalos de desviación estándar.
+El objetivo de este análisis fue evaluar si existían patrones característicos en las series del ECG al calcular su promedio con intervalos de desviación estándar y aplicar distintos suavizados, con el fin de identificar diferencias entre clases que pudieran ser útiles para la clasificación.
 
-Se realizó un análisis del promedio de las series con intervalos de desviación estándar, sin embargo, visualmente no se encontraron relaciones directas para separar las clases.
+### 3.5.1 Promedio de series con intervalos de desviación estándar.
+
+Se analizó el promedio de las series junto con sus intervalos de desviación estándar, para evaluar si existían diferencias visuales entre clases. Sin embargo, visualmente no se encontraron relaciones claras para separar las clases.
 
 ![SIGNAL II MEAN](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean.png)
 
-Como se observa en las gráficas, las señales presentan bastante variabilidad y no se logra apreciar patrones en las clases.
+Como se observa en las gráficas, las señales presentan alta variabilidad y no se logra identificar patrones en las clases.
 
-## Análisis de serie con intervalos de desviación estándar con suavizamiento de series
+## 3.5.2 Análisis de serie con intervalos de desviación estándar con suavizamiento de series
 
 Para este análisis se utilizaron las distintas ventanas de suavizamiento:
 
@@ -239,31 +241,33 @@ Para este análisis se utilizaron las distintas ventanas de suavizamiento:
 * Promedio de series con suavizamiento particular e intervalos de desviación estándar.
 * Promedio de series con suavizamiento promedio e intervalos de desviación estándar.
 
-### Promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
+### 3.5.2.1 Promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
 
-Se realizó un análisis del promedio de las series suavizadas con una ventana de 50 periodos con intervalos de desviación estándar, sin embargo, visualmente no se encontraron relaciones directas para separar las clases.
+Se analizó el promedio de las series suavizadas con una ventana de 50 periodos junto con sus intervalos de desviación estándar, para evaluar si existían diferencias visuales entre clases. Sin embargo, visualmente no se encontraron relaciones claras para separar las clases.
 
 ![SIGNAL II MEAN SMOOTH](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth.png)
 
-En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas, sin embargo, visualmente no podemos relaciones.
+En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas, sin embargo, visualmente no se pueden identificar diferencias entre clases.
 
-### Promedio de series con suavizamiento particular e intervalos de desviación estándar.
+### 3.5.2.2 Promedio de series con suavizamiento particular e intervalos de desviación estándar.
 
-Se realizó otro análisis, el promedio de las series suavizadas con una ventana particular para cada señal y clase con intervalos de desviación estándar, sin embargo, visualmente no se encontraron relaciones directas para separar las clases.
+Se analizó el promedio de las series suavizadas utilizando una ventana particular para cada señal y clase, con intervalos de desviación estándar, para evaluar si existían diferencias visuales entre clases. Sin embargo, visualmente no se encontraron patrones claros para separar las clases.
 
 ![SIGNAL II MEAN SMOOTH](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth_part.png)
 
 En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas, sin embargo, visualmente no podemos relaciones.
 
-### Promedio de series con suavizamiento promedio e intervalos de desviación estándar.
+### 3.5.2.3 Promedio de series con suavizamiento promedio e intervalos de desviación estándar.
 
-El último análisis realizado fue el promedio de las series suavizadas con una ventana promedio para cada señal con intervalos de desviación estándar, sin embargo, visualmente no se encontraron relaciones directas para separar las clases.
+El último análisis realizado fue el promedio de las series suavizadas con una ventana promedio para cada señal con intervalos de desviación estándar, para evaluar si existían diferencias visuales entre clases. Sin embargo, visualmente no se encontraron relaciones directas para separar las clases.
 
 ![SIGNAL II MEAN SMOOTH](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth_mean.png)
 
-En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas, sin embargo, visualmente no podemos relaciones.
+En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas, sin embargo, visualmente no encontramos patrones para separar las clases.
 
-# 4. Ingenieria de variables
+En resumen, aunque los distintos métodos de suavizado redujeron la variabilidad de las señales, no se encontraron diferencias visuales claras entre clases. Esto sugiere que estos promedios suavizados no contienen información suficiente para separarlos, aunque sus estadísticas se considerarán como posibles variables en el modelo.
+
+# 4 Ingenieria de variables
 
 Variables que se crearon, orígenes de variables.
 
@@ -274,15 +278,15 @@ En este apartado se trabajó, con base en los resultados del análisis explorato
 * Variables de ccf.
 * Análisis de Componentes Principales (PCA)
 
-## Variables de autocorrelaciones
+## 4.1 Variables de autocorrelaciones
 
 Para las variables de $acf$ y $pacf$, con base en el análisis, se encontró que las primeras 5 autocorrelaciones en promedio eran distintas de cero, por lo que se utilizaron estas autocorrelaciones como variables para el modelo. En total se tenían 12 señales y cada señal se utilizó las primeras 5 $acf$ y $pacf$ dando en total $12*5*2 = 120$ variables de este bloque.
 
-## Variables estadísticas de las series
+## 4.2 Variables estadísticas de las series
 
 Para las variables de estadísticas de la serie se tomó en cuenta variables como amplitud de las series, intensidad de las series, ratio de las series, promedio en donde se dan los picos en las series en el componente estacional, desviación estándar de las series en el componente estacional y número de picos en las series en el componente estacional. Dando un total de $6*12=72$ variables de estadísticas de la serie.
 
-## Variables de correlación cruzada 
+## 4.3 Variables de correlación cruzada 
 
 Para las variables de la CCF se tomaron en cuenta: el número de cruces por cero; el promedio, máximo, mínimo y desviación estándar de la CCF; el lag correspondiente al máximo y al mínimo de la CCF; la curtosis de la CCF; la media recortada de la CCF; y la norma de la matriz de la CCF. Dando un total de $78*9+1 = 703$ variables del bloque de correlación cruzada.
 
@@ -290,7 +294,7 @@ En donde el número de combinaciones posibles fue de:
 
 $$\binom{12 + 2 - 1}{2} = 78$$
 
-## Análisis de Componentes Principales
+## 4.4 Análisis de Componentes Principales
 
 
 Se aplicó PCA sobre el conjunto de variables generadas para reducir la dimensionalidad y evitar la multicolinealidad. Inicialmente se tenían $120+72+703 = 905$ variables de todos los bloques. Se seleccionaron los primeros k componentes principales que explicaban al menos el $95\%$ de la varianza. Resultando en $285$ componentes principales.
