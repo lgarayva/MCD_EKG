@@ -964,96 +964,95 @@ Para trabajos futuros se recomienda probar modelos de deep learning con arquitec
 | max_depth         | 20      |
 | max_features      | sqrt    |
 | min_samples_leaf  | 2       |
-| min_samples_split | 10      |
-| n_estimators      | 500     |
+| min_samples_split | 2       |
+| n_estimators      | 350     |
 
-|              |   precision |   recall |   f1-score |   support |
-|:-------------|------------:|---------:|-----------:|----------:|
-| 0            |    0.407801 | 0.383333 |   0.395189 |   300     |
-| 1            |    0.640678 | 0.63     |   0.635294 |   300     |
-| 2            |    0.402214 | 0.363333 |   0.381786 |   300     |
-| 3            |    0.480114 | 0.563333 |   0.518405 |   300     |
-| accuracy     |    0.485    | 0.485    |   0.485    |     0.485 |
-| macro avg    |    0.482702 | 0.485    |   0.482669 |  1200     |
-| weighted avg |    0.482702 | 0.485    |   0.482669 |  1200     |
+|              |   precision |   recall |   f1-score |      support |
+|:-------------|------------:|---------:|-----------:|-------------:|
+| 0            |    0.343805 | 0.291833 |   0.315695 |  6000        |
+| 1            |    0.498245 | 0.567667 |   0.530695 |  6000        |
+| 2            |    0.291698 | 0.26     |   0.274938 |  6000        |
+| 3            |    0.395954 | 0.443667 |   0.418455 |  6000        |
+| accuracy     |    0.390792 | 0.390792 |   0.390792 |     0.390792 |
+| macro avg    |    0.382425 | 0.390792 |   0.384946 | 24000        |
+| weighted avg |    0.382425 | 0.390792 |   0.384946 | 24000        |
 
 | metric             |    value |
 |:-------------------|---------:|
-| accuracy           | 0.485    |
-| precision_weighted | 0.482702 |
-| recall_weighted    | 0.485    |
-| f1_weighted        | 0.482669 |
-| roc_auc_ovr        | 0.73496  |
-| log_loss           | 1.20453  |
-| gini_normalized    | 0.46992  |
-| ks_test_clase_0    | 0.246667 |
-| ks_test_clase_1    | 0.546667 |
-| ks_test_clase_2    | 0.266667 |
-| ks_test_clase_3    | 0.44     |
+| accuracy           | 0.390792 |
+| precision_weighted | 0.382425 |
+| recall_weighted    | 0.390792 |
+| f1_weighted        | 0.384946 |
+| roc_auc_ovr        | 0.659797 |
+| log_loss           | 1.27119  |
+| gini_normalized    | 0.319593 |
+| ks_test_clase_0    | 0.153889 |
+| ks_test_clase_1    | 0.395667 |
+| ks_test_clase_2    | 0.1075   |
+| ks_test_clase_3    | 0.285111 |
 
 |        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
 |:-------|---------:|---------:|---------:|---------:|
-| Real 0 |      115 |       63 |       53 |       69 |
-| Real 1 |       46 |      189 |       40 |       25 |
-| Real 2 |       68 |       34 |      109 |       89 |
-| Real 3 |       53 |        9 |       69 |      169 |
+| Real 0 |     1751 |     1495 |     1245 |     1509 |
+| Real 1 |      815 |     3406 |     1087 |      692 |
+| Real 2 |     1366 |     1214 |     1560 |     1860 |
+| Real 3 |     1161 |      721 |     1456 |     2662 |
 
 | metric             |    value |
 |:-------------------|---------:|
-| accuracy           | 0.566667 |
-| precision_weighted | 0.565486 |
-| recall_weighted    | 0.566667 |
-| f1_weighted        | 0.563655 |
+| accuracy           | 0.508333 |
+| precision_weighted | 0.492711 |
+| recall_weighted    | 0.508333 |
+| f1_weighted        | 0.492884 |
 
 ### Gradient Boosting Classifier
 
 | parámetro         | valor   |
 |:------------------|:--------|
 | learning_rate     | 0.1     |
-| max_depth         | 20      |
+| max_depth         | 5       |
 | max_features      | log2    |
-| min_samples_leaf  | 10      |
-| min_samples_split | 2       |
+| min_samples_split | 10      |
 | n_estimators      | 100     |
-| subsample         | 1.0     |
+| subsample         | 1       |
 
-|              |   precision |   recall |   f1-score |   support |
-|:-------------|------------:|---------:|-----------:|----------:|
-| 0            |    0.37     |     0.37 |   0.37     |    300    |
-| 1            |    0.722892 |     0.6  |   0.655738 |    300    |
-| 2            |    0.375    |     0.47 |   0.41716  |    300    |
-| 3            |    0.48     |     0.44 |   0.45913  |    300    |
-| accuracy     |    0.47     |     0.47 |   0.47     |      0.47 |
-| macro avg    |    0.486973 |     0.47 |   0.475507 |   1200    |
-| weighted avg |    0.486973 |     0.47 |   0.475507 |   1200    |
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.343348 | 0.2895   |   0.314133 |  6000       |
+| 1            |    0.46613  | 0.559667 |   0.508634 |  6000       |
+| 2            |    0.283394 | 0.2065   |   0.238912 |  6000       |
+| 3            |    0.374202 | 0.459333 |   0.412421 |  6000       |
+| accuracy     |    0.37875  | 0.37875  |   0.37875  |     0.37875 |
+| macro avg    |    0.366769 | 0.37875  |   0.368525 | 24000       |
+| weighted avg |    0.366769 | 0.37875  |   0.368525 | 24000       |
 
-| metric             |    value |
-|:-------------------|---------:|
-| accuracy           | 0.47     |
-| precision_weighted | 0.486973 |
-| recall_weighted    | 0.47     |
-| f1_weighted        | 0.475507 |
-| roc_auc_ovr        | 0.72971  |
-| log_loss           | 1.27737  |
-| gini_normalized    | 0.45942  |
-| ks_test_clase_0    | 0.22     |
-| ks_test_clase_1    | 0.565556 |
-| ks_test_clase_2    | 0.286667 |
-| ks_test_clase_3    | 0.366667 |
+| metric             |     value |
+|:-------------------|----------:|
+| accuracy           | 0.37875   |
+| precision_weighted | 0.366769  |
+| recall_weighted    | 0.37875   |
+| f1_weighted        | 0.368525  |
+| roc_auc_ovr        | 0.642532  |
+| log_loss           | 1.29391   |
+| gini_normalized    | 0.285063  |
+| ks_test_clase_0    | 0.153389  |
+| ks_test_clase_1    | 0.356167  |
+| ks_test_clase_2    | 0.0857778 |
+| ks_test_clase_3    | 0.2645    |
 
 |        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
 |:-------|---------:|---------:|---------:|---------:|
-| Real 0 |      111 |       46 |       81 |       62 |
-| Real 1 |       47 |      180 |       56 |       17 |
-| Real 2 |       79 |       16 |      141 |       64 |
-| Real 3 |       63 |        7 |       98 |      132 |
+| Real 0 |     1737 |     1605 |     1038 |     1620 |
+| Real 1 |      843 |     3358 |      825 |      974 |
+| Real 2 |     1320 |     1426 |     1239 |     2015 |
+| Real 3 |     1159 |      815 |     1270 |     2756 |
 
 | metric             |    value |
 |:-------------------|---------:|
-| accuracy           | 0.508333 |
-| precision_weighted | 0.538344 |
-| recall_weighted    | 0.508333 |
-| f1_weighted        | 0.516082 |
+| accuracy           | 0.491667 |
+| precision_weighted | 0.468082 |
+| recall_weighted    | 0.491667 |
+| f1_weighted        | 0.46567  |
 
 ### Naive Bayes
 
@@ -1061,43 +1060,43 @@ Para trabajos futuros se recomienda probar modelos de deep learning con arquitec
 |:--------------|--------:|
 | var_smoothing |   1e-09 |
 
-|              |   precision |   recall |   f1-score |     support |
-|:-------------|------------:|---------:|-----------:|------------:|
-| 0            |    0.316327 | 0.103333 |   0.155779 |  300        |
-| 1            |    0.321823 | 0.776667 |   0.455078 |  300        |
-| 2            |    0.351145 | 0.153333 |   0.213457 |  300        |
-| 3            |    0.327935 | 0.27     |   0.296161 |  300        |
-| accuracy     |    0.325833 | 0.325833 |   0.325833 |    0.325833 |
-| macro avg    |    0.329307 | 0.325833 |   0.280119 | 1200        |
-| weighted avg |    0.329307 | 0.325833 |   0.280119 | 1200        |
+|              |   precision |    recall |   f1-score |      support |
+|:-------------|------------:|----------:|-----------:|-------------:|
+| 0            |    0.290155 | 0.028     |  0.0510716 |  6000        |
+| 1            |    0.263517 | 0.836667  |  0.400798  |  6000        |
+| 2            |    0.281537 | 0.0818333 |  0.126808  |  6000        |
+| 3            |    0.2874   | 0.125833  |  0.175032  |  6000        |
+| accuracy     |    0.268083 | 0.268083  |  0.268083  |     0.268083 |
+| macro avg    |    0.280652 | 0.268083  |  0.188427  | 24000        |
+| weighted avg |    0.280652 | 0.268083  |  0.188427  | 24000        |
 
 | metric             |     value |
 |:-------------------|----------:|
-| accuracy           |  0.325833 |
-| precision_weighted |  0.329307 |
-| recall_weighted    |  0.325833 |
-| f1_weighted        |  0.280119 |
-| roc_auc_ovr        |  0.588748 |
-| log_loss           | 20.8603   |
-| gini_normalized    |  0.177495 |
-| ks_test_clase_0    |  0.185556 |
-| ks_test_clase_1    |  0.242222 |
-| ks_test_clase_2    |  0.117778 |
-| ks_test_clase_3    |  0.115556 |
+| accuracy           | 0.268083  |
+| precision_weighted | 0.280652  |
+| recall_weighted    | 0.268083  |
+| f1_weighted        | 0.188427  |
+| roc_auc_ovr        | 0.527915  |
+| log_loss           | 5.01168   |
+| gini_normalized    | 0.0558292 |
+| ks_test_clase_0    | 0.0701111 |
+| ks_test_clase_1    | 0.107111  |
+| ks_test_clase_2    | 0.0651111 |
+| ks_test_clase_3    | 0.0232778 |
 
 |        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
 |:-------|---------:|---------:|---------:|---------:|
-| Real 0 |       31 |      164 |       29 |       76 |
-| Real 1 |       13 |      233 |       27 |       27 |
-| Real 2 |       20 |      171 |       46 |       63 |
-| Real 3 |       34 |      156 |       29 |       81 |
+| Real 0 |      168 |     4564 |      475 |      793 |
+| Real 1 |       63 |     5020 |      447 |      470 |
+| Real 2 |      158 |     4742 |      491 |      609 |
+| Real 3 |      190 |     4724 |      331 |      755 |
 
 | metric             |    value |
 |:-------------------|---------:|
-| accuracy           | 0.308333 |
-| precision_weighted | 0.302306 |
-| recall_weighted    | 0.308333 |
-| f1_weighted        | 0.241931 |
+| accuracy           | 0.25     |
+| precision_weighted | 0.14693  |
+| recall_weighted    | 0.25     |
+| f1_weighted        | 0.115846 |
 
 ### XGB Classifier
 
@@ -1112,46 +1111,46 @@ Para trabajos futuros se recomienda probar modelos de deep learning con arquitec
 | n_estimators          | 4000           |
 
 
-|              |   precision |   recall |   f1-score |    support |
-|:-------------|------------:|---------:|-----------:|-----------:|
-| 0            |    0.444816 | 0.443333 |   0.444073 |  300       |
-| 1            |    0.732824 | 0.64     |   0.683274 |  300       |
-| 2            |    0.412698 | 0.419355 |   0.416    |  310       |
-| 3            |    0.5      | 0.556667 |   0.526814 |  300       |
-| accuracy     |    0.51405  | 0.51405  |   0.51405  |    0.51405 |
-| macro avg    |    0.522585 | 0.514839 |   0.51754  | 1210       |
-| weighted avg |    0.521677 | 0.51405  |   0.516701 | 1210       |
+|              |   precision |   recall |   f1-score |      support |
+|:-------------|------------:|---------:|-----------:|-------------:|
+| 0            |    0.342726 | 0.249333 |   0.288664 |  6000        |
+| 1            |    0.498062 | 0.578167 |   0.535133 |  6000        |
+| 2            |    0.350038 | 0.295161 |   0.320266 |  6200        |
+| 3            |    0.403559 | 0.514    |   0.452133 |  6000        |
+| accuracy     |    0.408223 | 0.408223 |   0.408223 |     0.408223 |
+| macro avg    |    0.398596 | 0.409165 |   0.399049 | 24200        |
+| weighted avg |    0.398195 | 0.408223 |   0.398398 | 24200        |
 
 
 | metric             |    value |
 |:-------------------|---------:|
-| accuracy           | 0.51405  |
-| precision_weighted | 0.521677 |
-| recall_weighted    | 0.51405  |
-| f1_weighted        | 0.516701 |
-| roc_auc_ovr        | 0.767521 |
-| log_loss           | 1.12188  |
-| gini_normalized    | 0.535042 |
-| ks_test_clase_0    | 0.344286 |
-| ks_test_clase_1    | 0.597143 |
-| ks_test_clase_2    | 0.302043 |
-| ks_test_clase_3    | 0.459304 |
+| accuracy           | 0.408223 |
+| precision_weighted | 0.398195 |
+| recall_weighted    | 0.408223 |
+| f1_weighted        | 0.398398 |
+| roc_auc_ovr        | 0.667674 |
+| log_loss           | 1.30001  |
+| gini_normalized    | 0.335349 |
+| ks_test_clase_0    | 0.145802 |
+| ks_test_clase_1    | 0.4105   |
+| ks_test_clase_2    | 0.150387 |
+| ks_test_clase_3    | 0.289844 |
 
 
 |        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
 |:-------|---------:|---------:|---------:|---------:|
-| Real 0 |      133 |       45 |       71 |       51 |
-| Real 1 |       49 |      192 |       37 |       22 |
-| Real 2 |       69 |       17 |      130 |       94 |
-| Real 3 |       48 |        8 |       77 |      167 |
+| Real 0 |     1496 |     1430 |     1266 |     1808 |
+| Real 1 |      664 |     3469 |     1136 |      731 |
+| Real 2 |     1231 |     1120 |     1830 |     2019 |
+| Real 3 |      974 |      946 |      996 |     3084 |
 
 
 | metric             |    value |
 |:-------------------|---------:|
-| accuracy           | 0.528926 |
-| precision_weighted | 0.537967 |
-| recall_weighted    | 0.528926 |
-| f1_weighted        | 0.532205 |
+| accuracy           | 0.512397 |
+| precision_weighted | 0.509052 |
+| recall_weighted    | 0.512397 |
+| f1_weighted        | 0.472916 |
 
 
 ## Modelado utilizando feature engeeniering divida las series en chunks de 100
