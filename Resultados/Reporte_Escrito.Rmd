@@ -18,6 +18,8 @@ La interpretación de un ECG requiere experiencia clínica y puede variar entre 
 
 Este proyecto busca desarrollar un modelo de clasificación multiclase de ECG para diferenciar distintas patologías cardíacas, usando ingeniería de variables, análisis de series temporales y algoritmos de machine learning, evaluando su desempeño y utilidad clínica.
 
+\newpage
+
 # 2. Datos
 
 Los datos fueron obtenidos de PTB-XL, el cual es el mayor conjunto de datos clínicos de ECG disponible públicamente hasta la fecha. Estos datos fueron desarrollados para generar modelos de aprendizaje de máquina, con el objetivo de generar un sistema de decisiones automatizado para la interpretación de ECG. Este conjunto de datos fue desarrollado con contrarrestar dos grandes obstáculos que se tenían con datos de ECG:
@@ -49,6 +51,8 @@ Para los datos se realizó un proceso de adquisición de datos y procesamiento d
 ### 2.2 Procesamiento de datos
 
 Las señales fueron convertidas del formato original a un formato binario con 16 bits de precisión a una resolución de 1 $\mu$ V /LSB. Pasaron por un proceso en el que se eliminaron picos de encendido y apagado en los dispositivos, estos picos se encontraban al inicio y final de los registros. Además, las señales fueron re muestreadas a una señal de 500 Hz, y también se generó una versión de 100 Hz.
+
+\newpage
 
 # 3. Análisis exploratorio y procesamiento
 
@@ -269,6 +273,8 @@ En las gráficas se puede observar que con este suavizamiento se elimina variabi
 
 En resumen, aunque los distintos métodos de suavizado redujeron la variabilidad de las señales, no se encontraron diferencias visuales claras entre clases. Esto sugiere que estos promedios suavizados no contienen información suficiente para separarlos, aunque sus estadísticas se considerarán como posibles variables en el modelo.
 
+\newpage
+
 # 4 Ingeniería de variables
 
 La ingeniería de variables tuvo como objetivo generar variables que capturaran la estructura temporal, la variabilidad y la relación entre señales del ECG, con el fin de generar un modelo de clasificación multiclase. Se generaron variables basadas en autocorrelaciones, estadística descriptiva y correlaciones cruzadas. Además, se aplicó un análisis de componentes principales para reducir dimensionalidad en los datos.
@@ -295,6 +301,8 @@ $$\binom{12 + 2 - 1}{2} = 78$$
 Se aplicó PCA sobre el conjunto de variables generadas para reducir la dimensionalidad y evitar la multicolinealidad. Inicialmente se tenían $120+72+703 = 905$ variables de todos los bloques. Se seleccionaron los primeros k componentes principales que explicaban al menos el $95\%$ de la varianza. Resultando en $285$ componentes principales.
 
 En total, se generaron 285 variables por serie. Estas features se usaron como entrada en los modelos de clasificación. Sin embargo, al aplicar PCA para reducir la dimensionalidad, no se evaluó directamente la importancia de cada variable, ya que los modelos utilizaron las combinaciones de componentes principales.
+
+\newpage
 
 # 5 Modelo
 
@@ -409,13 +417,15 @@ Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes,
 ## Tiempos de ejecución
 
 | Versión                        | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
-|--------------------------------|---------------------|--------------------------|------------------------------|-------------|----------------|
-| Feature Engineering            | 0.05                | 3.99                     | 15.85                        | 0.03        | 0.65           |
-| 100 Chunks                     | 0.40                | 68.93                    | 72.28                        | 0.06        | 3.25           |
-| 5 Chunks                       | 0.38                | 89.37                    | 17.16                        | 0.06        | 3.22           |
-| Feature Engineering 100 Chunks | 0.13                | 36.52                    | 40.29                        | 0.01        | 1.41           |
+|--------------------------------|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
+| Feature Engineering            |                0.05 |                   3.99   |                     15.85    |       0.03  |          0.65  |
+| 100 Chunks                     |                0.40 |                  68.93   |                     72.28    |       0.06  |          3.25  |
+| 5 Chunks                       |                0.15 |                  62.35   |                     10.45    |       0.07  |          1.59  |
+| Feature Engineering 100 Chunks |                0.13 |                  36.52   |                     40.29    |       0.01  |          1.41  |
 
-Modelos que se realizaron, tiempos de ejecución de modelos, comparación de modelos.
+los tiempos de ejecución que se reportan únicamente como referencia comparativa, ya que algunos modelos se realizaron con una versión reducida de la búsqueda de hiperparámetros por limitaciones computacionales.
+
+\newpage
 
 # 6 Resultados
 
@@ -425,11 +435,12 @@ En los primeros resultados de los modelos, el algoritmo que obtuvo un mejor dese
 
 Buscando soluciones a tener una cantidad limitada de registros se optó por dividir el datasets en chunks, es decir, cada serie se dividía en pedazos para poder tener una mayor cantidad de registros. Para esta parte se tomaron dos particiones. La primera partición se tomó el número de retrasos obtenidos en la función de autocorrelación, cinco retrasos, y la segunda partición fue arbitraria de 100 registros, es decir, tomando cada registro como un segundo de la serie.
 
-Para la división de la serie temporal en 5 segmentos ("chunks"), el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de $0.7675$, accuracy global de $0.5141$ y un accuracy promedio por paciente de $0.5289$.
+Para la división de la serie temporal en 5 segmentos ("chunks"), el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de 0.767521, accuracy global de 0.51405 y un accuracy promedio por paciente de 0.528926.
+
 Aunque el ROC AUC es ligeramente inferior al obtenido con la regresión logística, el accuracy por paciente es ligeramente superior.
 Cabe destacar que, al dividir la serie en chunks, cada uno recibe una predicción individual. Para calcular el accuracy por paciente, se tomó la moda de las predicciones de los chunks correspondientes a cada serie y se comparó con la etiqueta real de dicha serie.
 
-Por otro lado, para la división de la serie temporal en 100 segmentos ("chunks"), el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de xxxxxxx, accuracy global de xxxxxxx y un accuracy promedio por paciente de xxxxxxx. Dando el mejor desempeño de los modelos probados hasta ese momento, superando a todos los modelos tanto en ROC AUC como en accuracy.
+Por otro lado, para la división de la serie temporal en 100 segmentos ("chunks"), el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de 0.767521, accuracy global de 0.51405 y un accuracy promedio por paciente de 0.528926.
 
 Otra análisis que se realizó fue aplicar ingeniería de variables a la serie dividida por chunks, en esta parte únicamente se tomó la partición de 100 chunks debido a que la ingeniería de variables no era posible únicamente con 5 valores de la serie.
 
@@ -438,6 +449,8 @@ Para la división de la serie temporal en 100 segmentos ("chunks") utilizando in
 Otro punto a analizar son los tiempos de ejecución de entrenamiento de los modelos. De la tabla de ejecución de modelos, podemos observar que el entrenamiento de 
 
 Resultados obtenidos en los modelos, en relación al punto 5 y resultados de análisis exploratorio con respecto al objetivo el proyecto.
+
+\newpage
 
 # 7 Conclusiones
 
@@ -448,6 +461,8 @@ Para este proyecto se generaron 905 variables por serie, incluyendo estadística
 Estos resultados muestran que las variables generadas sí aportan información para clasificar los ECG, aunque el desempeño todavía es bajo para usarse en clínica. Además, al usar PCA no se pudo ver la importancia de cada variable por separado y el desempeño bajó un poco.
 
 Para trabajos futuros se recomienda probar modelos de deep learning con arquitecturas diseñadas para series de tiempo, y también explorar la extracción de características en el dominio de frecuencia y la morfología de las ondas ECG. Otra opción es crear 4 modelos distintos para clasificar cada clase por separado usando un enfoque one vs all.
+
+\newpage
 
 # 8 Anexo resultados modelos
 
