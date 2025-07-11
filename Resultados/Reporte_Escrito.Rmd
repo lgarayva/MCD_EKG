@@ -14,7 +14,7 @@ Las enfermedades cardiovasculares son la principal causa de muerte a nivel mundi
 
 El electrocardiograma es un estudio no invasivo que registra la actividad eléctrica del corazón. Es fundamental para detectar alteraciones en el ritmo cardíaco, conducción eléctrica y morfología cardíaca.
 
-Interpretar un ECG requiere experiencia clínica y puede variar entre especialistas. Por eso, se ha buscado desarrollar modelos automatizados de interpretación usando machine learning. El dataset PTB-XL, que tiene más de 21,000 registros validados por cardiólogos, permite explorar estas aplicaciones.
+La interpretación de un ECG requiere experiencia clínica y puede variar entre especialistas. Por ello, se ha buscado desarrollar modelos automatizados de interpretación usando machine learning. El dataset PTB-XL, que tiene más de 21,000 registros validados por cardiólogos, permite explorar estas aplicaciones.
 
 Este proyecto busca desarrollar un modelo de clasificación multiclase de ECG para diferenciar distintas patologías cardíacas, usando ingeniería de variables, análisis de series temporales y algoritmos de machine learning, evaluando su desempeño y utilidad clínica.
 
@@ -22,7 +22,7 @@ Este proyecto busca desarrollar un modelo de clasificación multiclase de ECG pa
 
 Los datos fueron obtenidos de PTB-XL, el cual es el mayor conjunto de datos clínicos de ECG disponible públicamente hasta la fecha. Estos datos fueron desarrollados para generar modelos de aprendizaje de máquina, con el objetivo de generar un sistema de decisiones automatizado para la interpretación de ECG. Este conjunto de datos fue desarrollado con contrarrestar dos grandes obstáculos que se tenían con datos de ECG:
 
-* No existía un conjunto de datos para entrenamiento y validación público que pudiera utilizarse para entrenar los modelos.
+* No existía un conjunto de datos público para entrenamiento y validación público que pudiera utilizarse para desarrollar los modelos.
 * La falta de procedimientos definidos para evaluar los algoritmos.
 
 Los datos de *PTB-XL* fueron registrados mediante dispositivos *Schiller AG* de octubre de 1989 a junio de 1966.
@@ -38,33 +38,33 @@ El conjunto de datos tiene las siguientes características:
 
 Para los datos se realizó un proceso de adquisición de datos y procesamiento de datos.
 
-### Adquisición de datos
+### 2.1 Adquisición de datos
 
 1. Las señales se recortaron en segmentos de 10 segundos y se guardaron en un formato comprimido de 400 Hz. Para todas las señales, se usó el estándar de las 12 caras (I, II, III, aVL, aVR, aVF, V1, V2, V3, V4, V5 y V6) con referencia al brazo derecho.
-2. La información fue registrada en la base de datos por una enfermera.
+2. Una enfermera registró la información en la base de datos.
 3. Cada registro fue interpretado en un 67.13% de manera manual por un cardiólogo, 31.2% de manera automática por un dispositivo de ECG con validaciones posteriores por un cardiólogo y un 1.67% sin reporte inicial.
 4. Finalmente, todos los reportes fueron nuevamente anotados de manera manual por un experto basado principalmente en características cuantitativas de las señales.
 
 
-### Procesamiento de datos
+### 2.2 Procesamiento de datos
 
 Las señales fueron convertidas del formato original a un formato binario con 16 bits de precisión a una resolución de 1 $\mu$ V /LSB. Pasaron por un proceso en el que se eliminaron picos de encendido y apagado en los dispositivos, estos picos se encontraban al inicio y final de los registros. Además, las señales fueron re muestreadas a una señal de 500 Hz, y también se generó una versión de 100 Hz.
 
-# 3 Análisis exploratorio y Procesamiento
+# 3. Análisis exploratorio y procesamiento
 
 El análisis exploratorio de datos tuvo como objetivo identificar patrones temporales y relaciones entre señales del ECG que pudieran ser útiles para la clasificación de patologías cardíacas, así como evaluar la estacionariedad de las señales y su estructura de autocorrelación.
 
-Como primer análisis estudiamos las autocorrelaciones (ACF) y autocorrelaciones parciales (PACF). Para este primer análisis, se revisó la ACF de las series originales y obteniendo el agregado de estas; también se analizó el agregado de las series y posteriormente se obtuvo la ACF y PACF. Para el análisis de la ACF y PACF se dividió el análisis por clase y por señal.
+Como primer análisis estudiamos las autocorrelaciones (ACF) y autocorrelaciones parciales (PACF). Se revisó la ACF de las series originales y obteniendo el agregado de estas; también se analizó el agregado de las series y posteriormente se obtuvo la ACF y PACF. Para el análisis de la ACF y PACF se dividió por clase y por señal.
 
 El segundo análisis que se realizó fue la identificación de raíces unitarias por medio de la prueba de Dickey-Fuller, esto para identificar si las series presentaban una raíz unitaria que podría afectar la estacionalidad de las series. Este análisis fue de vital importancia ya que logramos identificar que la mayoría de las series eran no estacionarias lo que afectaba la identificación de la ACF, posterior a aplicar diferencia pudimos encontrar patrones más claros en esta.
 
 El tercer análisis realizado fue la descomposición de la serie, para este análisis nos enfocamos específicamente en el componente estacional, esto con el objetivo de encontrar patrones y periodicidades. Una vez encontrado estos patrones obtuvimos un patrón de picos en la serie el que utilizamos posteriormente para suavizar la serie, con el objetivo de encontrar posibles patrones en las series eliminando ruido en esta.
 
-El cuatro análisis realizado fue el análisis de cross-correlation, en este análisis ya no nos centramos en las señales particulares, sino que analizamos combinaciones de señales, con el objetivo de encontrar relaciones entre pares. En este apartado analizamos las series originales y el promedio de las series.
+El cuatro análisis realizado fue de cross-correlation, en este análisis ya no nos centramos en las señales particulares, sino que analizamos combinaciones de señales, con el objetivo de encontrar relaciones entre pares. En este apartado nos enfocamos en las series originales y el promedio de las series.
 
-El quinto análisis fue el promedio de las series con intervalos de desviación estándar. Este análisis se realizó tanto para la serie original como a la serie suavizada con los resultados obtenidos en el análisis tres.
+El quinto análisis fue el promedio de las series con intervalos de desviación estándar. Este análisis se realizó tanto para la serie original como a la suavizada con los resultados obtenidos en el análisis tres.
 
-El sexto análisis que se realizó fue similar al análisis cuatro, a diferencia que para este análisis utilizamos un suavizamiento de las series.
+El sexto análisis que se realizó fue similar al cuatro, a diferencia que para este análisis utilizamos un suavizamiento de las series.
 
 Es importante mencionar que en este apartado analizaremos únicamente la señal II y clase MI ,Infarto de Miocardio, ya que sirve computacionalmente para analizar infarto inferior.
 
@@ -74,7 +74,7 @@ Es importante mencionar que en este apartado analizaremos únicamente la señal 
 
 ![ACF PACF II 30 lags](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_2.png)
 
-De las gráficas de de autocorrelación, podemos notar que estas no descienden a cero, mientras que las gráficas de autocorrelación parciales tienden a decrecer a cero confirme aumentan los retrasos. Este comportamiento indica que existe no estacionariedad en la serie o incluso que existe una raíz unitaria. Que la PACF tienda a cero podría indicar que existe un componente autorregresivo en la serie, es decir, la serie podría analizarse con un modelo AR.
+De las gráficas de de autocorrelación, podemos notar que estas no descienden a cero, mientras que las gráficas de autocorrelación parciales sí tienden a decrecer a cero conforme aumentan los retrasos. Este comportamiento indica que existe no estacionariedad en la serie o incluso que existe una raíz unitaria. Que la PACF tienda a cero podría indicar que existe un componente autorregresivo, es decir, la serie podría analizarse con un modelo AR.
 
 Para analizar más a fondo, estudiaremos la existencia de raíces unitarias y de no estacionariedad aplicando diferencias a la serie y aplicando la prueba de Dickey-Fuller.
 
@@ -119,11 +119,11 @@ Al realizar una segunda prueba para analizar si es necesario aplicar una diferen
 
 ![ACF PACF II diff](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_diff_MI.png)
 
-Aplicando una diferencia a la serie y obteniendo la ACF y PACF, podemos observar que únicamente las primeras 5 autocorrelaciones de la ACF son significativamente distintas de cero, mientras que la PACF conserva el comportamiento decreciente a cero, lo que nos lleva a pensar que nuestra suposición fue correcta de que las series eran no estacionarias y presentan un componente autorregresivo.
+Aplicando una diferencia a la serie y obteniendo la ACF y PACF, podemos observar que únicamente las primeras 5 autocorrelaciones de la ACF son significativamente distintas de cero, mientras que la PACF conserva el comportamiento decreciente a cero, lo que confirma que nuestra suposición de que las series eran no estacionarias y presentan un componente autorregresivo fue correcta.
 
 ## 3.3 Descomposición de la serie
 
-En el análisis de descomposición de la serie, analizamos únicamente la parte estacional de la serie. Para este análisis utilizamos el promedio de la serie para obtener esta descomposición. Una vez obtenido el componente estacional del promedio de las series obtuvimos los saltos dentro de la serie tomando en cuenta un salto por encima de dos desviaciones estándar. Con los saltos obtenemos una estadística de cada cuantos periodos se dan estos y obtuvimos los siguientes resultados:
+En el análisis de descomposición de la serie, nos enfocamos únicamente la parte estacional de la serie. Para esto, utilizamos el promedio de la serie para obtener esta descomposición. Una vez obtenido el componente estacional del promedio de las series obtuvimos los saltos dentro de la serie tomando en cuenta un salto por encima de dos desviaciones estándar. Con los saltos obtenemos una estadística de cada cuantos periodos se dan estos y obtuvimos los siguientes resultados:
 
 
 | Señal   |       MI |   STTC MI |     STTC |    OTHER |   promedio |      std |
@@ -154,12 +154,12 @@ La presencia de estos picos en el componente estacional sugiere que las señales
 
 Para el análisis de correlación cruzada analizamos distintas variantes de estas:
 
-* Análisis de correlación cruzada de las series originales.
-* Análisis de correlación cruzada de las series originales con intervalos de desviación estándar.
-* Análisis de correlación cruzada promedio de las series originales con intervalos de desviación estándar.
-* Análisis de cross-correlation del promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
-* Análisis de cross-correlation window particular.
-* Análisis de cross-correlation con ventana (window) promedio
+* Correlación cruzada de las series originales.
+* Correlación cruzada de las series originales con intervalos de desviación estándar.
+* Correlación cruzada promedio de las series originales con intervalos de desviación estándar.
+* Cross-correlation del promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
+* Cross-correlation window particular.
+* Cross-correlation con ventana (window) promedio
 
 Para este estudio realizamos un análisis de las señales de la misma cara con sus respectivas combinaciones.
 
@@ -182,7 +182,7 @@ En este segundo análisis estudiamos como se comporta el promedio de las correla
 
 ![CCF II AVF SD](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd.png)
 
-De este análisis vemos que en promedio la correlación cruzada tiene un máximo en el retraso 0. Sin embargo, en los demás retrasos no parece existir una correlación cruzada significativa.
+Vemos que en promedio la correlación cruzada tiene un máximo en el retraso 0. Sin embargo, en los demás retrasos no parece existir una correlación cruzada significativa.
 
 ### 3.4.3 Análisis de correlación cruzada promedio de las series originales con intervalos de desviación estándar.
 
@@ -211,7 +211,7 @@ Otro análisis realizado fue el análisis de correlación cruzada utilizando com
 
 ![SIGNAL II AVF SMOOTH PART](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd_smooth_part.png)
 
-Podemos observar que utilizar una ventana de suavizamiento particular tenemos una gráfica de correlación cruzada más suave, y podemos notar los picos en otros puntos además del retraso cero. Sin embargo, tampoco existe una relación clara para separar las clases de las señales.
+Podemos observar que al utilizar una ventana de suavizamiento particular tenemos una gráfica de correlación cruzada más suave, y podemos notar los picos en otros puntos además del retraso cero. Sin embargo, tampoco existe una relación clara para separar las clases de las señales.
 
 ### 3.4.6 Análisis de cross-correlation con ventana (window) promedio
 
@@ -249,7 +249,7 @@ Se analizó el promedio de las series suavizadas con una ventana de 50 periodos 
 
 ![SIGNAL II MEAN SMOOTH](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth.png)
 
-En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas, sin embargo, visualmente no se pueden identificar diferencias entre clases.
+En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas. Sin embargo, visualmente no se pueden identificar diferencias entre clases.
 
 ### 3.5.2.2 Promedio de series con suavizamiento particular e intervalos de desviación estándar.
 
@@ -257,7 +257,7 @@ Se analizó el promedio de las series suavizadas utilizando una ventana particul
 
 ![SIGNAL II MEAN SMOOTH](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth_part.png)
 
-En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas, sin embargo, visualmente no podemos relaciones.
+En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas. Sin embargo, visualmente no podemos relaciones.
 
 ### 3.5.2.3 Promedio de series con suavizamiento promedio e intervalos de desviación estándar.
 
@@ -265,7 +265,7 @@ El último análisis realizado fue el promedio de las series suavizadas con una 
 
 ![SIGNAL II MEAN SMOOTH](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth_mean.png)
 
-En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas, sin embargo, visualmente no encontramos patrones para separar las clases.
+En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas. Sin embargo, visualmente no encontramos patrones para separar las clases.
 
 En resumen, aunque los distintos métodos de suavizado redujeron la variabilidad de las señales, no se encontraron diferencias visuales claras entre clases. Esto sugiere que estos promedios suavizados no contienen información suficiente para separarlos, aunque sus estadísticas se considerarán como posibles variables en el modelo.
 
@@ -366,7 +366,7 @@ Para la evaluación de modelos tomamos en consideración las métricas de *accur
 | f1_weighted         |            0.527638 |                 0.48103  |                    0.500224  |    0.287205 |       0.515084 |
 | roc_auc_ovr         |            0.790475 |                 0.751476 |                    0.751817  |    0.616916 |       0.762303 |
 
-Una de las complicaciones que se tenía en esta primera serie de modelos es la cantidad de datos, esta primera serie de modelos se utilizó un set de entrenamiento del $30\%$ para train, $20\%$ para test y $10\%$ para validación, sin embargo, nos quedábamos con muy pocos registros ya que la base original es únicamente de $2,400$ y $285$ resultantes del PCA lo que llevaría a modelos con sobreajuste y modelos inestables. Por estas complicaciones se planteó la idea de realizar los modelos fragmentando la series originales. 
+Una de las complicaciones que se tenía en esta primera serie de modelos es la cantidad de datos. Esta primera serie de modelos se utilizó un set de entrenamiento del $30\%$ para train, $20\%$ para test y $10\%$ para validación. Sin embargo, nos quedábamos con muy pocos registros ya que la base original es únicamente de $2,400$ y $285$ resultantes del PCA lo que llevaría a modelos con sobreajuste y modelos inestables. Por estas complicaciones se planteó la idea de realizar los modelos fragmentando la series originales. 
 
 Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes, en fragmentos de 100 registros y en fragmentos de 5 registros. Estos fragmentos se eligieron en 100 por ser el número de registros que contemplaba un segundo en la serie y fragmentos de 5 por el análisis de autocorrelaciones, en este análisis observamos que las primeras 5 autocorrelaciones eran significativas.
 
@@ -423,7 +423,7 @@ En esta sección se presentan los resultados de los modelos de clasificación mu
 
 En los primeros resultados de los modelos, el algoritmo que obtuvo un mejor desempeño fue la regresión logística, logrando un *ROC AUC* mayor que los otros algoritmos, con un *ROC* de $0.790575$ y un accuracy de $0.527083$. Una posible causa de este mejor desempeño fue el número limitado de registros y la gran cantidad de variables con las que se entrenó el modelo.
 
-Buscando soluciones a tener una cantidad limitada de registros se optó por dividir el datasets en chunks, es decir, cada serie se dividía en pedazos para poder tener una mayor cantidad de registros. Para esta parte se tomaron dos particiones. La primera partición se tomó el número de retrasos obtenidos en la función de autocorrelación, cinco retrasos, y la segunda partición fue una partición arbitraria de 100 registros, es decir, tomando cada registro como un segundo de la serie.
+Buscando soluciones a tener una cantidad limitada de registros se optó por dividir el datasets en chunks, es decir, cada serie se dividía en pedazos para poder tener una mayor cantidad de registros. Para esta parte se tomaron dos particiones. La primera partición se tomó el número de retrasos obtenidos en la función de autocorrelación, cinco retrasos, y la segunda partición fue arbitraria de 100 registros, es decir, tomando cada registro como un segundo de la serie.
 
 Para la división de la serie temporal en 5 segmentos ("chunks"), el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de $0.7675$, accuracy global de $0.5141$ y un accuracy promedio por paciente de $0.5289$.
 Aunque el ROC AUC es ligeramente inferior al obtenido con la regresión logística, el accuracy por paciente es ligeramente superior.
@@ -916,46 +916,46 @@ Para trabajos futuros se recomienda probar modelos de deep learning con arquitec
 
 | parámetro   | valor   |
 |:------------|:--------|
-| C           | 0.001   |
+| C           | 0.0001  |
 | penalty     | l2      |
 
-|              |   precision |   recall |   f1-score |     support |
-|:-------------|------------:|---------:|-----------:|------------:|
-| 0            |    0.236749 | 0.223333 |   0.229846 |  300        |
-| 1            |    0.27551  | 0.27     |   0.272727 |  300        |
-| 2            |    0.257329 | 0.263333 |   0.260297 |  300        |
-| 3            |    0.256329 | 0.27     |   0.262987 |  300        |
-| accuracy     |    0.256667 | 0.256667 |   0.256667 |    0.256667 |
-| macro avg    |    0.256479 | 0.256667 |   0.256464 | 1200        |
-| weighted avg |    0.256479 | 0.256667 |   0.256464 | 1200        |
+|              |   precision |    recall |   f1-score |      support |
+|:-------------|------------:|----------:|-----------:|-------------:|
+| 0            |    0.284611 | 0.270333  |  0.277289  |  6000        |
+| 1            |    0.253881 | 0.324333  |  0.284815  |  6000        |
+| 2            |    0.244994 | 0.0346667 |  0.0607388 |  6000        |
+| 3            |    0.247267 | 0.403333  |  0.306581  |  6000        |
+| accuracy     |    0.258167 | 0.258167  |  0.258167  |     0.258167 |
+| macro avg    |    0.257688 | 0.258167  |  0.232356  | 24000        |
+| weighted avg |    0.257688 | 0.258167  |  0.232356  | 24000        |
 
-| metric             |       value |
-|:-------------------|------------:|
-| accuracy           | 0.256667    |
-| precision_weighted | 0.256479    |
-| recall_weighted    | 0.256667    |
-| f1_weighted        | 0.256464    |
-| roc_auc_ovr        | 0.500283    |
-| log_loss           | 1.39063     |
-| gini_normalized    | 0.000566667 |
-| ks_test_clase_0    | 0.0711111   |
-| ks_test_clase_1    | 0.06        |
-| ks_test_clase_2    | 0.0388889   |
-| ks_test_clase_3    | 0.03        |
+| metric             |     value |
+|:-------------------|----------:|
+| accuracy           | 0.258167  |
+| precision_weighted | 0.257688  |
+| recall_weighted    | 0.258167  |
+| f1_weighted        | 0.232356  |
+| roc_auc_ovr        | 0.509649  |
+| log_loss           | 1.38628   |
+| gini_normalized    | 0.0192987 |
+| ks_test_clase_0    | 0.0627778 |
+| ks_test_clase_1    | 0.0753889 |
+| ks_test_clase_2    | 0.0179444 |
+| ks_test_clase_3    | 0.0317778 |
 
 |        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
 |:-------|---------:|---------:|---------:|---------:|
-| Real 0 |       67 |       61 |       82 |       90 |
-| Real 1 |       68 |       81 |       77 |       74 |
-| Real 2 |       82 |       68 |       79 |       71 |
-| Real 3 |       66 |       84 |       69 |       81 |
+| Real 0 |     1622 |     1865 |      223 |     2290 |
+| Real 1 |     1243 |     1946 |      210 |     2601 |
+| Real 2 |     1586 |     1730 |      208 |     2476 |
+| Real 3 |     1248 |     2124 |      208 |     2420 |
 
 | metric             |    value |
 |:-------------------|---------:|
-| accuracy           | 0.333333 |
-| precision_weighted | 0.340975 |
-| recall_weighted    | 0.333333 |
-| f1_weighted        | 0.335172 |
+| accuracy           | 0.266667 |
+| precision_weighted | 0.241029 |
+| recall_weighted    | 0.266667 |
+| f1_weighted        | 0.21731  |
 
 ### Random Forest Classifier
 
