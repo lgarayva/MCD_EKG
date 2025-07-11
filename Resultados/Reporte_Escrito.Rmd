@@ -1,52 +1,54 @@
 ---
 title: "Reporte_Escrito"
 author: "León Garay"
-output: word_document
+output:
+  word_document: default
+  pdf_document: default
 ---
 
 
 
 # 1. Introducción
 
-Las enfermedades cardiovasculares son la principal causa de muerte a nivel mundial, incluso en países con ingresos altos, donde solo el cáncer las supera. Un diagnóstico temprano y preciso mediante ECG ayuda a prevenir complicaciones graves como el infarto agudo de miocardio.
+Las enfermedades cardiovasculares son la principal causa de muerte a nivel mundial, incluso en países con ingresos altos, donde solo el cáncer las supera. Un diagnóstico temprano y preciso mediante un electrocardiograma (ECG) ayuda a prevenir complicaciones graves como el infarto agudo de miocardio.
 
-El electrocardiograma (ECG) es un estudio no invasivo que registra la actividad eléctrica del corazón. Es fundamental para detectar alteraciones en el ritmo cardíaco, conducción eléctrica y morfología cardíaca.
+El electrocardiograma es un estudio no invasivo que registra la actividad eléctrica del corazón. Es fundamental para detectar alteraciones en el ritmo cardíaco, conducción eléctrica y morfología cardíaca.
 
-Interpretar un ECG requiere experiencia clínica y puede variar entre especialistas. Por eso, se han buscado modelos automatizados de interpretación usando machine learning. El dataset PTB-XL, que tiene más de 21,000 registros validados por cardiólogos, permite explorar estas aplicaciones.
+Interpretar un ECG requiere experiencia clínica y puede variar entre especialistas. Por eso, se ha buscado desarrollar modelos automatizados de interpretación usando machine learning. El dataset PTB-XL, que tiene más de 21,000 registros validados por cardiólogos, permite explorar estas aplicaciones.
 
-Este proyecto busca desarrollar un modelo de clasificación multiclase de ECG para diferenciar distintas patologías cardíacas, usando ingeniería de variables, análisis de series temporales y algoritmos de machine learning, y evaluar su desempeño y utilidad clínica.
+Este proyecto busca desarrollar un modelo de clasificación multiclase de ECG para diferenciar distintas patologías cardíacas, usando ingeniería de variables, análisis de series temporales y algoritmos de machine learning, evaluando su desempeño y utilidad clínica.
 
 # 2. Datos
 
-Los datos fueron obtenidos de PTB-XL, el cual es el mayor conjunto de datos clínicos de ECG disponible públicamente hasta la fecha. Estos datos fueron desarrollados con el objetivo de ser utilizados en métodos de aprendizaje de máquina con el fin de generar un sistema de decisiones automatizado para la interpretación de ECG. Este conjunto de datos fue desarrollado con contrarrestar dos grandes obstáculos que se tenían con datos de ECG.
+Los datos fueron obtenidos de PTB-XL, el cual es el mayor conjunto de datos clínicos de ECG disponible públicamente hasta la fecha. Estos datos fueron desarrollados para generar modelos de aprendizaje de máquina, con el objetivo de generar un sistema de decisiones automatizado para la interpretación de ECG. Este conjunto de datos fue desarrollado con contrarrestar dos grandes obstáculos que se tenían con datos de ECG:
 
-* El primer obstáculo que se tenía era que no existía un conjunto de datos para entrenamiento y validación público que pudiera utilizarse para entrenar los modelos.
-* El segundo obstáculo fue la falta de procedimientos definidos para evaluar los algoritmos.
+* No existía un conjunto de datos para entrenamiento y validación público que pudiera utilizarse para entrenar los modelos.
+* La falta de procedimientos definidos para evaluar los algoritmos.
 
-Los datos de *PTB-XL* fue registrada mediante dispositivos *Schiller AG* de octubre de 1989 a junio de 1966.
+Los datos de *PTB-XL* fueron registrados mediante dispositivos *Schiller AG* de octubre de 1989 a junio de 1966.
 
 El conjunto de datos tiene las siguientes características:
 
-* tiene un volumen de 21,837 registros de 12 señales, cada una de 10 segundos, provenientes de 18,885 pacientes.
-* El conjunto de datos está balanceado respecto al género: 52% hombres y 48% mujeres. Presenta un amplio rango de edades, desde 0 hasta 95 años, con una mediana de 62 y un rango intercuartílico de 22.
-* Los electrocardiogramas fueron validados por hasta 2 cardiólogos, los registros incluyen información sobre ritmo, forma y diagnóstico del ECG.
+* Un volumen de 21,837 registros de 12 señales, cada una de 10 segundos, provenientes de 18,885 pacientes.
+* Está balanceado respecto al género: 52% hombres y 48% mujeres. 
+* Presenta un amplio rango de edades, desde 0 hasta 95 años, con una mediana de 62 y un rango intercuartílico de 22.
+* Los electrocardiogramas fueron validados por hasta 2 cardiólogos.
+* Los registros incluyen información sobre ritmo, forma y diagnóstico del ECG.
 * Los diagnósticos se clasificaron en formato de múltiples etiquetas, organizados en 5 súperclases y 24 subclases.
 
 Para los datos se realizó un proceso de adquisición de datos y procesamiento de datos.
 
 ### Adquisición de datos
 
-1. Las señales se recortaron en segmentos de 10 segundos y guardado en un formato comprimido de 400 Hz. Para todas las señales, se usó el estándar de las 12 caras (I, II, III, aVL, aVR, aVF, V1, V2, V3, V4, V5 y V6) con referencia al brazo derecho.
+1. Las señales se recortaron en segmentos de 10 segundos y se guardaron en un formato comprimido de 400 Hz. Para todas las señales, se usó el estándar de las 12 caras (I, II, III, aVL, aVR, aVF, V1, V2, V3, V4, V5 y V6) con referencia al brazo derecho.
 2. La información fue registrada en la base de datos por una enfermera.
 3. Cada registro fue interpretado en un 67.13% de manera manual por un cardiólogo, 31.2% de manera automática por un dispositivo de ECG con validaciones posteriores por un cardiólogo y un 1.67% sin reporte inicial.
-4. Finalmente, todos los reportes volvieron a ser anotados de manera manual por un experto basado principalmente en características cuantitativas de las señales.
+4. Finalmente, todos los reportes fueron nuevamente anotados de manera manual por un experto basado principalmente en características cuantitativas de las señales.
 
 
 ### Procesamiento de datos
 
-Las señales fueron convertidas del formato original a un formato binario con 16bits de precisión a una resolución de 1 $\mu$ V /LSB. Las señales pasaron por un proceso en el que se eliminaron picos de encendido y apagado en los dispositivos, estos picos se encontraban al inicio y final de los registros, además, las señales fueron re muestreadas a una señal de 500 Hz, también se generó una versión de 100 Hz.
-
-dónde se obtuvieron los datos, organización de datos. origen de datos. clases de datos, etc.
+Las señales fueron convertidas del formato original a un formato binario con 16 bits de precisión a una resolución de 1 $\mu$ V /LSB. Pasaron por un proceso en el que se eliminaron picos de encendido y apagado en los dispositivos, estos picos se encontraban al inicio y final de los registros. Además, las señales fueron re muestreadas a una señal de 500 Hz, y también se generó una versión de 100 Hz.
 
 # 3 Análisis exploratorio y Procesamiento
 
@@ -54,7 +56,7 @@ El análisis exploratorio de datos tuvo como objetivo identificar patrones tempo
 
 Como primer análisis estudiamos las autocorrelaciones (ACF) y autocorrelaciones parciales (PACF). Para este primer análisis, se revisó la ACF de las series originales y obteniendo el agregado de estas; también se analizó el agregado de las series y posteriormente se obtuvo la ACF y PACF. Para el análisis de la ACF y PACF se dividió el análisis por clase y por señal.
 
-El segundo análisis que se realizó fue la identificación de raíces unitarios por medio de la prueba de Dickey-Fuller, esto para identificar si las series presentaban una raíz unitario que podría afectar la estacionalidad de las series. Este análisis fue de vital importancia ya que logramos identificar que la mayoría de las series eran no estacionarias lo que afectaba la identificación de la ACF, posterior a aplicar diferencia pudimos encontrar patrones más claros en esta.
+El segundo análisis que se realizó fue la identificación de raíces unitarias por medio de la prueba de Dickey-Fuller, esto para identificar si las series presentaban una raíz unitaria que podría afectar la estacionalidad de las series. Este análisis fue de vital importancia ya que logramos identificar que la mayoría de las series eran no estacionarias lo que afectaba la identificación de la ACF, posterior a aplicar diferencia pudimos encontrar patrones más claros en esta.
 
 El tercer análisis realizado fue la descomposición de la serie, para este análisis nos enfocamos específicamente en el componente estacional, esto con el objetivo de encontrar patrones y periodicidades. Una vez encontrado estos patrones obtuvimos un patrón de picos en la serie el que utilizamos posteriormente para suavizar la serie, con el objetivo de encontrar posibles patrones en las series eliminando ruido en esta.
 
@@ -439,6 +441,13 @@ Resultados obtenidos en los modelos, en relación al punto 5 y resultados de an�
 
 # 7 Conclusiones
 
+El objetivo de este proyecto fue crear un modelo que pudiera clasificar diferentes enfermedades cardíacas usando las señales de ECG del dataset PTB-XL, aplicando ingeniería de variables, separación por segmentos y algoritmos de machine learning.
+
+Para este proyecto se generaron 905 variables por serie, incluyendo estadísticas descriptivas, autocorrelaciones y correlaciones cruzadas. Posteriormente se redujo la dimensionalidad usando componentes principales, quedando 209 variables finales. Se evaluaron varios modelos de clasificación y XGBoost fue el que tuvo mejor desempeño, con un ROC AUC de 0.57, accuracy de 0.50 y F1 macro de 0.47.
+
+Estos resultados muestran que las variables generadas sí aportan información para clasificar los ECG, aunque el desempeño todavía es bajo para usarse en clínica. Además, al usar PCA no se pudo ver la importancia de cada variable por separado y el desempeño bajó un poco.
+
+Para trabajos futuros se recomienda probar modelos de deep learning con arquitecturas diseñadas para series de tiempo, y también explorar la extracción de características en el dominio de frecuencia y la morfología de las ondas ECG. Otra opción es crear 4 modelos distintos para clasificar cada clase por separado usando un enfoque one vs all.
 
 # 8 Anexo resultados modelos
 
