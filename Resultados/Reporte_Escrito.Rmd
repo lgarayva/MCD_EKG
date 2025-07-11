@@ -384,7 +384,7 @@ Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes,
 
 ## Modelado utilizando valores de series en chunks de 5
 
-| metric                    | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
+| Métrica                   | Regresión Logística | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
 |---------------------------|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
 | accuracy                  |            0.256667 |                0.485     |                    0.47      |    0.325833 |       0.51405  |
 | precision_weighted        |            0.256479 |                0.482702  |                    0.486973  |    0.329307 |       0.521677 |
