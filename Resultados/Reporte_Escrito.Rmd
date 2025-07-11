@@ -1,68 +1,70 @@
 ---
 title: "Reporte_Escrito"
 author: "León Garay"
-output: word_document
+output:
+  word_document: default
+  pdf_document: default
 ---
 
 
 
 # 1. Introducción
 
-Las enfermedades cardiovasculares son la principal causa de muerte a nivel mundial, incluso en países con ingresos altos, donde solo el cáncer las supera. Un diagnóstico temprano y preciso mediante ECG ayuda a prevenir complicaciones graves como el infarto agudo de miocardio.
+Las enfermedades cardiovasculares son la principal causa de muerte a nivel mundial, incluso en países con ingresos altos, donde solo el cáncer las supera. Un diagnóstico temprano y preciso mediante un electrocardiograma (ECG) ayuda a prevenir complicaciones graves como el infarto agudo de miocardio.
 
-El electrocardiograma (ECG) es un estudio no invasivo que registra la actividad eléctrica del corazón. Es fundamental para detectar alteraciones en el ritmo cardiacto, conducción eléctrica y morfología cardíaca.
+El electrocardiograma es un estudio no invasivo que registra la actividad eléctrica del corazón. Es fundamental para detectar alteraciones en el ritmo cardíaco, conducción eléctrica y morfología cardíaca.
 
-Interpretar un ECG requiere experiencia clínica y puede variar entre especialistas. Por eso, se han buscado modelos automatizados de interpretación usando machine learning. El dataset PTB-XL, que tiene más de 21,000 registros validados por cardiólogos, permite explorar estas aplicaciones.
+La interpretación de un ECG requiere experiencia clínica y puede variar entre especialistas. Por ello, se ha buscado desarrollar modelos automatizados de interpretación usando machine learning. El dataset PTB-XL, que tiene más de 21,000 registros validados por cardiólogos, permite explorar estas aplicaciones.
 
-Este proyecto busca desarrollar un modelo de clasificación multiclase de ECG para diferenciar distintas patologías cardíacas, usando ingeniería de variables, análisis de series temporales y algoritmos de machine learning, y evaluar su desempeño y utilidad clínica.
+Este proyecto busca desarrollar un modelo de clasificación multiclase de ECG para diferenciar distintas patologías cardíacas, usando ingeniería de variables, análisis de series temporales y algoritmos de machine learning, evaluando su desempeño y utilidad clínica.
 
 # 2. Datos
 
-Los datos fueron obtenidos de PTB-XL, el cual es el mayor conjunto de datos clínicos de ECG disponible públicamente hasta la fecha. Estos datos fueron desarrollados con el objetivo de ser utilizados en métodos de aprendizaje de máquina con el fin de generar un sistema de decisiones automatizado para la interpretación de ECG. Este conjunto de datos fue desarrollado con contrarrestar dos grandes obstáculos que se tenían con datos de ECG.
+Los datos fueron obtenidos de PTB-XL, el cual es el mayor conjunto de datos clínicos de ECG disponible públicamente hasta la fecha. Estos datos fueron desarrollados para generar modelos de aprendizaje de máquina, con el objetivo de generar un sistema de decisiones automatizado para la interpretación de ECG. Este conjunto de datos fue desarrollado con contrarrestar dos grandes obstáculos que se tenían con datos de ECG:
 
-* El primer obstáculo que se tenía era que no existía un conjunto de datos para entrenamiento y validación público que pudiera utilizarse para entrenar los modelos.
-* El segundo obstáculo fue la falta de procedimientos definidos para evaluar los algoritmos.
+* No existía un conjunto de datos público para entrenamiento y validación público que pudiera utilizarse para desarrollar los modelos.
+* La falta de procedimientos definidos para evaluar los algoritmos.
 
-Los datos de *PTB-XL* fue registrada mediante dispositivos *Schiller AG* de octubre de 1989 a junio de 1966.
+Los datos de *PTB-XL* fueron registrados mediante dispositivos *Schiller AG* de octubre de 1989 a junio de 1966.
 
 El conjunto de datos tiene las siguientes características:
 
-* tiene un volumen de 21,837 registros de 12 señales, cada una de 10 segundos, provenientes de 18,885 pacientes.
-* El conjunto de datos está balanceado respecto al género: 52% hombres y 48% mujeres. Presenta un amplio rango de edades, desde 0 hasta 95 años, con una mediana de 62 y un rango intercuartílico de 22.
-* Los electrocardiogramas fueron validados por hasta 2 cardiólogos, los registros incluyen información sobre ritmo, forma y diagnóstico del ECG.
+* Un volumen de 21,837 registros de 12 señales, cada una de 10 segundos, provenientes de 18,885 pacientes.
+* Está balanceado respecto al género: 52% hombres y 48% mujeres. 
+* Presenta un amplio rango de edades, desde 0 hasta 95 años, con una mediana de 62 y un rango intercuartílico de 22.
+* Los electrocardiogramas fueron validados por hasta 2 cardiólogos.
+* Los registros incluyen información sobre ritmo, forma y diagnóstico del ECG.
 * Los diagnósticos se clasificaron en formato de múltiples etiquetas, organizados en 5 súperclases y 24 subclases.
 
 Para los datos se realizó un proceso de adquisición de datos y procesamiento de datos.
 
-### Adquisición de datos
+### 2.1 Adquisición de datos
 
-1. Las señales se recortaron en segmentos de 10 segundos y guardado en un formato comprimido de 400 Hz. Para todas las señales, se usó el estándar de las 12 caras (I, II, III, aVL, aVR, aVF, V1, V2, V3, V4, V5 y V6) con referencia al brazo derecho.
-2. La información fue registrada en la base de datos por una enfermera.
+1. Las señales se recortaron en segmentos de 10 segundos y se guardaron en un formato comprimido de 400 Hz. Para todas las señales, se usó el estándar de las 12 caras (I, II, III, aVL, aVR, aVF, V1, V2, V3, V4, V5 y V6) con referencia al brazo derecho.
+2. Una enfermera registró la información en la base de datos.
 3. Cada registro fue interpretado en un 67.13% de manera manual por un cardiólogo, 31.2% de manera automática por un dispositivo de ECG con validaciones posteriores por un cardiólogo y un 1.67% sin reporte inicial.
-4. Finalmente, todos los reportes volvieron a ser anotados de manera manual por un experto basado principalmente en características cuantitativas de las señales.
+4. Finalmente, todos los reportes fueron nuevamente anotados de manera manual por un experto basado principalmente en características cuantitativas de las señales.
 
 
-### Procesamiento de datos
+### 2.2 Procesamiento de datos
 
-Las señales fueron convertidas del formato original a un formato binario con 16bits de precisión a una resolución de 1 $\mu$ V /LSB. Las señales pasaron por un proceso en el que se eliminaron picos de encendido y apagado en los dispositivos, estos picos se encontraban al inicio y final de los registros, además, las señales fueron re muestreadas a una señal de 500 Hz, también se generó una versión de 100 Hz.
+Las señales fueron convertidas del formato original a un formato binario con 16 bits de precisión a una resolución de 1 $\mu$ V /LSB. Pasaron por un proceso en el que se eliminaron picos de encendido y apagado en los dispositivos, estos picos se encontraban al inicio y final de los registros. Además, las señales fueron re muestreadas a una señal de 500 Hz, y también se generó una versión de 100 Hz.
 
-dónde se obtuvieron los datos, organización de datos. origen de datos. clases de datos, etc.
-
-# 3 Análisis exploratorio y Procesamiento
+# 3. Análisis exploratorio y procesamiento
 
 El análisis exploratorio de datos tuvo como objetivo identificar patrones temporales y relaciones entre señales del ECG que pudieran ser útiles para la clasificación de patologías cardíacas, así como evaluar la estacionariedad de las señales y su estructura de autocorrelación.
 
-Como primer análisis estudiamos las autocorrelaciones (ACF) y autocorrelaciones parciales (PACF). Para este primer análisis, se revisó la ACF de las series originales y obteniendo el agregado de estas; también se analizó el agregado de las series y posteriormente se obtuvo la ACF y PACF. Para el análisis de la ACF y PACF se dividió el análisis por clase y por señal.
+Como primer análisis estudiamos las autocorrelaciones (ACF) y autocorrelaciones parciales (PACF). Se revisó la ACF de las series originales y obteniendo el agregado de estas; también se analizó el agregado de las series y posteriormente se obtuvo la ACF y PACF. Para el análisis de la ACF y PACF se dividió por clase y por señal.
 
-El segundo análisis que se realizó fue la identificación de raíces unitarios por medio de la prueba de Dickey-Fuller, esto para identificar si las series presentaban una raíz unitario que podría afectar la estacionalidad de las series. Este análisis fue de vital importancia ya que logramos identificar que la mayoría de las series eran no estacionarias lo que afectaba la identificación de la ACF, posterior a aplicar diferencia pudimos encontrar patrones más claros en esta.
+El segundo análisis que se realizó fue la identificación de raíces unitarias por medio de la prueba de Dickey-Fuller, esto para identificar si las series presentaban una raíz unitaria que podría afectar la estacionalidad de las series. Este análisis fue de vital importancia ya que logramos identificar que la mayoría de las series eran no estacionarias lo que afectaba la identificación de la ACF, posterior a aplicar diferencia pudimos encontrar patrones más claros en esta.
 
 El tercer análisis realizado fue la descomposición de la serie, para este análisis nos enfocamos específicamente en el componente estacional, esto con el objetivo de encontrar patrones y periodicidades. Una vez encontrado estos patrones obtuvimos un patrón de picos en la serie el que utilizamos posteriormente para suavizar la serie, con el objetivo de encontrar posibles patrones en las series eliminando ruido en esta.
 
-El cuatro análisis realizado fue el análisis de cross-correlation, en este análisis ya no nos centramos en las señales particulares, sino que analizamos combinaciones de señales, con el objetivo de encontrar relaciones entre pares. En este apartado analizamos las series originales y el promedio de las series.
+El cuatro análisis realizado fue de cross-correlation, en este análisis ya no nos centramos en las señales particulares, sino que analizamos combinaciones de señales, con el objetivo de encontrar relaciones entre pares. En este apartado nos enfocamos en las series originales y el promedio de las series.
 
-El quinto análisis fue el promedio de las series con intervalos de desviación estándar. Este análisis se realizó tanto para la serie original como a la serie suavizada con los resultados obtenidos en el análisis tres.
+El quinto análisis fue el promedio de las series con intervalos de desviación estándar. Este análisis se realizó tanto para la serie original como a la suavizada con los resultados obtenidos en el análisis tres.
 
-El sexto análisis que se realizó fue similar al análisis cuatro, a diferencia que para este análisis utilizamos un suavizamiento de las series.
+El sexto análisis que se realizó fue similar al cuatro, a diferencia que para este análisis utilizamos un suavizamiento de las series.
 
 Es importante mencionar que en este apartado analizaremos únicamente la señal II y clase MI ,Infarto de Miocardio, ya que sirve computacionalmente para analizar infarto inferior.
 
@@ -72,7 +74,7 @@ Es importante mencionar que en este apartado analizaremos únicamente la señal 
 
 ![ACF PACF II 30 lags](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_2.png)
 
-De las gráficas de de autocorrelación, podemos notar que estas no descienden a cero, mientras que las gráficas de autocorrelación parciales tienden a decrecer a cero confirme aumentan los retrazos. Este comportamiento indica que existe no estacionariedad en la serie o incluso que existe una raíz unitaria. Que la PACF tienda a cero podría indicar que existe un componente autorregresivo en la serie, es decir, la serie podría analizarse con un modelo AR.
+De las gráficas de de autocorrelación, podemos notar que estas no descienden a cero, mientras que las gráficas de autocorrelación parciales sí tienden a decrecer a cero conforme aumentan los retrasos. Este comportamiento indica que existe no estacionariedad en la serie o incluso que existe una raíz unitaria. Que la PACF tienda a cero podría indicar que existe un componente autorregresivo, es decir, la serie podría analizarse con un modelo AR.
 
 Para analizar más a fondo, estudiaremos la existencia de raíces unitarias y de no estacionariedad aplicando diferencias a la serie y aplicando la prueba de Dickey-Fuller.
 
@@ -117,11 +119,11 @@ Al realizar una segunda prueba para analizar si es necesario aplicar una diferen
 
 ![ACF PACF II diff](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_diff_MI.png)
 
-Aplicando una diferencia a la serie y obteniendo la ACF y PACF, podemos observar que únicamente las primeras 5 autocorrelaciones de la ACF son significativamente distintas de cero, mientras que la PACF conserva el comportamiento decreciente a cero, lo que nos lleva a pensar que nuestra suposición fue correcta de que las series eran no estacionarias y presentan un componente autorregresivo.
+Aplicando una diferencia a la serie y obteniendo la ACF y PACF, podemos observar que únicamente las primeras 5 autocorrelaciones de la ACF son significativamente distintas de cero, mientras que la PACF conserva el comportamiento decreciente a cero, lo que confirma que nuestra suposición de que las series eran no estacionarias y presentan un componente autorregresivo fue correcta.
 
 ## 3.3 Descomposición de la serie
 
-En el análisis de descomposición de la serie, analizamos únicamente la parte estacional de la serie. Para este análisis utilizamos el promedio de la serie para obtener esta descomposición. Una vez obtenido el componente estacional del promedio de las series obtuvimos los saltos dentro de la serie tomando en cuenta un salto por encima de dos desviaciones estándar. Con los saltos obtenemos una estadística de cada cuantos periodos se dan estos y obtuvimos los siguientes resultados:
+En el análisis de descomposición de la serie, nos enfocamos únicamente la parte estacional de la serie. Para esto, utilizamos el promedio de la serie para obtener esta descomposición. Una vez obtenido el componente estacional del promedio de las series obtuvimos los saltos dentro de la serie tomando en cuenta un salto por encima de dos desviaciones estándar. Con los saltos obtenemos una estadística de cada cuantos periodos se dan estos y obtuvimos los siguientes resultados:
 
 
 | Señal   |       MI |   STTC MI |     STTC |    OTHER |   promedio |      std |
@@ -152,12 +154,12 @@ La presencia de estos picos en el componente estacional sugiere que las señales
 
 Para el análisis de correlación cruzada analizamos distintas variantes de estas:
 
-* Análisis de correlación cruzada de las series originales.
-* Análisis de correlación cruzada de las series originales con intervalos de desviación estándar.
-* Análisis de correlación cruzada promedio de las series originales con intervalos de desviación estándar.
-* Análisis de cross-correlation del promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
-* Análisis de cross-correlation window particular.
-* Análisis de cross-correlation con ventana (window) promedio
+* Correlación cruzada de las series originales.
+* Correlación cruzada de las series originales con intervalos de desviación estándar.
+* Correlación cruzada promedio de las series originales con intervalos de desviación estándar.
+* Cross-correlation del promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
+* Cross-correlation window particular.
+* Cross-correlation con ventana (window) promedio
 
 Para este estudio realizamos un análisis de las señales de la misma cara con sus respectivas combinaciones.
 
@@ -180,7 +182,7 @@ En este segundo análisis estudiamos como se comporta el promedio de las correla
 
 ![CCF II AVF SD](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd.png)
 
-De este análisis vemos que en promedio la correlación cruzada tiene un máximo en el retraso 0. Sin embargo, en los demás retrasos no parece existir una correlación cruzada significativa.
+Vemos que en promedio la correlación cruzada tiene un máximo en el retraso 0. Sin embargo, en los demás retrasos no parece existir una correlación cruzada significativa.
 
 ### 3.4.3 Análisis de correlación cruzada promedio de las series originales con intervalos de desviación estándar.
 
@@ -209,7 +211,7 @@ Otro análisis realizado fue el análisis de correlación cruzada utilizando com
 
 ![SIGNAL II AVF SMOOTH PART](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd_smooth_part.png)
 
-Podemos observar que utilizar una ventana de suavizamiento particular tenemos una gráfica de correlación cruzada más suave, y podemos notar los picos en otros puntos además del retraso cero. Sin embargo, tampoco existe una relación clara para separar las clases de las señales.
+Podemos observar que al utilizar una ventana de suavizamiento particular tenemos una gráfica de correlación cruzada más suave, y podemos notar los picos en otros puntos además del retraso cero. Sin embargo, tampoco existe una relación clara para separar las clases de las señales.
 
 ### 3.4.6 Análisis de cross-correlation con ventana (window) promedio
 
@@ -247,7 +249,7 @@ Se analizó el promedio de las series suavizadas con una ventana de 50 periodos 
 
 ![SIGNAL II MEAN SMOOTH](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth.png)
 
-En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas, sin embargo, visualmente no se pueden identificar diferencias entre clases.
+En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas. Sin embargo, visualmente no se pueden identificar diferencias entre clases.
 
 ### 3.5.2.2 Promedio de series con suavizamiento particular e intervalos de desviación estándar.
 
@@ -255,7 +257,7 @@ Se analizó el promedio de las series suavizadas utilizando una ventana particul
 
 ![SIGNAL II MEAN SMOOTH](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth_part.png)
 
-En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas, sin embargo, visualmente no podemos relaciones.
+En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas. Sin embargo, visualmente no podemos relaciones.
 
 ### 3.5.2.3 Promedio de series con suavizamiento promedio e intervalos de desviación estándar.
 
@@ -263,20 +265,13 @@ El último análisis realizado fue el promedio de las series suavizadas con una 
 
 ![SIGNAL II MEAN SMOOTH](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth_mean.png)
 
-En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas, sin embargo, visualmente no encontramos patrones para separar las clases.
+En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas. Sin embargo, visualmente no encontramos patrones para separar las clases.
 
 En resumen, aunque los distintos métodos de suavizado redujeron la variabilidad de las señales, no se encontraron diferencias visuales claras entre clases. Esto sugiere que estos promedios suavizados no contienen información suficiente para separarlos, aunque sus estadísticas se considerarán como posibles variables en el modelo.
 
-# 4 Ingenieria de variables
+# 4 Ingeniería de variables
 
-Variables que se crearon, orígenes de variables.
-
-En este apartado se trabajó, con base en los resultados del análisis exploratorio de datos, la creación de variables para el modelo. Se trabajaron tres bloques de variables y una reducción de dimensionalidad:
-
-* Variables de acf y pacf.
-* variables estadísticas de la serie y descomposición de la serie.
-* Variables de ccf.
-* Análisis de Componentes Principales (PCA)
+La ingeniería de variables tuvo como objetivo generar variables que capturaran la estructura temporal, la variabilidad y la relación entre señales del ECG, con el fin de generar un modelo de clasificación multiclase. Se generaron variables basadas en autocorrelaciones, estadística descriptiva y correlaciones cruzadas. Además, se aplicó un análisis de componentes principales para reducir dimensionalidad en los datos.
 
 ## 4.1 Variables de autocorrelaciones
 
@@ -298,6 +293,8 @@ $$\binom{12 + 2 - 1}{2} = 78$$
 
 
 Se aplicó PCA sobre el conjunto de variables generadas para reducir la dimensionalidad y evitar la multicolinealidad. Inicialmente se tenían $120+72+703 = 905$ variables de todos los bloques. Se seleccionaron los primeros k componentes principales que explicaban al menos el $95\%$ de la varianza. Resultando en $285$ componentes principales.
+
+En total, se generaron 285 variables por serie. Estas features se usaron como entrada en los modelos de clasificación. Sin embargo, al aplicar PCA para reducir la dimensionalidad, no se evaluó directamente la importancia de cada variable, ya que los modelos utilizaron las combinaciones de componentes principales.
 
 # 5 Modelo
 
@@ -369,7 +366,7 @@ Para la evaluación de modelos tomamos en consideración las métricas de *accur
 | f1_weighted         |            0.527638 |                 0.48103  |                    0.500224  |    0.287205 |       0.515084 |
 | roc_auc_ovr         |            0.790475 |                 0.751476 |                    0.751817  |    0.616916 |       0.762303 |
 
-Una de las complicaciones que se tenía en esta primera serie de modelos es la cantidad de datos, esta primera serie de modelos se utilizó un set de entrenamiento del $30\%$ para train, $20\%$ para test y $10\%$ para validación, sin embargo, nos quedábamos con muy pocos registros ya que la base original es únicamente de $2,400$ y $285$ resultantes del PCA lo que llevaría a modelos con sobreajuste y modelos inestables. Por estas complicaciones se planteó la idea de realizar los modelos fragmentando la series originales. 
+Una de las complicaciones que se tenía en esta primera serie de modelos es la cantidad de datos. Esta primera serie de modelos se utilizó un set de entrenamiento del $30\%$ para train, $20\%$ para test y $10\%$ para validación. Sin embargo, nos quedábamos con muy pocos registros ya que la base original es únicamente de $2,400$ y $285$ resultantes del PCA lo que llevaría a modelos con sobreajuste y modelos inestables. Por estas complicaciones se planteó la idea de realizar los modelos fragmentando la series originales. 
 
 Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes, en fragmentos de 100 registros y en fragmentos de 5 registros. Estos fragmentos se eligieron en 100 por ser el número de registros que contemplaba un segundo en la serie y fragmentos de 5 por el análisis de autocorrelaciones, en este análisis observamos que las primeras 5 autocorrelaciones eran significativas.
 
@@ -422,9 +419,11 @@ Modelos que se realizaron, tiempos de ejecución de modelos, comparación de mod
 
 # 6 Resultados
 
+En esta sección se presentan los resultados de los modelos de clasificación multiclase desarrollados, comparando su desempeño con diferentes combinaciones de features, chunks de series y arquitecturas de modelos. Se reportan las métricas de accuracy, f1-score y ROC AUC.
+
 En los primeros resultados de los modelos, el algoritmo que obtuvo un mejor desempeño fue la regresión logística, logrando un *ROC AUC* mayor que los otros algoritmos, con un *ROC* de $0.790575$ y un accuracy de $0.527083$. Una posible causa de este mejor desempeño fue el número limitado de registros y la gran cantidad de variables con las que se entrenó el modelo.
 
-Buscando soluciones a tener una cantidad limitada de registros se optó por dividir el datasets en chunks, es decir, cada serie se dividía en pedazos para poder tener una mayor cantidad de regitros. Para esta parte se tomaron dos particiones. La primera partición se tomó el número de retrazos obtenidos en la función de autocorrelación, cinco retrazos, y la segunda partición fue una partición arbitraria de 100 regitros, es decir, tomando cada registro como un segundo de la serie.
+Buscando soluciones a tener una cantidad limitada de registros se optó por dividir el datasets en chunks, es decir, cada serie se dividía en pedazos para poder tener una mayor cantidad de registros. Para esta parte se tomaron dos particiones. La primera partición se tomó el número de retrasos obtenidos en la función de autocorrelación, cinco retrasos, y la segunda partición fue arbitraria de 100 registros, es decir, tomando cada registro como un segundo de la serie.
 
 Para la división de la serie temporal en 5 segmentos ("chunks"), el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de $0.7675$, accuracy global de $0.5141$ y un accuracy promedio por paciente de $0.5289$.
 Aunque el ROC AUC es ligeramente inferior al obtenido con la regresión logística, el accuracy por paciente es ligeramente superior.
@@ -442,6 +441,13 @@ Resultados obtenidos en los modelos, en relación al punto 5 y resultados de an�
 
 # 7 Conclusiones
 
+El objetivo de este proyecto fue crear un modelo que pudiera clasificar diferentes enfermedades cardíacas usando las señales de ECG del dataset PTB-XL, aplicando ingeniería de variables, separación por segmentos y algoritmos de machine learning.
+
+Para este proyecto se generaron 905 variables por serie, incluyendo estadísticas descriptivas, autocorrelaciones y correlaciones cruzadas. Posteriormente se redujo la dimensionalidad usando componentes principales, quedando 209 variables finales. Se evaluaron varios modelos de clasificación y XGBoost fue el que tuvo mejor desempeño, con un ROC AUC de 0.57, accuracy de 0.50 y F1 macro de 0.47.
+
+Estos resultados muestran que las variables generadas sí aportan información para clasificar los ECG, aunque el desempeño todavía es bajo para usarse en clínica. Además, al usar PCA no se pudo ver la importancia de cada variable por separado y el desempeño bajó un poco.
+
+Para trabajos futuros se recomienda probar modelos de deep learning con arquitecturas diseñadas para series de tiempo, y también explorar la extracción de características en el dominio de frecuencia y la morfología de las ondas ECG. Otra opción es crear 4 modelos distintos para clasificar cada clase por separado usando un enfoque one vs all.
 
 # 8 Anexo resultados modelos
 
@@ -910,46 +916,46 @@ Resultados obtenidos en los modelos, en relación al punto 5 y resultados de an�
 
 | parámetro   | valor   |
 |:------------|:--------|
-| C           | 0.001   |
+| C           | 0.0001  |
 | penalty     | l2      |
 
-|              |   precision |   recall |   f1-score |     support |
-|:-------------|------------:|---------:|-----------:|------------:|
-| 0            |    0.236749 | 0.223333 |   0.229846 |  300        |
-| 1            |    0.27551  | 0.27     |   0.272727 |  300        |
-| 2            |    0.257329 | 0.263333 |   0.260297 |  300        |
-| 3            |    0.256329 | 0.27     |   0.262987 |  300        |
-| accuracy     |    0.256667 | 0.256667 |   0.256667 |    0.256667 |
-| macro avg    |    0.256479 | 0.256667 |   0.256464 | 1200        |
-| weighted avg |    0.256479 | 0.256667 |   0.256464 | 1200        |
+|              |   precision |    recall |   f1-score |      support |
+|:-------------|------------:|----------:|-----------:|-------------:|
+| 0            |    0.284611 | 0.270333  |  0.277289  |  6000        |
+| 1            |    0.253881 | 0.324333  |  0.284815  |  6000        |
+| 2            |    0.244994 | 0.0346667 |  0.0607388 |  6000        |
+| 3            |    0.247267 | 0.403333  |  0.306581  |  6000        |
+| accuracy     |    0.258167 | 0.258167  |  0.258167  |     0.258167 |
+| macro avg    |    0.257688 | 0.258167  |  0.232356  | 24000        |
+| weighted avg |    0.257688 | 0.258167  |  0.232356  | 24000        |
 
-| metric             |       value |
-|:-------------------|------------:|
-| accuracy           | 0.256667    |
-| precision_weighted | 0.256479    |
-| recall_weighted    | 0.256667    |
-| f1_weighted        | 0.256464    |
-| roc_auc_ovr        | 0.500283    |
-| log_loss           | 1.39063     |
-| gini_normalized    | 0.000566667 |
-| ks_test_clase_0    | 0.0711111   |
-| ks_test_clase_1    | 0.06        |
-| ks_test_clase_2    | 0.0388889   |
-| ks_test_clase_3    | 0.03        |
+| metric             |     value |
+|:-------------------|----------:|
+| accuracy           | 0.258167  |
+| precision_weighted | 0.257688  |
+| recall_weighted    | 0.258167  |
+| f1_weighted        | 0.232356  |
+| roc_auc_ovr        | 0.509649  |
+| log_loss           | 1.38628   |
+| gini_normalized    | 0.0192987 |
+| ks_test_clase_0    | 0.0627778 |
+| ks_test_clase_1    | 0.0753889 |
+| ks_test_clase_2    | 0.0179444 |
+| ks_test_clase_3    | 0.0317778 |
 
 |        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
 |:-------|---------:|---------:|---------:|---------:|
-| Real 0 |       67 |       61 |       82 |       90 |
-| Real 1 |       68 |       81 |       77 |       74 |
-| Real 2 |       82 |       68 |       79 |       71 |
-| Real 3 |       66 |       84 |       69 |       81 |
+| Real 0 |     1622 |     1865 |      223 |     2290 |
+| Real 1 |     1243 |     1946 |      210 |     2601 |
+| Real 2 |     1586 |     1730 |      208 |     2476 |
+| Real 3 |     1248 |     2124 |      208 |     2420 |
 
 | metric             |    value |
 |:-------------------|---------:|
-| accuracy           | 0.333333 |
-| precision_weighted | 0.340975 |
-| recall_weighted    | 0.333333 |
-| f1_weighted        | 0.335172 |
+| accuracy           | 0.266667 |
+| precision_weighted | 0.241029 |
+| recall_weighted    | 0.266667 |
+| f1_weighted        | 0.21731  |
 
 ### Random Forest Classifier
 
@@ -958,96 +964,95 @@ Resultados obtenidos en los modelos, en relación al punto 5 y resultados de an�
 | max_depth         | 20      |
 | max_features      | sqrt    |
 | min_samples_leaf  | 2       |
-| min_samples_split | 10      |
-| n_estimators      | 500     |
+| min_samples_split | 2       |
+| n_estimators      | 350     |
 
-|              |   precision |   recall |   f1-score |   support |
-|:-------------|------------:|---------:|-----------:|----------:|
-| 0            |    0.407801 | 0.383333 |   0.395189 |   300     |
-| 1            |    0.640678 | 0.63     |   0.635294 |   300     |
-| 2            |    0.402214 | 0.363333 |   0.381786 |   300     |
-| 3            |    0.480114 | 0.563333 |   0.518405 |   300     |
-| accuracy     |    0.485    | 0.485    |   0.485    |     0.485 |
-| macro avg    |    0.482702 | 0.485    |   0.482669 |  1200     |
-| weighted avg |    0.482702 | 0.485    |   0.482669 |  1200     |
+|              |   precision |   recall |   f1-score |      support |
+|:-------------|------------:|---------:|-----------:|-------------:|
+| 0            |    0.343805 | 0.291833 |   0.315695 |  6000        |
+| 1            |    0.498245 | 0.567667 |   0.530695 |  6000        |
+| 2            |    0.291698 | 0.26     |   0.274938 |  6000        |
+| 3            |    0.395954 | 0.443667 |   0.418455 |  6000        |
+| accuracy     |    0.390792 | 0.390792 |   0.390792 |     0.390792 |
+| macro avg    |    0.382425 | 0.390792 |   0.384946 | 24000        |
+| weighted avg |    0.382425 | 0.390792 |   0.384946 | 24000        |
 
 | metric             |    value |
 |:-------------------|---------:|
-| accuracy           | 0.485    |
-| precision_weighted | 0.482702 |
-| recall_weighted    | 0.485    |
-| f1_weighted        | 0.482669 |
-| roc_auc_ovr        | 0.73496  |
-| log_loss           | 1.20453  |
-| gini_normalized    | 0.46992  |
-| ks_test_clase_0    | 0.246667 |
-| ks_test_clase_1    | 0.546667 |
-| ks_test_clase_2    | 0.266667 |
-| ks_test_clase_3    | 0.44     |
+| accuracy           | 0.390792 |
+| precision_weighted | 0.382425 |
+| recall_weighted    | 0.390792 |
+| f1_weighted        | 0.384946 |
+| roc_auc_ovr        | 0.659797 |
+| log_loss           | 1.27119  |
+| gini_normalized    | 0.319593 |
+| ks_test_clase_0    | 0.153889 |
+| ks_test_clase_1    | 0.395667 |
+| ks_test_clase_2    | 0.1075   |
+| ks_test_clase_3    | 0.285111 |
 
 |        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
 |:-------|---------:|---------:|---------:|---------:|
-| Real 0 |      115 |       63 |       53 |       69 |
-| Real 1 |       46 |      189 |       40 |       25 |
-| Real 2 |       68 |       34 |      109 |       89 |
-| Real 3 |       53 |        9 |       69 |      169 |
+| Real 0 |     1751 |     1495 |     1245 |     1509 |
+| Real 1 |      815 |     3406 |     1087 |      692 |
+| Real 2 |     1366 |     1214 |     1560 |     1860 |
+| Real 3 |     1161 |      721 |     1456 |     2662 |
 
 | metric             |    value |
 |:-------------------|---------:|
-| accuracy           | 0.566667 |
-| precision_weighted | 0.565486 |
-| recall_weighted    | 0.566667 |
-| f1_weighted        | 0.563655 |
+| accuracy           | 0.508333 |
+| precision_weighted | 0.492711 |
+| recall_weighted    | 0.508333 |
+| f1_weighted        | 0.492884 |
 
 ### Gradient Boosting Classifier
 
 | parámetro         | valor   |
 |:------------------|:--------|
 | learning_rate     | 0.1     |
-| max_depth         | 20      |
+| max_depth         | 5       |
 | max_features      | log2    |
-| min_samples_leaf  | 10      |
-| min_samples_split | 2       |
+| min_samples_split | 10      |
 | n_estimators      | 100     |
-| subsample         | 1.0     |
+| subsample         | 1       |
 
-|              |   precision |   recall |   f1-score |   support |
-|:-------------|------------:|---------:|-----------:|----------:|
-| 0            |    0.37     |     0.37 |   0.37     |    300    |
-| 1            |    0.722892 |     0.6  |   0.655738 |    300    |
-| 2            |    0.375    |     0.47 |   0.41716  |    300    |
-| 3            |    0.48     |     0.44 |   0.45913  |    300    |
-| accuracy     |    0.47     |     0.47 |   0.47     |      0.47 |
-| macro avg    |    0.486973 |     0.47 |   0.475507 |   1200    |
-| weighted avg |    0.486973 |     0.47 |   0.475507 |   1200    |
+|              |   precision |   recall |   f1-score |     support |
+|:-------------|------------:|---------:|-----------:|------------:|
+| 0            |    0.343348 | 0.2895   |   0.314133 |  6000       |
+| 1            |    0.46613  | 0.559667 |   0.508634 |  6000       |
+| 2            |    0.283394 | 0.2065   |   0.238912 |  6000       |
+| 3            |    0.374202 | 0.459333 |   0.412421 |  6000       |
+| accuracy     |    0.37875  | 0.37875  |   0.37875  |     0.37875 |
+| macro avg    |    0.366769 | 0.37875  |   0.368525 | 24000       |
+| weighted avg |    0.366769 | 0.37875  |   0.368525 | 24000       |
 
-| metric             |    value |
-|:-------------------|---------:|
-| accuracy           | 0.47     |
-| precision_weighted | 0.486973 |
-| recall_weighted    | 0.47     |
-| f1_weighted        | 0.475507 |
-| roc_auc_ovr        | 0.72971  |
-| log_loss           | 1.27737  |
-| gini_normalized    | 0.45942  |
-| ks_test_clase_0    | 0.22     |
-| ks_test_clase_1    | 0.565556 |
-| ks_test_clase_2    | 0.286667 |
-| ks_test_clase_3    | 0.366667 |
+| metric             |     value |
+|:-------------------|----------:|
+| accuracy           | 0.37875   |
+| precision_weighted | 0.366769  |
+| recall_weighted    | 0.37875   |
+| f1_weighted        | 0.368525  |
+| roc_auc_ovr        | 0.642532  |
+| log_loss           | 1.29391   |
+| gini_normalized    | 0.285063  |
+| ks_test_clase_0    | 0.153389  |
+| ks_test_clase_1    | 0.356167  |
+| ks_test_clase_2    | 0.0857778 |
+| ks_test_clase_3    | 0.2645    |
 
 |        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
 |:-------|---------:|---------:|---------:|---------:|
-| Real 0 |      111 |       46 |       81 |       62 |
-| Real 1 |       47 |      180 |       56 |       17 |
-| Real 2 |       79 |       16 |      141 |       64 |
-| Real 3 |       63 |        7 |       98 |      132 |
+| Real 0 |     1737 |     1605 |     1038 |     1620 |
+| Real 1 |      843 |     3358 |      825 |      974 |
+| Real 2 |     1320 |     1426 |     1239 |     2015 |
+| Real 3 |     1159 |      815 |     1270 |     2756 |
 
 | metric             |    value |
 |:-------------------|---------:|
-| accuracy           | 0.508333 |
-| precision_weighted | 0.538344 |
-| recall_weighted    | 0.508333 |
-| f1_weighted        | 0.516082 |
+| accuracy           | 0.491667 |
+| precision_weighted | 0.468082 |
+| recall_weighted    | 0.491667 |
+| f1_weighted        | 0.46567  |
 
 ### Naive Bayes
 
@@ -1055,43 +1060,43 @@ Resultados obtenidos en los modelos, en relación al punto 5 y resultados de an�
 |:--------------|--------:|
 | var_smoothing |   1e-09 |
 
-|              |   precision |   recall |   f1-score |     support |
-|:-------------|------------:|---------:|-----------:|------------:|
-| 0            |    0.316327 | 0.103333 |   0.155779 |  300        |
-| 1            |    0.321823 | 0.776667 |   0.455078 |  300        |
-| 2            |    0.351145 | 0.153333 |   0.213457 |  300        |
-| 3            |    0.327935 | 0.27     |   0.296161 |  300        |
-| accuracy     |    0.325833 | 0.325833 |   0.325833 |    0.325833 |
-| macro avg    |    0.329307 | 0.325833 |   0.280119 | 1200        |
-| weighted avg |    0.329307 | 0.325833 |   0.280119 | 1200        |
+|              |   precision |    recall |   f1-score |      support |
+|:-------------|------------:|----------:|-----------:|-------------:|
+| 0            |    0.290155 | 0.028     |  0.0510716 |  6000        |
+| 1            |    0.263517 | 0.836667  |  0.400798  |  6000        |
+| 2            |    0.281537 | 0.0818333 |  0.126808  |  6000        |
+| 3            |    0.2874   | 0.125833  |  0.175032  |  6000        |
+| accuracy     |    0.268083 | 0.268083  |  0.268083  |     0.268083 |
+| macro avg    |    0.280652 | 0.268083  |  0.188427  | 24000        |
+| weighted avg |    0.280652 | 0.268083  |  0.188427  | 24000        |
 
 | metric             |     value |
 |:-------------------|----------:|
-| accuracy           |  0.325833 |
-| precision_weighted |  0.329307 |
-| recall_weighted    |  0.325833 |
-| f1_weighted        |  0.280119 |
-| roc_auc_ovr        |  0.588748 |
-| log_loss           | 20.8603   |
-| gini_normalized    |  0.177495 |
-| ks_test_clase_0    |  0.185556 |
-| ks_test_clase_1    |  0.242222 |
-| ks_test_clase_2    |  0.117778 |
-| ks_test_clase_3    |  0.115556 |
+| accuracy           | 0.268083  |
+| precision_weighted | 0.280652  |
+| recall_weighted    | 0.268083  |
+| f1_weighted        | 0.188427  |
+| roc_auc_ovr        | 0.527915  |
+| log_loss           | 5.01168   |
+| gini_normalized    | 0.0558292 |
+| ks_test_clase_0    | 0.0701111 |
+| ks_test_clase_1    | 0.107111  |
+| ks_test_clase_2    | 0.0651111 |
+| ks_test_clase_3    | 0.0232778 |
 
 |        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
 |:-------|---------:|---------:|---------:|---------:|
-| Real 0 |       31 |      164 |       29 |       76 |
-| Real 1 |       13 |      233 |       27 |       27 |
-| Real 2 |       20 |      171 |       46 |       63 |
-| Real 3 |       34 |      156 |       29 |       81 |
+| Real 0 |      168 |     4564 |      475 |      793 |
+| Real 1 |       63 |     5020 |      447 |      470 |
+| Real 2 |      158 |     4742 |      491 |      609 |
+| Real 3 |      190 |     4724 |      331 |      755 |
 
 | metric             |    value |
 |:-------------------|---------:|
-| accuracy           | 0.308333 |
-| precision_weighted | 0.302306 |
-| recall_weighted    | 0.308333 |
-| f1_weighted        | 0.241931 |
+| accuracy           | 0.25     |
+| precision_weighted | 0.14693  |
+| recall_weighted    | 0.25     |
+| f1_weighted        | 0.115846 |
 
 ### XGB Classifier
 
@@ -1106,46 +1111,46 @@ Resultados obtenidos en los modelos, en relación al punto 5 y resultados de an�
 | n_estimators          | 4000           |
 
 
-|              |   precision |   recall |   f1-score |    support |
-|:-------------|------------:|---------:|-----------:|-----------:|
-| 0            |    0.444816 | 0.443333 |   0.444073 |  300       |
-| 1            |    0.732824 | 0.64     |   0.683274 |  300       |
-| 2            |    0.412698 | 0.419355 |   0.416    |  310       |
-| 3            |    0.5      | 0.556667 |   0.526814 |  300       |
-| accuracy     |    0.51405  | 0.51405  |   0.51405  |    0.51405 |
-| macro avg    |    0.522585 | 0.514839 |   0.51754  | 1210       |
-| weighted avg |    0.521677 | 0.51405  |   0.516701 | 1210       |
+|              |   precision |   recall |   f1-score |      support |
+|:-------------|------------:|---------:|-----------:|-------------:|
+| 0            |    0.342726 | 0.249333 |   0.288664 |  6000        |
+| 1            |    0.498062 | 0.578167 |   0.535133 |  6000        |
+| 2            |    0.350038 | 0.295161 |   0.320266 |  6200        |
+| 3            |    0.403559 | 0.514    |   0.452133 |  6000        |
+| accuracy     |    0.408223 | 0.408223 |   0.408223 |     0.408223 |
+| macro avg    |    0.398596 | 0.409165 |   0.399049 | 24200        |
+| weighted avg |    0.398195 | 0.408223 |   0.398398 | 24200        |
 
 
 | metric             |    value |
 |:-------------------|---------:|
-| accuracy           | 0.51405  |
-| precision_weighted | 0.521677 |
-| recall_weighted    | 0.51405  |
-| f1_weighted        | 0.516701 |
-| roc_auc_ovr        | 0.767521 |
-| log_loss           | 1.12188  |
-| gini_normalized    | 0.535042 |
-| ks_test_clase_0    | 0.344286 |
-| ks_test_clase_1    | 0.597143 |
-| ks_test_clase_2    | 0.302043 |
-| ks_test_clase_3    | 0.459304 |
+| accuracy           | 0.408223 |
+| precision_weighted | 0.398195 |
+| recall_weighted    | 0.408223 |
+| f1_weighted        | 0.398398 |
+| roc_auc_ovr        | 0.667674 |
+| log_loss           | 1.30001  |
+| gini_normalized    | 0.335349 |
+| ks_test_clase_0    | 0.145802 |
+| ks_test_clase_1    | 0.4105   |
+| ks_test_clase_2    | 0.150387 |
+| ks_test_clase_3    | 0.289844 |
 
 
 |        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
 |:-------|---------:|---------:|---------:|---------:|
-| Real 0 |      133 |       45 |       71 |       51 |
-| Real 1 |       49 |      192 |       37 |       22 |
-| Real 2 |       69 |       17 |      130 |       94 |
-| Real 3 |       48 |        8 |       77 |      167 |
+| Real 0 |     1496 |     1430 |     1266 |     1808 |
+| Real 1 |      664 |     3469 |     1136 |      731 |
+| Real 2 |     1231 |     1120 |     1830 |     2019 |
+| Real 3 |      974 |      946 |      996 |     3084 |
 
 
 | metric             |    value |
 |:-------------------|---------:|
-| accuracy           | 0.528926 |
-| precision_weighted | 0.537967 |
-| recall_weighted    | 0.528926 |
-| f1_weighted        | 0.532205 |
+| accuracy           | 0.512397 |
+| precision_weighted | 0.509052 |
+| recall_weighted    | 0.512397 |
+| f1_weighted        | 0.472916 |
 
 
 ## Modelado utilizando feature engeeniering divida las series en chunks de 100
