@@ -58,13 +58,13 @@ Las señales fueron convertidas del formato original a un formato binario con 16
 
 El análisis exploratorio de datos tuvo como objetivo identificar patrones temporales y relaciones entre señales del ECG que pudieran ser útiles para la clasificación de patologías cardíacas, así como evaluar la estacionariedad de las señales y su estructura de autocorrelación.
 
-Como primer análisis estudiamos las autocorrelaciones (ACF) y autocorrelaciones parciales (PACF). Se revisó la ACF de las series originales y obteniendo el agregado de estas; también se analizó el agregado de las series y posteriormente se obtuvo la ACF y PACF. Para el análisis de la ACF y PACF se dividió por clase y por señal.
+Como primer análisis, se estudiaron las autocorrelaciones (ACF) y autocorrelaciones parciales (PACF) de las series originales. Se calculó la ACF de cada serie individual y del agregado por clase y señal. Posteriormente, se obtuvieron las PACF correspondientes, dividiendo los resultados por clase y por señal para su comparación.
 
-El segundo análisis que se realizó fue la identificación de raíces unitarias por medio de la prueba de Dickey-Fuller, esto para identificar si las series presentaban una raíz unitaria que podría afectar la estacionalidad de las series. Este análisis fue de vital importancia ya que logramos identificar que la mayoría de las series eran no estacionarias lo que afectaba la identificación de la ACF, posterior a aplicar diferencia pudimos encontrar patrones más claros en esta.
+El segundo análisis consistió en evaluar la presencia de raíces unitarias mediante la prueba de Dickey-Fuller, con el objetivo de determinar la estacionariedad de las series. Este análisis fue fundamental, ya que la mayoría de las series resultaron no estacionarias, lo que afectaba el cálculo de la ACF. Al aplicar la primera diferencia, se identificaron patrones más claros en las autocorrelaciones.
 
-El tercer análisis realizado fue la descomposición de la serie, para este análisis nos enfocamos específicamente en el componente estacional, esto con el objetivo de encontrar patrones y periodicidades. Una vez encontrado estos patrones obtuvimos un patrón de picos en la serie el que utilizamos posteriormente para suavizar la serie, con el objetivo de encontrar posibles patrones en las series eliminando ruido en esta.
+l tercer análisis consistió en la descomposición de las series para aislar su componente estacional, con el fin de identificar periodicidades relevantes. A partir de este componente estacional, se detectaron picos recurrentes que posteriormente se emplearon para suavizar las series y eliminar ruido, buscando así revelar patrones temporales más claros.
 
-El cuatro análisis realizado fue de cross-correlation, en este análisis ya no nos centramos en las señales particulares, sino que analizamos combinaciones de señales, con el objetivo de encontrar relaciones entre pares. En este apartado nos enfocamos en las series originales y el promedio de las series.
+A diferencia de los análisis anteriores que evaluaban cada señal por separado, el cuarto análisis calculó la correlación cruzada entre pares de señales. Este enfoque tuvo como objetivo identificar relaciones entre diferentes derivaciones. Se realizaron los análisis tanto sobre las series originales como sobre sus promedios.
 
 El quinto análisis fue el promedio de las series con intervalos de desviación estándar. Este análisis se realizó tanto para la serie original como a la suavizada con los resultados obtenidos en el análisis tres.
 
@@ -181,7 +181,7 @@ En este primer análisis buscábamos encontrar relaciones entre las señales con
 
 ![Figura 6. Gráficas de correlaciones cruzadas entre la señal II y la señal AVF](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF.png)
 
-De las gráficas podemos observar que existen correlaciones cruzadas notables en los retrasos $[-75, 0, 75]$ y unos picos menores dentro de ese intervalo. Sin embargo, visualmente no logramos encontrar una diferenciación clara entre las clases.
+De las gráficas podemos observar que existen correlaciones cruzadas notables en los retrasos $[-75, 0, 75]$ y unos picos menores dentro de ese intervalo. Sin embargo, no se identificaron diferencias visuales clara entre las clases.
 
 ### 3.4.2 de correlación cruzada de las series originales con intervalos de desviación estándar.
 
@@ -265,7 +265,7 @@ Se analizó el promedio de las series suavizadas utilizando una ventana particul
 
 ![Figura 19. Gráficas del promedio de la señal II con suavizado (ventana particular) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth_part.png)
 
-En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas. Sin embargo, visualmente no podemos relaciones.
+En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas. Sin embargo, visualmente no se identificaron relaciones claras entre las clases.
 
 ### 3.5.2.3 Promedio de series con suavizamiento promedio e intervalos de desviación estándar.
 
@@ -444,7 +444,7 @@ los tiempos de ejecución que se reportan únicamente como referencia comparativ
 
 En esta sección se presentan los resultados de los modelos de clasificación multiclase desarrollados, comparando su desempeño con diferentes combinaciones de features, chunks de series y arquitecturas de modelos. Se reportan las métricas de accuracy, f1-score y ROC AUC.
 
-En los primeros resultados de los modelos, el algoritmo que obtuvo un mejor desempeño fue la regresión logística, logrando un ROC AUC mayor que los otros algoritmos, con un ROC de 0.790575 y un accuracy de 0.527083. Una posible causa de este mejor desempeño fue el número limitado de registros y la gran cantidad de variables con las que se entrenó el modelo.
+El modelo de regresión logística obtuvo un ROC AUC de 0.79 y un accuracy de 0.52. Considerando que el accuracy esperado por azar en un problema multiclase de cuatro categorías balanceadas es de 0.25, este resultado indica que el modelo logró duplicar el desempeño del azar, mostrando que las variables generadas contienen información relevante para la clasificación. Sin embargo, un accuracy de 0.52 es insuficiente para aplicaciones clínicas, donde se requiere una precisión mayor para apoyar decisiones diagnósticas. Una posible causa de esta mejora en el desempeño fue el número limitado de registros y las numerosas variables con las que se entrenó el modelo.
 
 Buscando soluciones a tener una cantidad limitada de registros se optó por dividir el datasets en chunks, es decir, cada serie se dividía en pedazos para poder tener una mayor cantidad de registros. Para esta parte se tomaron dos particiones. La primera partición se tomó el número de retrasos obtenidos en la función de autocorrelación, cinco retrasos, y la segunda partición fue arbitraria de 100 registros, es decir, tomando cada registro como un segundo de la serie.
 
@@ -469,11 +469,13 @@ El objetivo de este proyecto fue crear un modelo que pudiera clasificar diferent
 
 Para este proyecto se generaron 905 variables por serie, incluyendo estadísticas descriptivas, autocorrelaciones y correlaciones cruzadas. Posteriormente se redujo la dimensionalidad usando componentes principales, quedando 209 variables finales. Se evaluaron varios modelos de clasificación y XGBoost fue el que tuvo mejor desempeño, con un ROC AUC de 0.57, accuracy de 0.50 y F1 macro de 0.47.
 
-Estos resultados muestran que las variables generadas sí aportan información para clasificar los ECG, aunque el desempeño todavía es bajo para usarse en clínica. Además, al usar PCA no se pudo ver la importancia de cada variable por separado y el desempeño bajó un poco.
+Los resultados obtenidos indican que las variables generadas aportan información útil para la clasificación de ECG. Sin embargo, el desempeño de los modelos no alcanza niveles clínicamente aceptables, posiblemente debido a la pérdida de interpretabilidad y varianza explicada al aplicar PCA. Esta reducción en el desempeño sugiere que la selección de variables más relevantes, en lugar de un PCA global, podría mejorar la precisión y facilitar la interpretación médica.
 
 También se observó que el modelo de XGBoost con segmentación e ingeniería de variables no solo obtuvo el mejor desempeño, sino que además presentó tiempos de entrenamiento bajos en comparación con otras arquitecturas. Sin embargo, debido a limitaciones computacionales, los modelos se entrenaron utilizando un número reducido de hiperparámetros, lo que podría haber limitado su optimización completa. Este resultado sugiere que XGBoost es una opción eficiente y viable para este problema, aunque se recomienda realizar una búsqueda de hiperparámetros más exhaustiva en futuros trabajos.
 
-Para trabajos futuros se recomienda probar modelos de deep learning con arquitecturas diseñadas para series de tiempo, y también explorar la extracción de características en el dominio de frecuencia y la morfología de las ondas ECG. Otra opción es crear 4 modelos distintos para clasificar cada clase por separado usando un enfoque one vs all.
+Para trabajos futuros se recomienda probar modelos de deep learning con arquitecturas diseñadas para series de tiempo, y también explorar la extracción de características en el dominio de frecuencia y la morfología de las ondas ECG. De forma alternativa crear cuatro modelos distintos, cada uno entrenado para clasificar una clase específica frente a las demás (enfoque one-vs-all).
+
+En conclusión, este proyecto permitió desarrollar habilidades avanzadas para analizar series de tiempo y modelar señales biomédicas. A pesar de que los resultados todavía no se pueden usar en la práctica clínica, son un primer paso hacia la creación de modelos automáticos de diagnóstico por ECG enfocados a apoyar cardiólogos y ayudar a prevenir eventos cardiovasculares graves con diagnósticos más rápidos y precisos.
 
 \newpage
 
