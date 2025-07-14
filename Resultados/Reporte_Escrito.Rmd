@@ -214,7 +214,7 @@ Otro análisis realizado fue el análisis de correlación cruzada utilizando com
 
 ![Figura 14. Promedio de las correlaciones cruzadas entre la señal II y la señal AVF con suavizado (ventana particular) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd_smooth_part.png)
 
-Podemos observar que al utilizar una ventana de suavizamiento particular tenemos una gráfica de correlación cruzada más suave, y podemos notar los picos en otros puntos además del retraso cero. Sin embargo, tampoco existe una relación clara para separar las clases de las señales.
+En la Figura 13 y en la Figura 14 podemos observar que al utilizar una ventana de suavizamiento particular se obtiene una gráfica de correlación cruzada más suave, y se pueden notar picos en otros puntos además del retraso cero. Sin embargo, en ambos casos tampoco existe una relación clara que permita separar las clases de las señales.
 
 ### 3.4.6 Análisis de cross-correlation con ventana (window) promedio
 
@@ -224,7 +224,7 @@ El último análisis de suavizamiento que se realizó con las correlaciones cruz
 
 ![Figura 16. Promedio de las correlaciones cruzadas entre la señal II y la señal AVF con suavizado (ventana promedio) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd_smooth_mean.png)
 
-Podemos notar que aplicar un suavizamiento particular o promedio nos ayuda a encontrar picos en la gráfica de correlación cruzada que no era fácilmente ver en la gráfica del promedio de las series. Sin embargo, no encontramos una relación clara para poder separarlos.
+En la Figura 15 y en la Figura 16 podemos notar que aplicar un suavizamiento particular o un promedio nos ayuda a encontrar picos en la gráfica de correlación cruzada que no eran fáciles de ver en la gráfica del promedio de las series. Sin embargo, en ambos casos no encontramos una relación clara que permita separar las clases de las señales.
 
 ## 3.5 Análisis de serie con intervalos de desviación estándar
 
@@ -236,7 +236,7 @@ Se analizó el promedio de las series junto con sus intervalos de desviación es
 
 ![Figura 17. Gráficas del promedio de la señal II con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean.png)
 
-Como se observa en las gráficas, las señales presentan alta variabilidad y no se logra identificar patrones en las clases.
+Como se observa en la Figura 17, las señales presentan alta variabilidad y no se logra identificar patrones claros que permitan diferenciar las clases.
 
 ## 3.5.2 Análisis de serie con intervalos de desviación estándar con suavizamiento de series
 
@@ -252,7 +252,7 @@ Se analizó el promedio de las series suavizadas con una ventana de 50 periodos 
 
 ![Figura 18. Gráficas del promedio de la señal II con suavizado (ventana 50) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth.png)
 
-En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas. Sin embargo, visualmente no se pueden identificar diferencias entre clases.
+En la Figura 18 se puede observar que con este suavizamiento se elimina parte de la variabilidad de las gráficas. Sin embargo, visualmente no se pueden identificar diferencias claras entre las clases.
 
 ### 3.5.2.2 Promedio de series con suavizamiento particular e intervalos de desviación estándar.
 
@@ -260,7 +260,7 @@ Se analizó el promedio de las series suavizadas utilizando una ventana particul
 
 ![Figura 19. Gráficas del promedio de la señal II con suavizado (ventana particular) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth_part.png)
 
-En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas. Sin embargo, visualmente no se identificaron relaciones claras entre las clases.
+En la Figura 19 se puede observar que con este suavizamiento se elimina parte de la variabilidad de las gráficas. Sin embargo, visualmente no se identificaron relaciones claras entre las clases.
 
 ### 3.5.2.3 Promedio de series con suavizamiento promedio e intervalos de desviación estándar.
 
@@ -268,7 +268,7 @@ El último análisis realizado fue el promedio de las series suavizadas con una 
 
 ![Figura 20. Gráficas del promedio de la señal II con suavizado (ventana promedio) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth_mean.png)
 
-En las gráficas se puede observar que con este suavizamiento se elimina variabilidad de las gráficas. Sin embargo, visualmente no encontramos patrones para separar las clases.
+En la Figura 20 se puede observar que con este suavizamiento se elimina parte de la variabilidad de las gráficas. Sin embargo, visualmente no se encontraron patrones que permitan separar las clases.
 
 En resumen, aunque los distintos métodos de suavizado redujeron la variabilidad de las señales, no se encontraron diferencias visuales claras entre clases. Esto sugiere que estos promedios suavizados no contienen información suficiente para separarlos, aunque sus estadísticas se considerarán como posibles variables en el modelo.
 
@@ -364,6 +364,8 @@ Es importante mencionar que por costos computacionales no todos las pruebas se e
 
 Para la evaluación de modelos tomamos en consideración las métricas de accuracy, recall_weighted, f1_weighted y roc_auc_ovr. Con base en estas métricas se evaluó que modelo que desempeñó de mejor manera. Para los modelos que se dividieron en chunks adicional de estas métricas, tomamos en consideración la moda de las predicciones de los chunks y así obtuvimos las métricas de accuracy, precision_weighted, recall_weighted y f1_weighted.
 
+Las tablas siguientes presentan las métricas obtenidas de los distintos modelos evaluados, con el fin de comparar su desempeño. El análisis detallado de estos resultados se realiza en la sección de Resultados.
+
 ## 5.1 Modelado utilizando ingeniería de variables
 
 | metric              | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
@@ -375,7 +377,7 @@ Para la evaluación de modelos tomamos en consideración las métricas de accura
 
 **Tabla 5.** Resultados del modelo utilizando ingeniería de variables.
 
-Una de las complicaciones que se tenía en esta primera serie de modelos es la cantidad de datos. Esta primera serie de modelos se utilizó un set de entrenamiento del 30% para train, 20% para test y 10% para validación. Sin embargo, nos quedábamos con muy pocos registros ya que la base original es únicamente de 2,400 y 285 resultantes del PCA lo que llevaría a modelos con sobreajuste y modelos inestables. Por estas complicaciones se planteó la idea de realizar los modelos fragmentando la series originales. 
+La Tabla 5 muestra los resultados del modelo utilizando ingeniería de variables. Una de las complicaciones que se tenía en esta primera serie de modelos es la cantidad de datos. Esta primera serie de modelos se utilizó un set de entrenamiento del 30% para train, 20% para test y 10% para validación. Sin embargo, nos quedábamos con muy pocos registros ya que la base original es únicamente de 2,400 y 285 resultantes del PCA lo que llevaría a modelos con sobreajuste y modelos inestables. Por estas complicaciones se planteó la idea de realizar los modelos fragmentando la series originales. 
 
 Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes, en fragmentos de 100 registros y en fragmentos de 5 registros. Estos fragmentos se eligieron en 100 por ser el número de registros que contemplaba un segundo en la serie y fragmentos de 5 por el análisis de autocorrelaciones, en este análisis observamos que las primeras 5 autocorrelaciones eran significativas.
 
@@ -432,7 +434,7 @@ Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes,
 
 **Tabla 9.** Tiempos de ejecución de los modelos.
 
-los tiempos de ejecución que se reportan únicamente como referencia comparativa, ya que algunos modelos se realizaron con una versión reducida de la búsqueda de hiperparámetros por limitaciones computacionales.
+La Tabla 9 muestra los tiempos de ejecución de los modelos, los cuales se reportan únicamente como referencia comparativa, ya que algunos modelos se realizaron con una versión reducida de la búsqueda de hiperparámetros debido a limitaciones computacionales.
 
 \newpage
 
@@ -447,6 +449,7 @@ Buscando soluciones a tener una cantidad limitada de registros se optó por divi
 Para la división de la serie temporal en 5 segmentos ("chunks"), el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de 0.767521, accuracy global de 0.51405 y un accuracy promedio por paciente de 0.528926.
 
 Aunque el ROC AUC es ligeramente inferior al obtenido con la regresión logística, el accuracy por paciente es ligeramente superior.
+
 Cabe destacar que, al dividir la serie en chunks, cada uno recibe una predicción individual. Para calcular el accuracy por paciente, se tomó la moda de las predicciones de los chunks correspondientes a cada serie y se comparó con la etiqueta real de dicha serie.
 
 Por otro lado, para la división de la serie temporal en 100 segmentos ("chunks"), el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de 0.767521, accuracy global de 0.51405 y un accuracy promedio por paciente de 0.528926.
@@ -455,7 +458,7 @@ Otra análisis que se realizó fue aplicar ingeniería de variables a la serie d
 
 Para la división de la serie temporal en 100 segmentos ("chunks") utilizando ingeniería de variables, el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de 0.824416, accuracy global de 0.573444 y un accuracy promedio por paciente de 0.593361. Dando el mejor desempeño de los modelos probados, superando a todos los modelos tanto en ROC AUC como en accuracy.
 
-Otro punto importante son los tiempos de entrenamiento de los modelos. En la tabla de la sección 5.5 se ve que los primeros modelos que usaban solo ingeniería de variables tuvieron tiempos de entrenamiento más bajos en arquitecturas avanzadas, aunque tenían menos datos. También destaca que los modelos XGB con segmentación tuvieron el mejor rendimiento y menor tiempo de entrenamiento frente a otras arquitecturas, aunque solo se entrenaron con una selección de hiperparámetros.
+Otro punto importante son los tiempos de entrenamiento de los modelos. En la Tabla 9 se ve que los primeros modelos que usaban solo ingeniería de variables tuvieron tiempos de entrenamiento más bajos en arquitecturas avanzadas, aunque tenían menos datos. También destaca que los modelos XGB con segmentación tuvieron el mejor rendimiento y menor tiempo de entrenamiento frente a otras arquitecturas, aunque solo se entrenaron con una selección de hiperparámetros.
 
 \newpage
 
