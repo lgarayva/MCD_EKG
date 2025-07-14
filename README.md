@@ -10,11 +10,11 @@ Autor:
 Este repositorio contiene el código, los datos y la documentación para el proyecto **Clasificación de ECG con Machine Learning: Un Análisis de Series Temporales y Feature Engineering** desarrollado como parte de la estancia de investigación de la Maestría en Ciencia de Datos.
 
 ## Table of contents
-- [Clasificación de ECG con Machine Learning: Un Análisis de Series Temporales y Feature Engineering](#clasificación-de-ecg-con-machine-learning-un-análisis-de-series-temporales-y-feature-engineering)
-  - [Table of contents](#table-of-contents)
-  - [Objetivo](#objetivo)
-  - [Creación de entorno virtual](#creación-de-entorno-virtual)
-  - [Estructura del repositorio](#estructura-del-repositorio)
+- [Clasificación de ECG con Machine Learning: Un Análisis de Series Temporales y Feature Engineering](#clasificación-de-ecg-con-machine-learning-un-análisis-de-series-temporales-y-feature-engineering).
+- [Table of contents](#table-of-contents).
+- [Objetivo](#objetivo).
+- [Creación de entorno virtual](#creación-de-entorno-virtual).
+- [Estructura del repositorio](#estructura-del-repositorio).
 
 ## Objetivo
 
