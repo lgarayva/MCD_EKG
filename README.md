@@ -31,6 +31,7 @@ python -m venv mcd_venv
 conda activate mcd_env
 
 source mcd_venv/bin/activate
+
 python -m pip install --upgrade --force-reinstall pip
 
 pip install -r requerimientos_MCD.txt
