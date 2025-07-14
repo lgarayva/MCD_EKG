@@ -39,13 +39,13 @@ pip install -r requerimientos_MCD.txt
 
 ## Estructura del repositorio
 
-- **config/**: archivos de configuración y constantes.
-- **Datos-Leonel-PTBXL/**: datos brutos y procesados utilizados en el proyecto. 
-- **docs/**: documentos generados.
-- **img/**: imágenes utilizadas en el proyecto o generadas como resultados.
-- **notebooks/**: notebooks ejecutados, ordenados por número o etapa.
-- **resultados/**: reportes y resultados de los modelos y análisis finales.
-- **src/**: código fuente y funciones utilizadas a lo largo del desarrollo.
+- **config**: archivos de configuración y constantes.
+- **Datos-Leonel-PTBXL**: datos brutos y procesados utilizados en el proyecto. 
+- **docs**: documentos generados.
+- **img**: imágenes utilizadas en el proyecto o generadas como resultados.
+- **notebooks**: notebooks ejecutados, ordenados por número o etapa.
+- **resultados**: reportes y resultados de los modelos y análisis finales.
+- **src**: código fuente y funciones utilizadas a lo largo del desarrollo.
 
 ```
 ├── config
