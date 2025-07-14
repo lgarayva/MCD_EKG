@@ -22,7 +22,7 @@ Este proyecto busca desarrollar un modelo de clasificación multiclase de ECG pa
 
 ## Creación de entorno virtual
 
-Crear un ambiente virtual con Python 3.12.7. Para la creación de este ambiente virtual ejecutar las siguientes líneas de código en la terminal.
+Para crear un entorno virtual con **Python 3.12.7**, ejecuta los siguientes comandos en la terminal:
 
 ```bash
 
