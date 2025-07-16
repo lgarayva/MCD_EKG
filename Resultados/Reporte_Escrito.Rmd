@@ -65,7 +65,7 @@ Para los datos se realizó un proceso de adquisición de datos y procesamiento d
 
 **Tabla 1** Categorías de súperclases para la clasificación de ECG. 
 
-De la Tabla 1 se puede observar que existen cinco súperclases. Para este proyecto, se realizó una modificación en la agrupación de las subclases. La modificación consistió en contemplar las clases MI, STTC, MI & STTC y otros. El objetivo de esta reclasificación fue detectar infartos en los que existe algún cambio en el segmento ST y diferenciarlos de aquellos que no presentan alteraciones.
+De la Tabla 1 se puede observar que existen cinco súperclases. Para este proyecto, se realizó una modificación en la agrupación de las subclases. La modificación consistió en contemplar las clases MI, STTC, STTC & MI y otros. El objetivo de esta reclasificación fue detectar infartos en los que existe algún cambio en el segmento ST y diferenciarlos de aquellos que no presentan alteraciones.
 
 ### 2.1 Adquisición de datos
 
@@ -512,14 +512,19 @@ En la Tabla 11 se comparan los cuatro pipelines previamente descritos: ingenier�
 
 Adicional, en la matriz de confusión podemos notar los sigu
 
-|               | Pred mi | Pred other | Pred sttc | Pred sttc_mi |
-|:--------------|--------:|-----------:|----------:|-------------:|
-| Real mi       |     314 |        107 |       64  |          115 |
-| Real other    |      89 |        409 |       85  |           17 |
-| Real sttc     |      90 |         61 |      327  |          132 |
-| Real sttc_mi  |     115 |         17 |      136  |          332 |
+|                 | Pred MI | Pred OTHER | Pred STTC | Pred STTC & MI |
+|:----------------|--------:|-----------:|----------:|---------------:|
+| Real MI         |     314 |        107 |       64  |            115 |
+| Real OTHER      |      89 |        409 |       85  |             17 |
+| Real STTC       |      90 |         61 |      327  |            132 |
+| Real STTC & MI  |     115 |         17 |      136  |            332 |
 
 **Tabla 12.** Matriz de confusión modelo ganador.
+
+* La clase MI fue correctamente clasificada en 314 ocasiones; los principales errores se presentaron con la clase OTHER y con la clase STTC & MI.
+* La clase OTHER fue la que presentó el mejor desempeño del modelo, con 409 clasificaciones correctas.
+* La clase STTC tuvo 327 clasificaciones correctas; los principales errores se dieron con la clase MI y la clase STTC & MI.
+* La clase STTC & MI se clasificó correctamente en 332 casos; los principales errores ocurrieron en la clase MI y la clase STTC.
 
 Otro punto importante son los tiempos de entrenamiento de los modelos. En la Tabla 10 se ve que los primeros modelos que usaban solo ingeniería de variables tuvieron tiempos de entrenamiento más bajos en arquitecturas avanzadas, aunque tenían menos datos. También destaca que los modelos XGB con segmentación tuvieron el mejor rendimiento y menor tiempo de entrenamiento frente a otras arquitecturas, aunque solo se entrenaron con una selección de hiperparámetros.
 
