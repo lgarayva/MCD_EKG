@@ -89,7 +89,7 @@ Como primer análisis, se estudiaron las autocorrelaciones (ACF) y autocorrelaci
 
 El segundo análisis consistió en evaluar la presencia de raíces unitarias mediante la prueba de Dickey-Fuller, con el objetivo de determinar la estacionariedad de las series. Este análisis fue fundamental, ya que la mayoría de las series resultaron no estacionarias, lo que afectaba el cálculo de la ACF. Al aplicar la primera diferencia, se identificaron patrones más claros en las autocorrelaciones.
 
-l tercer análisis consistió en la descomposición de las series para aislar su componente estacional, con el fin de identificar periodicidades relevantes. A partir de este componente estacional, se detectaron picos recurrentes que posteriormente se emplearon para suavizar las series y eliminar ruido, buscando así revelar patrones temporales más claros.
+El tercer análisis consistió en la descomposición de las series para aislar su componente estacional, con el fin de identificar periodicidades relevantes. A partir de este componente estacional, se detectaron picos recurrentes que posteriormente se emplearon para suavizar las series y eliminar ruido, buscando así revelar patrones temporales más claros.
 
 A diferencia de los análisis anteriores que evaluaban cada señal por separado, el cuarto análisis calculó la correlación cruzada entre pares de señales. Este enfoque tuvo como objetivo identificar relaciones entre diferentes derivaciones. Se realizaron los análisis tanto sobre las series originales como sobre sus promedios.
 
@@ -323,6 +323,8 @@ Para las variables de la CCF se tomaron en cuenta: el número de cruces por cero
 
 En donde el número de combinaciones posibles fue de: 
 
+
+
 $$\binom{12 + 2 - 1}{2} = 78$$
 
 ## 4.4 Análisis de Componentes Principales
@@ -512,7 +514,7 @@ Para la división de la serie temporal en 100 segmentos ("chunks") utilizando in
 
 En la Tabla 11 se comparan los cuatro pipelines previamente descritos: ingeniería de variables, 100 chunks, 5 chunks y 100 chunks con ingeniería de variables. Se observa que el modelo con mejor desempeño fue XGBoost con el enfoque de 100 chunks combinado con ingeniería de variables, obteniendo un accuracy de 0.57 y un ROC AUC de 0.82.
 
-Adicional, en la matriz de confusión podemos notar los sigu
+La siguiente tabla muestra la matriz de confusión del modelo ganador. Se puede observar cuántas veces el modelo acertó en cada clase y en cuáles se equivocó más.
 
 |                 | Pred MI | Pred OTHER | Pred STTC | Pred STTC & MI |
 |:----------------|--------:|-----------:|----------:|---------------:|
@@ -522,6 +524,8 @@ Adicional, en la matriz de confusión podemos notar los sigu
 | Real STTC & MI  |     115 |         17 |      136  |            332 |
 
 **Tabla 12.** Matriz de confusión modelo ganador.
+
+De la Tabla 12 se podemos notar lo siguiente:
 
 * La clase MI fue correctamente clasificada en 314 ocasiones; los principales errores se presentaron con la clase OTHER y con la clase STTC & MI.
 * La clase OTHER fue la que presentó el mejor desempeño del modelo, con 409 clasificaciones correctas.
