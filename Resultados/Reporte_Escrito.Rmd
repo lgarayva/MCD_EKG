@@ -55,6 +55,18 @@ El conjunto de datos tiene las siguientes características:
 
 Para los datos se realizó un proceso de adquisición de datos y procesamiento de datos.
 
+| Súperclase | Descripción                 |
+|:-----------|:----------------------------|
+| NORM       | ECG normal                  |
+| CD         | Trastorno de la conducción  |
+| MI         | Infarto de miocardio        |
+| HYP        | Hipertrofia                 |
+| STTC       | Cambios en ST/T             |
+
+**Tabla 1** Categorías de súperclases para la clasificación de ECG. 
+
+De la Tabla 1 se puede observar que existen cinco súperclases. Para este proyecto, se realizó una modificación en la agrupación de las subclases. La modificación consistió en contemplar las clases MI, STTC, STTC & MI y otros. El objetivo de esta reclasificación fue detectar infartos en los que existe algún cambio en el segmento ST y diferenciarlos de aquellos que no presentan alteraciones.
+
 ### 2.1 Adquisición de datos
 
 1. Las señales se recortaron en segmentos de 10 segundos y se guardaron en un formato comprimido de 400 Hz. Para todas las señales, se usó el estándar de las 12 caras (I, II, III, aVL, aVR, aVF, V1, V2, V3, V4, V5 y V6) con referencia al brazo derecho.
@@ -89,9 +101,9 @@ Es importante mencionar que en este apartado analizaremos únicamente la señal 
 
 ## 3.1 Análisis de ACF y PACF
 
-![Figura 1. Gráficas de autocorrelación y autocorrelación parcial de la señal II](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II.png)
+![Figura 1. Gráficas de autocorrelación y autocorrelación parcial de la señal II](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II.png){ width=50% }
 
-![Figura 2. Gráficas de autocorrelación y autocorrelación parcial de la señal II (30 lags)](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_2.png)
+![Figura 2. Gráficas de autocorrelación y autocorrelación parcial de la señal II (30 lags)](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_2.png){ width=50% }
 
 De las gráficas de autocorrelación y autocorrelación parcial presentadas en la Figura 1 y la Figura 2, podemos notar que estas no descienden a cero, mientras que las gráficas de autocorrelación parciales sí tienden a decrecer a cero conforme aumentan los retrasos. Este comportamiento indica que existe no estacionariedad en la serie o incluso que existe una raíz unitaria. Que la PACF tienda a cero podría indicar que existe un componente autorregresivo, es decir, la serie podría analizarse con un modelo AR.
 
@@ -101,71 +113,73 @@ Para analizar más a fondo, estudiaremos la existencia de raíces unitarias y de
 
 Realizando la prueba de Dickey-Fuller por señal y por clase obtenemos los siguientes resultados:
 
-| Señal   |       MI |   STTC MI |     STTC |    OTHER |
-|:--------|---------:|----------:|---------:|---------:|
-| AVL     | 0.843333 |  0.88     | 0.818333 | 0.735    |
-| V3      | 0.916667 |  0.916667 | 0.881667 | 0.941667 |
-| V1      | 0.856667 |  0.906667 | 0.86     | 0.853333 |
-| V2      | 0.923333 |  0.941667 | 0.891667 | 0.941667 |
-| II      | 0.841667 |  0.861667 | 0.823333 | 0.85     |
-| V4      | 0.861667 |  0.891667 | 0.805    | 0.911667 |
-| V5      | 0.795    |  0.876667 | 0.815    | 0.883333 |
-| V6      | 0.708333 |  0.836667 | 0.753333 | 0.82     |
-| III     | 0.808333 |  0.873333 | 0.733333 | 0.681667 |
-| AVR     | 0.888333 |  0.908333 | 0.878333 | 0.91     |
-| AVF     | 0.785    |  0.84     | 0.733333 | 0.733333 |
-| I       | 0.891667 |  0.9      | 0.888333 | 0.906667 |
+| Señal |   MI | STTC MI | STTC | OTHER |
+|:-----:|-----:|--------:|-----:|------:|
+| AVL   | 0.84 |   0.88  | 0.82 |  0.74 |
+| V3    | 0.92 |   0.92  | 0.88 |  0.94 |
+| V1    | 0.86 |   0.91  | 0.86 |  0.85 |
+| V2    | 0.92 |   0.94  | 0.89 |  0.94 |
+| II    | 0.84 |   0.86  | 0.82 |  0.85 |
+| V4    | 0.86 |   0.89  | 0.81 |  0.91 |
+| V5    | 0.80 |   0.88  | 0.82 |  0.88 |
+| V6    | 0.71 |   0.84  | 0.75 |  0.82 |
+| III   | 0.81 |   0.87  | 0.73 |  0.68 |
+| AVR   | 0.89 |   0.91  | 0.88 |  0.91 |
+| AVF   | 0.79 |   0.84  | 0.73 |  0.73 |
+| I     | 0.89 |   0.90  | 0.89 |  0.91 |
 
-**Tabla 1.** Prueba de Dickey-Fuller para raíces unitarias.
+**Tabla 2.** Prueba de Dickey-Fuller para raíces unitarias.
 
-De la Tabla 1 podemos observar que aunque no todas las series presentan raíz unitaria, existe no estacionaridad en la serie lo que afecta en la confiabilidad de las autocorrelaciones y en los supuestos de series de tiempo, por lo que es necesario aplicar una diferencia para volver estacionaria la serie.
+De la Tabla 2 podemos observar que aunque no todas las series presentan raíz unitaria, existe no estacionaridad en la serie lo que afecta en la confiabilidad de las autocorrelaciones y en los supuestos de series de tiempo, por lo que es necesario aplicar una diferencia para volver estacionaria la serie.
 
 
-| Señal   |       MI |   STTC MI |     STTC |   OTHER |
-|:--------|---------:|----------:|---------:|--------:|
-| AVL     | 0.996667 |         1 | 0.998333 |       1 |
-| V3      | 1        |         1 | 1        |       1 |
-| V1      | 1        |         1 | 1        |       1 |
-| V2      | 1        |         1 | 1        |       1 |
-| II      | 1        |         1 | 1        |       1 |
-| V4      | 1        |         1 | 1        |       1 |
-| V5      | 1        |         1 | 1        |       1 |
-| V6      | 0.998333 |         1 | 1        |       1 |
-| III     | 0.996667 |         1 | 0.998333 |       1 |
-| AVR     | 1        |         1 | 1        |       1 |
-| AVF     | 0.998333 |         1 | 1        |       1 |
-| I       | 0.998333 |         1 | 1        |       1 |
+| Señal |    MI  | STTC MI |  STTC  | OTHER |
+|:-----:|-------:|--------:|-------:|------:|
+| AVL   | 0.997  | 1.000   | 0.998  | 1.000 |
+| V3    | 1.000  | 1.000   | 1.000  | 1.000 |
+| V1    | 1.000  | 1.000   | 1.000  | 1.000 |
+| V2    | 1.000  | 1.000   | 1.000  | 1.000 |
+| II    | 1.000  | 1.000   | 1.000  | 1.000 |
+| V4    | 1.000  | 1.000   | 1.000  | 1.000 |
+| V5    | 1.000  | 1.000   | 1.000  | 1.000 |
+| V6    | 0.998  | 1.000   | 1.000  | 1.000 |
+| III   | 0.997  | 1.000   | 0.998  | 1.000 |
+| AVR   | 1.000  | 1.000   | 1.000  | 1.000 |
+| AVF   | 0.998  | 1.000   | 1.000  | 1.000 |
+| I     | 0.998  | 1.000   | 1.000  | 1.000 |
 
-**Tabla 2.** Prueba de Dickey-Fuller para raíces unitarias después de aplicar una diferenciación.
 
-De la Tabla 2 se observa que, al realizar una segunda prueba para determinar si era necesario aplicar una diferencia adicional, menos del 1% de las series presentó raíz unitaria. Por lo tanto, se concluye que únicamente es necesario aplicar solo una diferencia.
+**Tabla 3.** Prueba de Dickey-Fuller para raíces unitarias después de aplicar una diferenciación.
 
-![Figura 3. Gráficas de autocorrelación y autocorrelación parcial de la señal II después de aplicar diferencias](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_diff_MI.png)
+De la Tabla 3 se observa que, al realizar una segunda prueba para determinar si era necesario aplicar una diferencia adicional, menos del 1% de las series presentó raíz unitaria. Por lo tanto, se concluye que únicamente es necesario aplicar solo una diferencia.
+
+![Figura 3. Gráficas de autocorrelación y autocorrelación parcial de la señal II después de aplicar diferencias](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_diff_MI.png){ width=50% }
 
 En la Figura 3, donde se muestra la ACF y PACF después de aplicar una diferencia a la serie, se observa que únicamente las primeras cinco autocorrelaciones de la ACF son significativamente distintas de cero, mientras que la PACF mantiene su comportamiento decreciente hacia cero. Este resultado confirma que la suposición inicial sobre la no estacionariedad de las series y la presencia de un componente autorregresivo era correcta.
 
 ## 3.3 Descomposición de la serie
 
-En el análisis de descomposición de la serie, nos enfocamos únicamente en el componente estacional de la serie. Para esto, utilizamos el promedio de la serie para obtener esta descomposición. Una vez obtenido el componente estacional del promedio de las series obtuvimos los saltos dentro de la serie tomando en cuenta un salto por encima de dos desviaciones estándar. Con los saltos identificados, se calculó cada cuántos periodos ocurrían en promedio. Los resultados se presentan en la Tabla 3, donde se observa que, en general, los picos ocurren en promedio cada 46.80 periodos en todas las señales.
+En el análisis de descomposición de la serie, nos enfocamos únicamente en el componente estacional de la serie. Para esto, utilizamos el promedio de la serie para obtener esta descomposición. Una vez obtenido el componente estacional del promedio de las series obtuvimos los saltos dentro de la serie tomando en cuenta un salto por encima de dos desviaciones estándar. Con los saltos identificados, se calculó cada cuántos periodos ocurrían en promedio. Los resultados se presentan en la Tabla 4, donde se observa que, en general, los picos ocurren en promedio cada 46.80 periodos en todas las señales.
 
-| Señal   |       MI |   STTC MI |     STTC |    OTHER |   promedio |      std |
-|:--------|---------:|----------:|---------:|---------:|-----------:|---------:|
-| AVL     |  48.2105 |   33.4483 | 100      |  31.7931 |    53.363  | 31.9553  |
-| V3      | 100      |   48.8421 |  25.2051 |  32.5517 |    51.6497 | 33.7129  |
-| V1      | 100      |  100      |  25.0256 |  50      |    68.7564 | 37.49    |
-| V2      |  33.3793 |  100      |  50      |  50      |    58.3448 | 28.8542  |
-| II      |  50.2105 |   47.7895 |  32.2069 |  48.3684 |    44.6438 |  8.3553  |
-| V4      |  25.359  |   19.898  | 100      | 100      |    61.3142 | 44.7261  |
-| V5      |  24.4872 |   24.0256 |  19.9184 |  31.8276 |    25.0647 |  4.95428 |
-| V6      |  25.3846 |   24.3077 |  33.3793 | 100      |    45.7679 | 36.3805  |
-| III     |  19.6939 |   50.3684 |  24.359  | 100      |    48.6053 | 36.8252  |
-| AVR     |  24.4872 |   31.5517 |  32.2069 |  32.2759 |    30.1304 |  3.77628 |
-| AVF     |  32.069  |   50.2632 |  32.9655 |  48.3684 |    40.9165 |  9.73633 |
-| I       |  32.9655 |   31.5517 |  33.6897 |  34.2143 |    33.1053 |  1.15534 |
+| Señal |   MI  | STTC MI | STTC  | OTHER | promedio |  std  |
+|:-----:|------:|--------:|------:|------:|---------:|------:|
+| AVL   | 48.21 |  33.45  |100.00 | 31.79 |   53.36  | 31.96 |
+| V3    |100.00 |  48.84  | 25.21 | 32.55 |   51.65  | 33.71 |
+| V1    |100.00 | 100.00  | 25.03 | 50.00 |   68.76  | 37.49 |
+| V2    | 33.38 | 100.00  | 50.00 | 50.00 |   58.34  | 28.85 |
+| II    | 50.21 |  47.79  | 32.21 | 48.37 |   44.64  |  8.36 |
+| V4    | 25.36 |  19.90  |100.00 |100.00 |   61.31  | 44.73 |
+| V5    | 24.49 |  24.03  | 19.92 | 31.83 |   25.06  |  4.95 |
+| V6    | 25.38 |  24.31  | 33.38 |100.00 |   45.77  | 36.38 |
+| III   | 19.69 |  50.37  | 24.36 |100.00 |   48.61  | 36.83 |
+| AVR   | 24.49 |  31.55  | 32.21 | 32.28 |   30.13  |  3.78 |
+| AVF   | 32.07 |  50.26  | 32.97 | 48.37 |   40.92  |  9.74 |
+| I     | 32.97 |  31.55  | 33.69 | 34.21 |   33.11  |  1.16 |
 
-**Tabla 3.** Número de saltos en el componente estacional.
 
-![Figura 4. Gráficas de las tendencias estacionales de la señal II](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/seasonal_trend_II.png)
+**Tabla 4.** Número de saltos en el componente estacional.
+
+![Figura 4. Gráficas de las tendencias estacionales de la señal II](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/seasonal_trend_II.png){ width=50% }
 
 En la Figura 4, donde se muestran las gráficas del componente estacional, se observa que las señales correspondientes a MI presentan menor variabilidad o desviación en comparación con las demás. Además, se identifican tendencias de picos más marcadas en estas señales.
 
@@ -189,9 +203,9 @@ Para este estudio realizamos un análisis de las señales de la misma cara con s
 
 En este primer análisis buscábamos encontrar relaciones entre las señales con respecto a las clases, como ejemplo utilizaremos la cara interior la cual contiene la señal II.
 
-![Figura 5. Gráficas de correlaciones cruzadas entre la señal II y la señal III](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III.png)
+![Figura 5. Gráficas de correlaciones cruzadas entre la señal II y la señal III](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III.png){ width=50% }
 
-![Figura 6. Gráficas de correlaciones cruzadas entre la señal II y la señal AVF](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF.png)
+![Figura 6. Gráficas de correlaciones cruzadas entre la señal II y la señal AVF](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF.png){ width=50% }
 
 En las Figuras 5 y 6 se observa que existen correlaciones cruzadas notables en los retrasos -75, 0, 75 y unos picos menores dentro de ese intervalo. Sin embargo, no se identificaron diferencias visuales clara entre las clases.
 
@@ -199,17 +213,17 @@ En las Figuras 5 y 6 se observa que existen correlaciones cruzadas notables en l
 
 En este segundo análisis estudiamos como se comporta el promedio de las correlaciones cruzadas en conjunto con la desviación estándar. 
 
-![Figura 7. Gráficas de correlaciones cruzadas entre la señal II y la señal III con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd.png)
+![Figura 7. Gráficas de correlaciones cruzadas entre la señal II y la señal III con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd.png){ width=50% }
 
-![Figura 8. Gráficas de correlaciones cruzadas entre la señal II y la señal AVF con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd.png)
+![Figura 8. Gráficas de correlaciones cruzadas entre la señal II y la señal AVF con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd.png){ width=50% }
 
 En las Figuras 7 y 8 se observa que, en promedio, la correlación cruzada alcanza su máximo en el retraso 0. Sin embargo, en los demás retrasos no se evidencia una correlación cruzada significativa.
 
 ### 3.4.3 Análisis de correlación cruzada promedio de las series originales con intervalos de desviación estándar.
 
-![Figura 9. Promedio de las correlaciones cruzadas entre la señal II y la señal III con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_mean_II_III_sd.png)
+![Figura 9. Promedio de las correlaciones cruzadas entre la señal II y la señal III con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_mean_II_III_sd.png){ width=50% }
 
-![Figura 10. Promedio de las correlaciones cruzadas entre la señal II y la señal AVF con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_mean_II_AVF_sd.png)
+![Figura 10. Promedio de las correlaciones cruzadas entre la señal II y la señal AVF con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_mean_II_AVF_sd.png){ width=50% }
 
 En relación con el análisis anterior, en las Figuras 9 y 10 se observa que, en promedio, la correlación cruzada alcanza su máximo en el retraso 0. Sin embargo, en los demás retrasos no se identifica una correlación cruzada significativa.
 
@@ -217,9 +231,9 @@ En relación con el análisis anterior, en las Figuras 9 y 10 se observa que, en
 
 Otro análisis realizado fue el análisis de correlación cruzada del promedio de la serie suavizada con una ventana arbitraria de 50 periodos. El objetivo de utilizar un suavizamiento fue eliminar ruido y evaluar patrones generales.
 
-![Figura 11. Promedio de las correlaciones cruzadas entre la señal II y la señal III con suavizado (ventana 50) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd_smooth_50.png)
+![Figura 11. Promedio de las correlaciones cruzadas entre la señal II y la señal III con suavizado (ventana 50) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd_smooth_50.png){ width=50% }
 
-![Figura 12. Promedio de las correlaciones cruzadas entre la señal II y la señal AVF con suavizado (ventana 50) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd_smooth_50.png)
+![Figura 12. Promedio de las correlaciones cruzadas entre la señal II y la señal AVF con suavizado (ventana 50) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd_smooth_50.png){ width=50% }
 
 En las Figuras 11 y 12 se observa que las gráficas presentan picos similares a los del análisis original, sin que se identifique una diferenciación clara entre clases. Por lo tanto, este suavizado no aporta mejoras visuales evidentes.
 
@@ -227,9 +241,9 @@ En las Figuras 11 y 12 se observa que las gráficas presentan picos similares a 
 
 Otro análisis realizado fue el análisis de correlación cruzada utilizando como suavizamiento ventanas con periodos obtenidos en la descomposición de la serie. Este suavizamiento se hizo con los valores particulares de cada señal, al igual que el análisis anterior el objetivo fue eliminar ruido y evaluar patrones generales.
 
-![Figura 13. Promedio de las correlaciones cruzadas entre la señal II y la señal III con suavizado (ventana particular) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd_smooth_part.png)                        
+![Figura 13. Promedio de las correlaciones cruzadas entre la señal II y la señal III con suavizado (ventana particular) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd_smooth_part.png){ width=50% }
 
-![Figura 14. Promedio de las correlaciones cruzadas entre la señal II y la señal AVF con suavizado (ventana particular) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd_smooth_part.png)
+![Figura 14. Promedio de las correlaciones cruzadas entre la señal II y la señal AVF con suavizado (ventana particular) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd_smooth_part.png){ width=50% }
 
 En la Figura 13 y en la Figura 14 podemos observar que al utilizar una ventana de suavizamiento particular se obtiene una gráfica de correlación cruzada más suave, y se pueden notar picos en otros puntos además del retraso cero. Sin embargo, en ambos casos tampoco existe una relación clara que permita separar las clases de las señales.
 
@@ -237,9 +251,9 @@ En la Figura 13 y en la Figura 14 podemos observar que al utilizar una ventana d
 
 El último análisis de suavizamiento que se realizó con las correlaciones cruzadas fue analizar si el promedio de los saltos que encontramos en la descomposición de la serie de todas las clases.
 
-![Figura 15. Promedio de las correlaciones cruzadas entre la señal II y la señal III con suavizado (ventana promedio) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd_smooth_mean.png)
+![Figura 15. Promedio de las correlaciones cruzadas entre la señal II y la señal III con suavizado (ventana promedio) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd_smooth_mean.png){ width=50% }
 
-![Figura 16. Promedio de las correlaciones cruzadas entre la señal II y la señal AVF con suavizado (ventana promedio) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd_smooth_mean.png)
+![Figura 16. Promedio de las correlaciones cruzadas entre la señal II y la señal AVF con suavizado (ventana promedio) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd_smooth_mean.png){ width=50% }
 
 En la Figura 15 y en la Figura 16 podemos notar que aplicar un suavizamiento particular o un promedio nos ayuda a encontrar picos en la gráfica de correlación cruzada que no eran fáciles de ver en la gráfica del promedio de las series. Sin embargo, en ambos casos no encontramos una relación clara que permita separar las clases de las señales.
 
@@ -251,7 +265,7 @@ El objetivo de este análisis fue evaluar si existían patrones característicos
 
 Se analizó el promedio de las series junto con sus intervalos de desviación estándar, para evaluar si existían diferencias visuales entre clases. Sin embargo, visualmente no se encontraron relaciones claras para separar las clases.
 
-![Figura 17. Gráficas del promedio de la señal II con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean.png)
+![Figura 17. Gráficas del promedio de la señal II con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean.png){ width=50% }
 
 Como se observa en la Figura 17, las señales presentan alta variabilidad y no se logra identificar patrones claros que permitan diferenciar las clases.
 
@@ -267,7 +281,7 @@ Para este análisis se utilizaron las distintas ventanas de suavizamiento:
 
 Se analizó el promedio de las series suavizadas con una ventana de 50 periodos junto con sus intervalos de desviación estándar, para evaluar si existían diferencias visuales entre clases. Sin embargo, visualmente no se encontraron relaciones claras para separar las clases.
 
-![Figura 18. Gráficas del promedio de la señal II con suavizado (ventana 50) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth.png)
+![Figura 18. Gráficas del promedio de la señal II con suavizado (ventana 50) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth.png){ width=50% }
 
 En la Figura 18 se puede observar que con este suavizamiento se elimina parte de la variabilidad de las gráficas. Sin embargo, visualmente no se pueden identificar diferencias claras entre las clases.
 
@@ -275,7 +289,7 @@ En la Figura 18 se puede observar que con este suavizamiento se elimina parte de
 
 Se analizó el promedio de las series suavizadas utilizando una ventana particular para cada señal y clase, con intervalos de desviación estándar, para evaluar si existían diferencias visuales entre clases. Sin embargo, visualmente no se encontraron patrones claros para separar las clases.
 
-![Figura 19. Gráficas del promedio de la señal II con suavizado (ventana particular) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth_part.png)
+![Figura 19. Gráficas del promedio de la señal II con suavizado (ventana particular) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth_part.png){ width=50% }
 
 En la Figura 19 se puede observar que con este suavizamiento se elimina parte de la variabilidad de las gráficas. Sin embargo, visualmente no se identificaron relaciones claras entre las clases.
 
@@ -283,7 +297,7 @@ En la Figura 19 se puede observar que con este suavizamiento se elimina parte de
 
 El último análisis realizado fue el promedio de las series suavizadas con una ventana promedio para cada señal con intervalos de desviación estándar, para evaluar si existían diferencias visuales entre clases. Sin embargo, visualmente no se encontraron relaciones directas para separar las clases.
 
-![Figura 20. Gráficas del promedio de la señal II con suavizado (ventana promedio) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth_mean.png)
+![Figura 20. Gráficas del promedio de la señal II con suavizado (ventana promedio) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth_mean.png){ width=50% }
 
 En la Figura 20 se puede observar que con este suavizamiento se elimina parte de la variabilidad de las gráficas. Sin embargo, visualmente no se encontraron patrones que permitan separar las clases.
 
@@ -368,11 +382,13 @@ Gradient Boosting Classifier
 Naive Bayes
         {'var_smoothing': [1e-9, 1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3]}
 
-Classifier
-        learning_rate=0.1,
-        n_estimators=5000,
-        eval_metric="merror",
-        objective="multi:softprob"
+XGB Classifier
+        {
+        'learning_rate': [0.1],  # si quisieras probar más, agrega aquí
+        'n_estimators': [5000, 4000, 10000],
+        'eval_metric': ['merror', 'auc'],
+        'objective': ['multi:softprob'],
+        'early_stopping_rounds': [500, 1000]}
 ```
 
 
@@ -385,60 +401,64 @@ Las tablas siguientes presentan las métricas obtenidas de los distintos modelos
 
 ## 5.1 Modelado utilizando ingeniería de variables
 
-| metric              | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
-|---------------------|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
-| accuracy            |            0.527083 |                 0.483333 |                    0.5       |    0.335417 |       0.514583 |
-| precision_weighted  |            0.528874 |                 0.481121 |                    0.501884  |    0.374984 |       0.516245 |
-| f1_weighted         |            0.527638 |                 0.48103  |                    0.500224  |    0.287205 |       0.515084 |
-| roc_auc_ovr         |            0.790475 |                 0.751476 |                    0.751817  |    0.616916 |       0.762303 |
+| metric             | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
+|:------------------:|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
+| accuracy           |               0.53  |                    0.48  |                        0.50  |        0.34 |           0.51 |
+| precision_weighted |               0.53  |                    0.48  |                        0.50  |        0.37 |           0.52 |
+| f1_weighted        |               0.53  |                    0.48  |                        0.50  |        0.29 |           0.52 |
+| roc_auc_ovr        |               0.79  |                    0.75  |                        0.75  |        0.62 |           0.76 |
 
-**Tabla 5.** Resultados del modelo utilizando ingeniería de variables.
 
-La Tabla 5 muestra los resultados del modelo utilizando ingeniería de variables. Una de las complicaciones que se tenía en esta primera serie de modelos es la cantidad de datos. Esta primera serie de modelos se utilizó un set de entrenamiento del 30% para train, 20% para test y 10% para validación. Sin embargo, nos quedábamos con muy pocos registros ya que la base original es únicamente de 2,400 y 285 resultantes del PCA lo que llevaría a modelos con sobreajuste y modelos inestables. Por estas complicaciones se planteó la idea de realizar los modelos fragmentando la series originales. 
+**Tabla 6.** Resultados del modelo utilizando ingeniería de variables.
+
+La Tabla 6 muestra los resultados del modelo utilizando ingeniería de variables. Una de las complicaciones que se tenía en esta primera serie de modelos es la cantidad de datos. Esta primera serie de modelos se utilizó un set de entrenamiento del 30% para train, 20% para test y 10% para validación. Sin embargo, nos quedábamos con muy pocos registros ya que la base original es únicamente de 2,400 y 285 resultantes del PCA lo que llevaría a modelos con sobreajuste y modelos inestables. Por estas complicaciones se planteó la idea de realizar los modelos fragmentando la series originales. 
 
 Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes, en fragmentos de 100 registros y en fragmentos de 5 registros. Estos fragmentos se eligieron en 100 por ser el número de registros que contemplaba un segundo en la serie y fragmentos de 5 por el análisis de autocorrelaciones, en este análisis observamos que las primeras 5 autocorrelaciones eran significativas.
 
 ## 5.2 Modelado utilizando valores de series en chunks de 100
 
-| metric                    | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
-|---------------------------|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
-| accuracy                  |            0.256667 |                0.485     |                    0.499167  |    0.325833 |       0.51405  |
-| precision_weighted        |            0.256479 |                0.482702  |                    0.513695  |    0.329307 |       0.521677 |
-| f1_weighted               |            0.256464 |                0.482669  |                    0.504324  |    0.280119 |       0.516701 |
-| roc_auc_ovr               |            0.500283 |                0.73496   |                    0.746159  |    0.588748 |       0.767521 |
-| accuracy mode             |            0.333333 |                0.566667  |                    0.533333       0.308333 |       0.528926 |
-| precision weighted mode   |            0.340975 |                0.565486  |                    0.557202 |     0.302306 |       0.537967 |
-| f1 weighted mode          |            0.335172 |                0.563655  |                    0.540249 |     0.241931 |       0.532205 |
+| metric                  | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
+|:-----------------------:|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
+| accuracy                |               0.26  |                    0.49  |                        0.50  |        0.33 |           0.51 |
+| precision_weighted      |               0.26  |                    0.48  |                        0.51  |        0.33 |           0.52 |
+| f1_weighted             |               0.26  |                    0.48  |                        0.50  |        0.28 |           0.52 |
+| roc_auc_ovr             |               0.50  |                    0.73  |                        0.75  |        0.59 |           0.77 |
+| accuracy mode           |               0.33  |                    0.57  |                        0.53  |        0.31 |           0.53 |
+| precision weighted mode |               0.34  |                    0.57  |                        0.56  |        0.30 |           0.54 |
+| f1 weighted mode        |               0.34  |                    0.56  |                        0.54  |        0.24 |           0.53 |
 
-**Tabla 6.** Resultados del modelo utilizando segmentación en chunks de 100.
+
+**Tabla 7.** Resultados del modelo utilizando segmentación en chunks de 100.
 
 ## 5.3 Modelado utilizando valores de series en chunks de 5
 
-| Métrica                   | Regresión Logística | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
-|---------------------------|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
-| accuracy                  |            0.256667 |                0.485     |                    0.47      |    0.325833 |       0.51405  |
-| precision_weighted        |            0.256479 |                0.482702  |                    0.486973  |    0.329307 |       0.521677 |
-| f1_weighted               |            0.256464 |                0.482669  |                    0.475507  |    0.280119 |       0.516701 |
-| roc_auc_ovr               |            0.500283 |                0.73496   |                    0.72971   |    0.588748 |       0.767521 |
-| accuracy mode             |            0.333333 |                0.566667  |                    0.508333  |    0.308333 |       0.528926 |
-| precision weighted mode   |            0.340975 |                0.565486  |                    0.538344  |    0.302306 |       0.537967 |
-| f1 weighted mode          |            0.335172 |                0.563655  |                    0.516082  |    0.241931 |       0.532205 |
+| Métrica                 | Regresión Logística | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
+|:-----------------------:|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
+| accuracy                |               0.26  |                    0.49  |                        0.47  |        0.33 |           0.51 |
+| precision_weighted      |               0.26  |                    0.48  |                        0.49  |        0.33 |           0.52 |
+| f1_weighted             |               0.26  |                    0.48  |                        0.48  |        0.28 |           0.52 |
+| roc_auc_ovr             |               0.50  |                    0.73  |                        0.73  |        0.59 |           0.77 |
+| accuracy mode           |               0.33  |                    0.57  |                        0.51  |        0.31 |           0.53 |
+| precision weighted mode |               0.34  |                    0.57  |                        0.54  |        0.30 |           0.54 |
+| f1 weighted mode        |               0.34  |                    0.56  |                        0.52  |        0.24 |           0.53 |
 
-**Tabla 7.** Resultados del modelo utilizando segmentación en chunks de 5.
+
+**Tabla 8.** Resultados del modelo utilizando segmentación en chunks de 5.
 
 ## 5.4 Modelado utilizando ingeniería de variables divida las series en chunks de 100
 
-| metric                    | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
-|---------------------------|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
-| accuracy                  |            0.519167 |                0.52875   |                    0.530833  |    0.360417 |       0.573444 |
-| precision_weighted        |            0.526183 |                0.538321  |                    0.541456  |    0.375583 |       0.573925 |
-| f1_weighted               |            0.521181 |                0.531489  |                    0.533487  |    0.342724 |       0.573673 |
-| roc_auc_ovr               |            0.783896 |                0.780963  |                    0.789092  |    0.649275 |       0.824416 |
-| accuracy mode             |            0.554167 |                0.545833  |                    0.554167  |    0.383333 |       0.593361 |
-| precision weighted mode   |            0.561159 |                0.557403  |                    0.566695  |    0.420908 |       0.594469 |
-| f1 weighted mode          |            0.555268 |                0.548086  |                    0.557091  |    0.364589 |       0.593719 |
+| metric                  | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
+|:-----------------------:|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
+| accuracy                |               0.52  |                    0.53  |                        0.53  |        0.36 |           0.57 |
+| precision_weighted      |               0.53  |                    0.54  |                        0.54  |        0.38 |           0.57 |
+| f1_weighted             |               0.52  |                    0.53  |                        0.53  |        0.34 |           0.57 |
+| roc_auc_ovr             |               0.78  |                    0.78  |                        0.79  |        0.65 |           0.82 |
+| accuracy mode           |               0.55  |                    0.55  |                        0.55  |        0.38 |           0.59 |
+| precision weighted mode |               0.56  |                    0.56  |                        0.57  |        0.42 |           0.59 |
+| f1 weighted mode        |               0.56  |                    0.55  |                        0.56  |        0.36 |           0.59 |
 
-**Tabla 8.** Resultados del modelo utilizando ingeniería de variables y segmentación en chunks de 100 registros.
+
+**Tabla 9.** Resultados del modelo utilizando ingeniería de variables y segmentación en chunks de 100 registros.
 
 ## 5.5 Tiempos de ejecución
 
@@ -449,9 +469,9 @@ Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes,
 | 5 Chunks                       |                0.15 |                  62.35   |                     10.45    |       0.07  |          1.59  |
 | Feature Engineering 100 Chunks |                0.13 |                  36.52   |                     40.29    |       0.01  |          1.41  |
 
-**Tabla 9.** Tiempos de ejecución de los modelos.
+**Tabla 10.** Tiempos de ejecución de los modelos.
 
-La Tabla 9 muestra los tiempos de ejecución de los modelos, los cuales se reportan únicamente como referencia comparativa, ya que algunos modelos se realizaron con una versión reducida de la búsqueda de hiperparámetros debido a limitaciones computacionales.
+La Tabla 10 muestra los tiempos de ejecución de los modelos, los cuales se reportan únicamente como referencia comparativa, ya que algunos modelos se realizaron con una versión reducida de la búsqueda de hiperparámetros debido a limitaciones computacionales.
 
 \newpage
 
@@ -475,7 +495,42 @@ Otra análisis que se realizó fue aplicar ingeniería de variables a la serie d
 
 Para la división de la serie temporal en 100 segmentos ("chunks") utilizando ingeniería de variables, el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de 0.824416, accuracy global de 0.573444 y un accuracy promedio por paciente de 0.593361. Dando el mejor desempeño de los modelos probados, superando a todos los modelos tanto en ROC AUC como en accuracy.
 
-Otro punto importante son los tiempos de entrenamiento de los modelos. En la Tabla 9 se ve que los primeros modelos que usaban solo ingeniería de variables tuvieron tiempos de entrenamiento más bajos en arquitecturas avanzadas, aunque tenían menos datos. También destaca que los modelos XGB con segmentación tuvieron el mejor rendimiento y menor tiempo de entrenamiento frente a otras arquitecturas, aunque solo se entrenaron con una selección de hiperparámetros.
+| Métrica                    | Ing. variables (LogReg) | 100 chunks (XGB) | 5 chunks (XGB) | 100 chunks + ing. variables (XGB) |
+|----------------------------|-------------------------|------------------|---------------|------------------------------------|
+| Accuracy                   | 0.53                    | 0.51             | 0.41          | 0.57                               |
+| Precision Weighted         | 0.53                    | 0.52             | 0.40          | 0.57                               |
+| Recall Weighted            | 0.53                    | 0.51             | 0.41          | 0.57                               |
+| F1 Weighted                | 0.53                    | 0.52             | 0.40          | 0.57                               |
+| ROC AUC OVR                | 0.79                    | 0.77             | 0.67          | 0.82                               |
+| Accuracy (mode)            | -                       | 0.53             | 0.51          | 0.59                               |
+| Precision Weighted (mode)  | -                       | 0.54             | 0.51          | 0.59                               |
+| Recall Weighted (mode)     | -                       | 0.53             | 0.51          | 0.59                               |
+| F1 Weighted (mode)         | -                       | 0.53             | 0.47          | 0.59                               |
+
+
+**Tabla 11.** Métricas modelos ganadores.
+
+En la Tabla 11 se comparan los cuatro pipelines previamente descritos: ingeniería de variables, 100 chunks, 5 chunks y 100 chunks con ingeniería de variables. Se observa que el modelo con mejor desempeño fue XGBoost con el enfoque de 100 chunks combinado con ingeniería de variables, obteniendo un accuracy de 0.57 y un ROC AUC de 0.82.
+
+Adicional, en la matriz de confusión podemos notar los sigu
+
+|                 | Pred MI | Pred OTHER | Pred STTC | Pred STTC & MI |
+|:----------------|--------:|-----------:|----------:|---------------:|
+| Real MI         |     314 |        107 |       64  |            115 |
+| Real OTHER      |      89 |        409 |       85  |             17 |
+| Real STTC       |      90 |         61 |      327  |            132 |
+| Real STTC & MI  |     115 |         17 |      136  |            332 |
+
+**Tabla 12.** Matriz de confusión modelo ganador.
+
+* La clase MI fue correctamente clasificada en 314 ocasiones; los principales errores se presentaron con la clase OTHER y con la clase STTC & MI.
+* La clase OTHER fue la que presentó el mejor desempeño del modelo, con 409 clasificaciones correctas.
+* La clase STTC tuvo 327 clasificaciones correctas; los principales errores se dieron con la clase MI y la clase STTC & MI.
+* La clase STTC & MI se clasificó correctamente en 332 casos; los principales errores ocurrieron en la clase MI y la clase STTC.
+
+Es importante mencionar que la clase STTC & MI combina las clases STTC y MI, por lo que algunos de los errores de clasificación podrían deberse a que comparten características similares y están clínicamente relacionadas.
+
+Otro punto importante son los tiempos de entrenamiento de los modelos. En la Tabla 10 se ve que los primeros modelos que usaban solo ingeniería de variables tuvieron tiempos de entrenamiento más bajos en arquitecturas avanzadas, aunque tenían menos datos. También destaca que los modelos XGB con segmentación tuvieron el mejor rendimiento y menor tiempo de entrenamiento frente a otras arquitecturas, aunque solo se entrenaron con una selección de hiperparámetros.
 
 \newpage
 
@@ -489,11 +544,29 @@ Los resultados obtenidos indican que las variables generadas aportan informació
 
 También se observó que el modelo de XGBoost con segmentación e ingeniería de variables no solo obtuvo el mejor desempeño, sino que además presentó tiempos de entrenamiento bajos en comparación con otras arquitecturas. Sin embargo, debido a limitaciones computacionales, los modelos se entrenaron utilizando un número reducido de hiperparámetros, lo que podría haber limitado su optimización completa. Este resultado sugiere que XGBoost es una opción eficiente y viable para este problema, aunque se recomienda realizar una búsqueda de hiperparámetros más exhaustiva en futuros trabajos.
 
+Las principales limitaciones de este proyecto fueron la cantidad limitada de recursos y las restricciones computacionales. Debido a esto, se decidió trabajar con una segmentación arbitraria de los registros, sin considerar intervalos fisiológicos como ciclos cardiacos completos, lo que podría afectar la interpretación clínica de los resultados. Además, aunque se redujo la dimensionalidad aplicando PCA, esto limitó la interpretación de los componentes, ya que se pierde la información sobre qué variables originales aportan más a la separación de clases.
+
 Para trabajos futuros se recomienda probar modelos de deep learning con arquitecturas diseñadas para series de tiempo, y también explorar la extracción de características en el dominio de frecuencia y la morfología de las ondas ECG. De forma alternativa crear cuatro modelos distintos, cada uno entrenado para clasificar una clase específica frente a las demás (enfoque one-vs-all).
 
 En conclusión, este proyecto permitió desarrollar habilidades avanzadas para analizar series de tiempo y modelar señales biomédicas. A pesar de que los resultados todavía no se pueden usar en la práctica clínica, son un primer paso hacia la creación de modelos automáticos de diagnóstico por ECG enfocados a apoyar cardiólogos y ayudar a prevenir eventos cardiovasculares graves con diagnósticos más rápidos y precisos.
 
 \newpage
+
+# 8. Bibliografía
+
+Wagner, P., Strodthoff, N., Bousseljot, R.-D., Kreiseler, D., Lunze, F. I., Samek, W., … Schaeffter, T. (2020). PTB‑XL, a large publicly available electrocardiography dataset. Scientific Data, 7, 154. https://doi.org/10.1038/s41597-020-0495-6 
+
+
+
+\newpage
+
+# 9. Repositorio
+
+Todo el código desarrollado para este proyecto se encuentra disponible en el repositorio de GitHub:
+
+https://github.com/lgarayva/MCD_EKG
+
+En este repositorio se documenta detalladamente el uso de cada archivo, el orden de ejecución de los notebooks y las instrucciones para recrear el ambiente de desarrollo, con el fin de garantizar su correcta reproducción y facilitar su implementación.
 
 <!--
 # 8. Anexo resultados modelos
