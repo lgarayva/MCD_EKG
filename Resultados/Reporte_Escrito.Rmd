@@ -55,6 +55,18 @@ El conjunto de datos tiene las siguientes características:
 
 Para los datos se realizó un proceso de adquisición de datos y procesamiento de datos.
 
+| Súperclase | Descripción                 |
+|:-----------|:----------------------------|
+| NORM       | ECG normal                  |
+| CD         | Trastorno de la conducción  |
+| MI         | Infarto de miocardio        |
+| HYP        | Hipertrofia                 |
+| STTC       | Cambios en ST/T             |
+
+**Tabla 1** Categorías de súperclases para la clasificación de ECG. 
+
+De la Tabla 1 se puede observar que existen cinco súperclases. Para este proyecto, se realizó una modificación en la agrupación de las subclases. La modificación consistió en contemplar las clases MI, STTC, MI & STTC y otros. El objetivo de esta reclasificación fue detectar infartos en los que existe algún cambio en el segmento ST y diferenciarlos de aquellos que no presentan alteraciones.
+
 ### 2.1 Adquisición de datos
 
 1. Las señales se recortaron en segmentos de 10 segundos y se guardaron en un formato comprimido de 400 Hz. Para todas las señales, se usó el estándar de las 12 caras (I, II, III, aVL, aVR, aVF, V1, V2, V3, V4, V5 y V6) con referencia al brazo derecho.
@@ -116,9 +128,9 @@ Realizando la prueba de Dickey-Fuller por señal y por clase obtenemos los sigui
 | AVF   | 0.79 |   0.84  | 0.73 |  0.73 |
 | I     | 0.89 |   0.90  | 0.89 |  0.91 |
 
-**Tabla 1.** Prueba de Dickey-Fuller para raíces unitarias.
+**Tabla 2.** Prueba de Dickey-Fuller para raíces unitarias.
 
-De la Tabla 1 podemos observar que aunque no todas las series presentan raíz unitaria, existe no estacionaridad en la serie lo que afecta en la confiabilidad de las autocorrelaciones y en los supuestos de series de tiempo, por lo que es necesario aplicar una diferencia para volver estacionaria la serie.
+De la Tabla 2 podemos observar que aunque no todas las series presentan raíz unitaria, existe no estacionaridad en la serie lo que afecta en la confiabilidad de las autocorrelaciones y en los supuestos de series de tiempo, por lo que es necesario aplicar una diferencia para volver estacionaria la serie.
 
 
 | Señal |    MI  | STTC MI |  STTC  | OTHER |
@@ -137,9 +149,9 @@ De la Tabla 1 podemos observar que aunque no todas las series presentan raíz un
 | I     | 0.998  | 1.000   | 1.000  | 1.000 |
 
 
-**Tabla 2.** Prueba de Dickey-Fuller para raíces unitarias después de aplicar una diferenciación.
+**Tabla 3.** Prueba de Dickey-Fuller para raíces unitarias después de aplicar una diferenciación.
 
-De la Tabla 2 se observa que, al realizar una segunda prueba para determinar si era necesario aplicar una diferencia adicional, menos del 1% de las series presentó raíz unitaria. Por lo tanto, se concluye que únicamente es necesario aplicar solo una diferencia.
+De la Tabla 3 se observa que, al realizar una segunda prueba para determinar si era necesario aplicar una diferencia adicional, menos del 1% de las series presentó raíz unitaria. Por lo tanto, se concluye que únicamente es necesario aplicar solo una diferencia.
 
 ![Figura 3. Gráficas de autocorrelación y autocorrelación parcial de la señal II después de aplicar diferencias](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_diff_MI.png){ width=50% }
 
@@ -147,7 +159,7 @@ En la Figura 3, donde se muestra la ACF y PACF después de aplicar una diferenci
 
 ## 3.3 Descomposición de la serie
 
-En el análisis de descomposición de la serie, nos enfocamos únicamente en el componente estacional de la serie. Para esto, utilizamos el promedio de la serie para obtener esta descomposición. Una vez obtenido el componente estacional del promedio de las series obtuvimos los saltos dentro de la serie tomando en cuenta un salto por encima de dos desviaciones estándar. Con los saltos identificados, se calculó cada cuántos periodos ocurrían en promedio. Los resultados se presentan en la Tabla 3, donde se observa que, en general, los picos ocurren en promedio cada 46.80 periodos en todas las señales.
+En el análisis de descomposición de la serie, nos enfocamos únicamente en el componente estacional de la serie. Para esto, utilizamos el promedio de la serie para obtener esta descomposición. Una vez obtenido el componente estacional del promedio de las series obtuvimos los saltos dentro de la serie tomando en cuenta un salto por encima de dos desviaciones estándar. Con los saltos identificados, se calculó cada cuántos periodos ocurrían en promedio. Los resultados se presentan en la Tabla 4, donde se observa que, en general, los picos ocurren en promedio cada 46.80 periodos en todas las señales.
 
 | Señal |   MI  | STTC MI | STTC  | OTHER | promedio |  std  |
 |:-----:|------:|--------:|------:|------:|---------:|------:|
@@ -165,7 +177,7 @@ En el análisis de descomposición de la serie, nos enfocamos únicamente en el 
 | I     | 32.97 |  31.55  | 33.69 | 34.21 |   33.11  |  1.16 |
 
 
-**Tabla 3.** Número de saltos en el componente estacional.
+**Tabla 4.** Número de saltos en el componente estacional.
 
 ![Figura 4. Gráficas de las tendencias estacionales de la señal II](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/seasonal_trend_II.png){ width=50% }
 
@@ -395,9 +407,9 @@ Las tablas siguientes presentan las métricas obtenidas de los distintos modelos
 | roc_auc_ovr        |               0.79  |                    0.75  |                        0.75  |        0.62 |           0.76 |
 
 
-**Tabla 5.** Resultados del modelo utilizando ingeniería de variables.
+**Tabla 6.** Resultados del modelo utilizando ingeniería de variables.
 
-La Tabla 5 muestra los resultados del modelo utilizando ingeniería de variables. Una de las complicaciones que se tenía en esta primera serie de modelos es la cantidad de datos. Esta primera serie de modelos se utilizó un set de entrenamiento del 30% para train, 20% para test y 10% para validación. Sin embargo, nos quedábamos con muy pocos registros ya que la base original es únicamente de 2,400 y 285 resultantes del PCA lo que llevaría a modelos con sobreajuste y modelos inestables. Por estas complicaciones se planteó la idea de realizar los modelos fragmentando la series originales. 
+La Tabla 6 muestra los resultados del modelo utilizando ingeniería de variables. Una de las complicaciones que se tenía en esta primera serie de modelos es la cantidad de datos. Esta primera serie de modelos se utilizó un set de entrenamiento del 30% para train, 20% para test y 10% para validación. Sin embargo, nos quedábamos con muy pocos registros ya que la base original es únicamente de 2,400 y 285 resultantes del PCA lo que llevaría a modelos con sobreajuste y modelos inestables. Por estas complicaciones se planteó la idea de realizar los modelos fragmentando la series originales. 
 
 Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes, en fragmentos de 100 registros y en fragmentos de 5 registros. Estos fragmentos se eligieron en 100 por ser el número de registros que contemplaba un segundo en la serie y fragmentos de 5 por el análisis de autocorrelaciones, en este análisis observamos que las primeras 5 autocorrelaciones eran significativas.
 
@@ -414,7 +426,7 @@ Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes,
 | f1 weighted mode        |               0.34  |                    0.56  |                        0.54  |        0.24 |           0.53 |
 
 
-**Tabla 6.** Resultados del modelo utilizando segmentación en chunks de 100.
+**Tabla 7.** Resultados del modelo utilizando segmentación en chunks de 100.
 
 ## 5.3 Modelado utilizando valores de series en chunks de 5
 
@@ -429,7 +441,7 @@ Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes,
 | f1 weighted mode        |               0.34  |                    0.56  |                        0.52  |        0.24 |           0.53 |
 
 
-**Tabla 7.** Resultados del modelo utilizando segmentación en chunks de 5.
+**Tabla 8.** Resultados del modelo utilizando segmentación en chunks de 5.
 
 ## 5.4 Modelado utilizando ingeniería de variables divida las series en chunks de 100
 
@@ -444,7 +456,7 @@ Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes,
 | f1 weighted mode        |               0.56  |                    0.55  |                        0.56  |        0.36 |           0.59 |
 
 
-**Tabla 8.** Resultados del modelo utilizando ingeniería de variables y segmentación en chunks de 100 registros.
+**Tabla 9.** Resultados del modelo utilizando ingeniería de variables y segmentación en chunks de 100 registros.
 
 ## 5.5 Tiempos de ejecución
 
@@ -455,9 +467,9 @@ Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes,
 | 5 Chunks                       |                0.15 |                  62.35   |                     10.45    |       0.07  |          1.59  |
 | Feature Engineering 100 Chunks |                0.13 |                  36.52   |                     40.29    |       0.01  |          1.41  |
 
-**Tabla 9.** Tiempos de ejecución de los modelos.
+**Tabla 10.** Tiempos de ejecución de los modelos.
 
-La Tabla 9 muestra los tiempos de ejecución de los modelos, los cuales se reportan únicamente como referencia comparativa, ya que algunos modelos se realizaron con una versión reducida de la búsqueda de hiperparámetros debido a limitaciones computacionales.
+La Tabla 10 muestra los tiempos de ejecución de los modelos, los cuales se reportan únicamente como referencia comparativa, ya que algunos modelos se realizaron con una versión reducida de la búsqueda de hiperparámetros debido a limitaciones computacionales.
 
 \newpage
 
@@ -494,22 +506,22 @@ Para la división de la serie temporal en 100 segmentos ("chunks") utilizando in
 | F1 Weighted (mode)         | -                       | 0.53             | 0.47          | 0.59                               |
 
 
-**Tabla 10.** Métricas modelos ganadores.
+**Tabla 11.** Métricas modelos ganadores.
 
-En la Tabla 10 se comparan los cuatro pipelines previamente descritos: ingeniería de variables, 100 chunks, 5 chunks y 100 chunks con ingeniería de variables. Se observa que el modelo con mejor desempeño fue XGBoost con el enfoque de 100 chunks combinado con ingeniería de variables, obteniendo un accuracy de 0.57 y un ROC AUC de 0.82.
+En la Tabla 11 se comparan los cuatro pipelines previamente descritos: ingeniería de variables, 100 chunks, 5 chunks y 100 chunks con ingeniería de variables. Se observa que el modelo con mejor desempeño fue XGBoost con el enfoque de 100 chunks combinado con ingeniería de variables, obteniendo un accuracy de 0.57 y un ROC AUC de 0.82.
 
 Adicional, en la matriz de confusión podemos notar los sigu
 
-|        |   Pred 0 |   Pred 1 |   Pred 2 |   Pred 3 |
-|:-------|---------:|---------:|---------:|---------:|
-| Real 0 |      314 |      107 |       64 |      115 |
-| Real 1 |       89 |      409 |       85 |       17 |
-| Real 2 |       90 |       61 |      327 |      132 |
-| Real 3 |      115 |       17 |      136 |      332 |
+|               | Pred mi | Pred other | Pred sttc | Pred sttc_mi |
+|:--------------|--------:|-----------:|----------:|-------------:|
+| Real mi       |     314 |        107 |       64  |          115 |
+| Real other    |      89 |        409 |       85  |           17 |
+| Real sttc     |      90 |         61 |      327  |          132 |
+| Real sttc_mi  |     115 |         17 |      136  |          332 |
 
-**Tabla 11.** Matriz de confusión modelo ganador.
+**Tabla 12.** Matriz de confusión modelo ganador.
 
-Otro punto importante son los tiempos de entrenamiento de los modelos. En la Tabla 9 se ve que los primeros modelos que usaban solo ingeniería de variables tuvieron tiempos de entrenamiento más bajos en arquitecturas avanzadas, aunque tenían menos datos. También destaca que los modelos XGB con segmentación tuvieron el mejor rendimiento y menor tiempo de entrenamiento frente a otras arquitecturas, aunque solo se entrenaron con una selección de hiperparámetros.
+Otro punto importante son los tiempos de entrenamiento de los modelos. En la Tabla 10 se ve que los primeros modelos que usaban solo ingeniería de variables tuvieron tiempos de entrenamiento más bajos en arquitecturas avanzadas, aunque tenían menos datos. También destaca que los modelos XGB con segmentación tuvieron el mejor rendimiento y menor tiempo de entrenamiento frente a otras arquitecturas, aunque solo se entrenaron con una selección de hiperparámetros.
 
 \newpage
 
