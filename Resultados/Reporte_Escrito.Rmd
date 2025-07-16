@@ -382,11 +382,14 @@ Gradient Boosting Classifier
 Naive Bayes
         {'var_smoothing': [1e-9, 1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3]}
 
-Classifier
-        learning_rate=0.1,
-        n_estimators=5000,
-        eval_metric="merror",
-        objective="multi:softprob"
+XGB Classifier
+        {
+        'learning_rate': [0.1],  # si quisieras probar más, agrega aquí
+        'n_estimators': [5000, 4000, 10000],
+        'eval_metric': ['merror', 'auc'],
+        'objective': ['multi:softprob'],
+        'early_stopping_rounds': [500, 1000]
+        }
 ```
 
 
