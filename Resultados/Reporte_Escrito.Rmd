@@ -536,6 +536,17 @@ De la Tabla 12 se podemos notar lo siguiente:
 
 Es importante mencionar que la clase STTC & MI combina las clases STTC y MI, por lo que algunos de los errores de clasificación podrían deberse a que comparten características similares y están clínicamente relacionadas.
 
+| **Clase**    | **Sensibilidad (%)** | **Especificidad (%)** |
+|--------------|----------------------|-----------------------|
+| **MI**       | 52.3                 | 83.7                  |
+| **OTHER**    | 68.2                 | 89.8                  |
+| **STTC**     | 53.6                 | 84.2                  |
+| **STTC & MI**| 55.3                 | 85.4                  |
+
+**Tabla 13.** Sensibilidad y especificidad por clase en el modelo ganador. La sensibilidad indica la proporción de casos correctamente identificados por clase, mientras que la especificidad representa la proporción de no casos correctamente clasificados. Estas métricas son relevantes para evaluar el desempeño diagnóstico de cada categoría en aplicaciones clínicas.
+
+En la Tabla 13 se muestran las métricas de sensibilidad y especifidad por clase para el modelo ganador. La clase OTHER tuvo la mayor sencibilidad (68.2%) y especificidad (89.8%), indicando que el modelo identifica correctamente a los registros normales o con patologías distintas. La clase MI es la que presentó la menor sensibilidad (52.3%) y especifidad (83.7%). Las clases STTC y STTC & MI mostrron sensibilidades (53.6%-55.3%) y especifidades (84.2%-85.4%) similares. Estos resultados sugieren que el modelo logra un desempeño aceptable en la clasificación genera, sin embargo, es necesario optimizar la sensibilidad en las clases de mayor relevancia clínica, como la clase MI, para su aplicación como herramienta de apoyo diagnóstico.
+
 Otro punto importante son los tiempos de entrenamiento de los modelos. En la Tabla 10 se ve que los primeros modelos que usaban solo ingeniería de variables tuvieron tiempos de entrenamiento más bajos en arquitecturas avanzadas, aunque tenían menos datos. También destaca que los modelos XGB con segmentación tuvieron el mejor rendimiento y menor tiempo de entrenamiento frente a otras arquitecturas, aunque solo se entrenaron con una selección de hiperparámetros.
 
 \newpage
