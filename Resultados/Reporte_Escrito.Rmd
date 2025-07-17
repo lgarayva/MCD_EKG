@@ -405,11 +405,11 @@ Las tablas siguientes presentan las métricas obtenidas de los distintos modelos
 
 ## 5.1 Modelado utilizando ingeniería de variables
 
-| metric             | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
+| Metric             | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
 |:------------------:|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
 | Accuracy           |               0.53  |                    0.48  |                        0.50  |        0.34 |           0.51 |
 | Precision weighted |               0.53  |                    0.48  |                        0.50  |        0.37 |           0.52 |
-| F1_weighted        |               0.53  |                    0.48  |                        0.50  |        0.29 |           0.52 |
+| F1 weighted        |               0.53  |                    0.48  |                        0.50  |        0.29 |           0.52 |
 | ROC AUC            |               0.79  |                    0.75  |                        0.75  |        0.62 |           0.76 |
 
 
@@ -421,7 +421,7 @@ Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes,
 
 ## 5.2 Modelado utilizando valores de series en chunks de 100
 
-| metric                  | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
+| Metric                  | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
 |:-----------------------:|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
 | Accuracy                |               0.26  |                    0.49  |                        0.50  |        0.33 |           0.51 |
 | Precision weighted      |               0.26  |                    0.48  |                        0.51  |        0.33 |           0.52 |
@@ -436,7 +436,7 @@ Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes,
 
 ## 5.3 Modelado utilizando valores de series en chunks de 5
 
-| Métrica                 | Regresión Logística | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
+| Metric                  | Regresión Logística | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
 |:-----------------------:|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
 | Accuracy                |               0.26  |                    0.49  |                        0.47  |        0.33 |           0.51 |
 | Precision weighted      |               0.26  |                    0.48  |                        0.49  |        0.33 |           0.52 |
@@ -451,7 +451,7 @@ Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes,
 
 ## 5.4 Modelado utilizando ingeniería de variables divida las series en chunks de 100
 
-| metric                  | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
+| Metric                  | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
 |:-----------------------:|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
 | Accuracy                |               0.52  |                    0.53  |                        0.53  |        0.36 |           0.57 |
 | Precision weighted      |               0.53  |                    0.54  |                        0.54  |        0.38 |           0.57 |
