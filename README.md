@@ -50,7 +50,6 @@ pip install -r requerimientos_MCD.txt
 
 ```
 ├── config
-│   └── __pycache__
 ├── Datos-Leonel-PTBXL
 │   ├── mi
 │   ├── other

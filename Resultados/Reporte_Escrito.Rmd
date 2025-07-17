@@ -53,7 +53,7 @@ El conjunto de datos tiene las siguientes características:
 * Los registros incluyen información sobre ritmo, forma y diagnóstico del ECG.
 * Los diagnósticos se clasificaron en formato de múltiples etiquetas, organizados en 5 súperclases y 24 subclases.
 
-Para los datos se realizó un proceso de adquisición de datos y procesamiento de datos.
+Para la clasificación de los electrocardiogramas, los diagnósticos se agruparon en cinco súperclases principales, las cuales se describen en la Tabla 1.
 
 | Súperclase | Descripción                 |
 |:-----------|:----------------------------|
@@ -66,6 +66,8 @@ Para los datos se realizó un proceso de adquisición de datos y procesamiento d
 **Tabla 1** Categorías de súperclases para la clasificación de ECG. 
 
 De la Tabla 1 se puede observar que existen cinco súperclases. Para este proyecto, se realizó una modificación en la agrupación de las subclases. La modificación consistió en contemplar las clases MI, STTC, STTC & MI y otros. El objetivo de esta reclasificación fue detectar infartos en los que existe algún cambio en el segmento ST y diferenciarlos de aquellos que no presentan alteraciones.
+
+Los datos fueron adquiridos y procesados mediante el procedimiento que se detalla en la siguiente sección.
 
 ### 2.1 Adquisición de datos
 
@@ -89,7 +91,7 @@ Como primer análisis, se estudiaron las autocorrelaciones (ACF) y autocorrelaci
 
 El segundo análisis consistió en evaluar la presencia de raíces unitarias mediante la prueba de Dickey-Fuller, con el objetivo de determinar la estacionariedad de las series. Este análisis fue fundamental, ya que la mayoría de las series resultaron no estacionarias, lo que afectaba el cálculo de la ACF. Al aplicar la primera diferencia, se identificaron patrones más claros en las autocorrelaciones.
 
-l tercer análisis consistió en la descomposición de las series para aislar su componente estacional, con el fin de identificar periodicidades relevantes. A partir de este componente estacional, se detectaron picos recurrentes que posteriormente se emplearon para suavizar las series y eliminar ruido, buscando así revelar patrones temporales más claros.
+El tercer análisis consistió en la descomposición de las series para aislar su componente estacional, con el fin de identificar periodicidades relevantes. A partir de este componente estacional, se detectaron picos recurrentes que posteriormente se emplearon para suavizar las series y eliminar ruido, buscando así revelar patrones temporales más claros.
 
 A diferencia de los análisis anteriores que evaluaban cada señal por separado, el cuarto análisis calculó la correlación cruzada entre pares de señales. Este enfoque tuvo como objetivo identificar relaciones entre diferentes derivaciones. Se realizaron los análisis tanto sobre las series originales como sobre sus promedios.
 
@@ -323,6 +325,8 @@ Para las variables de la CCF se tomaron en cuenta: el número de cruces por cero
 
 En donde el número de combinaciones posibles fue de: 
 
+
+
 $$\binom{12 + 2 - 1}{2} = 78$$
 
 ## 4.4 Análisis de Componentes Principales
@@ -401,12 +405,12 @@ Las tablas siguientes presentan las métricas obtenidas de los distintos modelos
 
 ## 5.1 Modelado utilizando ingeniería de variables
 
-| metric             | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
+| Metric             | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
 |:------------------:|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
-| accuracy           |               0.53  |                    0.48  |                        0.50  |        0.34 |           0.51 |
-| precision_weighted |               0.53  |                    0.48  |                        0.50  |        0.37 |           0.52 |
-| f1_weighted        |               0.53  |                    0.48  |                        0.50  |        0.29 |           0.52 |
-| roc_auc_ovr        |               0.79  |                    0.75  |                        0.75  |        0.62 |           0.76 |
+| Accuracy           |               0.53  |                    0.48  |                        0.50  |        0.34 |           0.51 |
+| Precision weighted |               0.53  |                    0.48  |                        0.50  |        0.37 |           0.52 |
+| F1 weighted        |               0.53  |                    0.48  |                        0.50  |        0.29 |           0.52 |
+| ROC AUC            |               0.79  |                    0.75  |                        0.75  |        0.62 |           0.76 |
 
 
 **Tabla 6.** Resultados del modelo utilizando ingeniería de variables.
@@ -417,45 +421,45 @@ Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes,
 
 ## 5.2 Modelado utilizando valores de series en chunks de 100
 
-| metric                  | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
+| Metric                  | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
 |:-----------------------:|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
-| accuracy                |               0.26  |                    0.49  |                        0.50  |        0.33 |           0.51 |
-| precision_weighted      |               0.26  |                    0.48  |                        0.51  |        0.33 |           0.52 |
-| f1_weighted             |               0.26  |                    0.48  |                        0.50  |        0.28 |           0.52 |
-| roc_auc_ovr             |               0.50  |                    0.73  |                        0.75  |        0.59 |           0.77 |
-| accuracy mode           |               0.33  |                    0.57  |                        0.53  |        0.31 |           0.53 |
-| precision weighted mode |               0.34  |                    0.57  |                        0.56  |        0.30 |           0.54 |
-| f1 weighted mode        |               0.34  |                    0.56  |                        0.54  |        0.24 |           0.53 |
+| Accuracy                |               0.26  |                    0.49  |                        0.50  |        0.33 |           0.51 |
+| Precision weighted      |               0.26  |                    0.48  |                        0.51  |        0.33 |           0.52 |
+| F1 weighted             |               0.26  |                    0.48  |                        0.50  |        0.28 |           0.52 |
+| ROC AUC                 |               0.50  |                    0.73  |                        0.75  |        0.59 |           0.77 |
+| Accuracy mode           |               0.33  |                    0.57  |                        0.53  |        0.31 |           0.53 |
+| Precision weighted mode |               0.34  |                    0.57  |                        0.56  |        0.30 |           0.54 |
+| F1 weighted mode        |               0.34  |                    0.56  |                        0.54  |        0.24 |           0.53 |
 
 
 **Tabla 7.** Resultados del modelo utilizando segmentación en chunks de 100.
 
 ## 5.3 Modelado utilizando valores de series en chunks de 5
 
-| Métrica                 | Regresión Logística | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
+| Metric                  | Regresión Logística | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
 |:-----------------------:|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
-| accuracy                |               0.26  |                    0.49  |                        0.47  |        0.33 |           0.51 |
-| precision_weighted      |               0.26  |                    0.48  |                        0.49  |        0.33 |           0.52 |
-| f1_weighted             |               0.26  |                    0.48  |                        0.48  |        0.28 |           0.52 |
-| roc_auc_ovr             |               0.50  |                    0.73  |                        0.73  |        0.59 |           0.77 |
-| accuracy mode           |               0.33  |                    0.57  |                        0.51  |        0.31 |           0.53 |
-| precision weighted mode |               0.34  |                    0.57  |                        0.54  |        0.30 |           0.54 |
-| f1 weighted mode        |               0.34  |                    0.56  |                        0.52  |        0.24 |           0.53 |
+| Accuracy                |               0.26  |                    0.49  |                        0.47  |        0.33 |           0.51 |
+| Precision weighted      |               0.26  |                    0.48  |                        0.49  |        0.33 |           0.52 |
+| F1 weighted             |               0.26  |                    0.48  |                        0.48  |        0.28 |           0.52 |
+| ROC AUC                 |               0.50  |                    0.73  |                        0.73  |        0.59 |           0.77 |
+| Accuracy mode           |               0.33  |                    0.57  |                        0.51  |        0.31 |           0.53 |
+| Precision weighted mode |               0.34  |                    0.57  |                        0.54  |        0.30 |           0.54 |
+| F1 weighted mode        |               0.34  |                    0.56  |                        0.52  |        0.24 |           0.53 |
 
 
 **Tabla 8.** Resultados del modelo utilizando segmentación en chunks de 5.
 
 ## 5.4 Modelado utilizando ingeniería de variables divida las series en chunks de 100
 
-| metric                  | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
+| Metric                  | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
 |:-----------------------:|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
-| accuracy                |               0.52  |                    0.53  |                        0.53  |        0.36 |           0.57 |
-| precision_weighted      |               0.53  |                    0.54  |                        0.54  |        0.38 |           0.57 |
-| f1_weighted             |               0.52  |                    0.53  |                        0.53  |        0.34 |           0.57 |
-| roc_auc_ovr             |               0.78  |                    0.78  |                        0.79  |        0.65 |           0.82 |
-| accuracy mode           |               0.55  |                    0.55  |                        0.55  |        0.38 |           0.59 |
-| precision weighted mode |               0.56  |                    0.56  |                        0.57  |        0.42 |           0.59 |
-| f1 weighted mode        |               0.56  |                    0.55  |                        0.56  |        0.36 |           0.59 |
+| Accuracy                |               0.52  |                    0.53  |                        0.53  |        0.36 |           0.57 |
+| Precision weighted      |               0.53  |                    0.54  |                        0.54  |        0.38 |           0.57 |
+| F1 weighted             |               0.52  |                    0.53  |                        0.53  |        0.34 |           0.57 |
+| ROC AUC                 |               0.78  |                    0.78  |                        0.79  |        0.65 |           0.82 |
+| Accuracy mode           |               0.55  |                    0.55  |                        0.55  |        0.38 |           0.59 |
+| Precision weighted mode |               0.56  |                    0.56  |                        0.57  |        0.42 |           0.59 |
+| F1 weighted mode        |               0.56  |                    0.55  |                        0.56  |        0.36 |           0.59 |
 
 
 **Tabla 9.** Resultados del modelo utilizando ingeniería de variables y segmentación en chunks de 100 registros.
@@ -512,7 +516,7 @@ Para la división de la serie temporal en 100 segmentos ("chunks") utilizando in
 
 En la Tabla 11 se comparan los cuatro pipelines previamente descritos: ingeniería de variables, 100 chunks, 5 chunks y 100 chunks con ingeniería de variables. Se observa que el modelo con mejor desempeño fue XGBoost con el enfoque de 100 chunks combinado con ingeniería de variables, obteniendo un accuracy de 0.57 y un ROC AUC de 0.82.
 
-Adicional, en la matriz de confusión podemos notar los sigu
+La siguiente tabla muestra la matriz de confusión del modelo ganador. Se puede observar cuántas veces el modelo acertó en cada clase y en cuáles se equivocó más.
 
 |                 | Pred MI | Pred OTHER | Pred STTC | Pred STTC & MI |
 |:----------------|--------:|-----------:|----------:|---------------:|
@@ -523,12 +527,25 @@ Adicional, en la matriz de confusión podemos notar los sigu
 
 **Tabla 12.** Matriz de confusión modelo ganador.
 
+De la Tabla 12 se podemos notar lo siguiente:
+
 * La clase MI fue correctamente clasificada en 314 ocasiones; los principales errores se presentaron con la clase OTHER y con la clase STTC & MI.
 * La clase OTHER fue la que presentó el mejor desempeño del modelo, con 409 clasificaciones correctas.
 * La clase STTC tuvo 327 clasificaciones correctas; los principales errores se dieron con la clase MI y la clase STTC & MI.
 * La clase STTC & MI se clasificó correctamente en 332 casos; los principales errores ocurrieron en la clase MI y la clase STTC.
 
 Es importante mencionar que la clase STTC & MI combina las clases STTC y MI, por lo que algunos de los errores de clasificación podrían deberse a que comparten características similares y están clínicamente relacionadas.
+
+| **Clase**    | **Sensibilidad (%)** | **Especificidad (%)** |
+|--------------|----------------------|-----------------------|
+| **MI**       | 52.3                 | 83.7                  |
+| **OTHER**    | 68.2                 | 89.8                  |
+| **STTC**     | 53.6                 | 84.2                  |
+| **STTC & MI**| 55.3                 | 85.4                  |
+
+**Tabla 13.** Sensibilidad y especificidad por clase en el modelo ganador. La sensibilidad indica la proporción de casos correctamente identificados por clase, mientras que la especificidad representa la proporción de no casos correctamente clasificados. Estas métricas son relevantes para evaluar el desempeño diagnóstico de cada categoría en aplicaciones clínicas.
+
+En la Tabla 13 se muestran las métricas de sensibilidad y especificidad por clase para el modelo ganador. La clase OTHER tuvo la mayor sensibilidad (68.2%) y especificidad (89.8%), indicando que el modelo identifica correctamente a los registros normales o con patologías distintas. La clase MI es la que presentó la menor sensibilidad (52.3%) y especificidad (83.7%). Las clases STTC y STTC & MI mostrron sensibilidades (53.6%-55.3%) y especificidad (84.2%-85.4%) similares. Estos resultados sugieren que el modelo logra un desempeño aceptable en la clasificación general; sin embargo, es necesario optimizar la sensibilidad en las clases de mayor relevancia clínica, como la clase MI, para su aplicación como herramienta de apoyo diagnóstico.
 
 Otro punto importante son los tiempos de entrenamiento de los modelos. En la Tabla 10 se ve que los primeros modelos que usaban solo ingeniería de variables tuvieron tiempos de entrenamiento más bajos en arquitecturas avanzadas, aunque tenían menos datos. También destaca que los modelos XGB con segmentación tuvieron el mejor rendimiento y menor tiempo de entrenamiento frente a otras arquitecturas, aunque solo se entrenaron con una selección de hiperparámetros.
 
