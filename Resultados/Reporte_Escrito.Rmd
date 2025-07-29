@@ -138,7 +138,7 @@ Realizando la prueba de Dickey-Fuller por señal y por clase obtenemos los sigui
 
 **Tabla 2.** Porcentaje de series por señal y clase que presentan raíces unitarias, según la prueba de Dickey-Fuller.
 
-De la Tabla 2 podemos observar que aunque no todas las series presentan raíz unitaria, existe no estacionaridad en la serie lo que afecta en la confiabilidad de las autocorrelaciones y en los supuestos de series de tiempo, por lo que es necesario aplicar una diferencia para volver estacionaria la serie.
+De la Tabla 2 podemos observar que, aunque no todas las series presentan raíz unitaria, existe no estacionaridad en la serie lo que afecta en la confiabilidad de las autocorrelaciones y en los supuestos de series de tiempo, por lo que es necesario aplicar una diferencia para volver estacionaria la serie.
 
 
 | Señal |    MI  | STTC MI |  STTC  | OTHER |
@@ -327,7 +327,7 @@ Para las variables de estadísticas de la serie se tomó en cuenta variables com
 
 ## 4.3 Variables de correlación cruzada 
 
-Para las variables de la CCF se tomaron en cuenta: el número de cruces por cero; el promedio, máximo, mínimo y desviación estándar de la CCF; el retrazo correspondiente al máximo y al mínimo de la CCF; la curtosis de la CCF; la media recortada de la CCF; y la norma de la matriz de la CCF. Dando un total de 78*9+1 = 703 variables del bloque de correlación cruzada.
+Para las variables de la CCF se tomaron en cuenta: el número de cruces por cero; el promedio, máximo, mínimo y desviación estándar de la CCF; el retraso correspondiente al máximo y al mínimo de la CCF; la curtosis de la CCF; la media recortada de la CCF; y la norma de la matriz de la CCF. Dando un total de 78*9+1 = 703 variables del bloque de correlación cruzada.
 
 En donde el número de combinaciones posibles fue de: 
 
