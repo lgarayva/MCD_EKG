@@ -1,8 +1,10 @@
 ---
-title:
-author:
+title: "null"
+author: "null"
 output:
   word_document: default
+  html_document:
+    df_print: paged
 ---
 
 Maestría en Ciencia de Datos
@@ -14,7 +16,7 @@ Estancia de Investigación
 
 REPORTE
 
-Clasificación de EKG con Machine Learning: Un Análisis de Series Temporales y Feature Engineering
+Clasificación de electrocardiogramas con machine learning: un análisis de series temporales y feature engineering
 
 PRESENTA  
 
@@ -103,8 +105,7 @@ Es importante mencionar que, en este apartado se analizarán únicamente la señ
 
 En la Figura 1 se presenta la organización de las derivaciones del EKG según las distintas caras cardíacas (anterior, lateral, inferior y septal), que serán empleadas en los análisis de correlación cruzada entre señales.
 
-![Figura 1. Representación de las caras del corazón (lateral, inferior, septal, anterior) y sus derivaciones correspondientes del electrocardiograma.](/Users/leongaray/Desktop/MCD_EKG/img/general/CEKG.png){ width=50% }
-
+![Figura 1. Representación de las caras del corazón (lateral, inferior, septal, anterior) y sus derivaciones correspondientes del electrocardiograma. \n Fuente: Medical Exam Prep (2020). Understanding Acute Coronary Syndromes. Recuperado de https://www.medicalexamprep.co.uk/understanding-acute-coronary-syndromes/](/Users/leongaray/Desktop/MCD_EKG/img/general/CEKG.png){ width=80% }
 
 ## 3.1 Análisis de ACF y PACF
 
@@ -339,7 +340,7 @@ $$\binom{12 + 2 - 1}{2} = 78$$
 
 Se aplicó PCA sobre el conjunto de variables generadas para reducir la dimensionalidad y evitar la multicolinealidad. Inicialmente se tenían 120+72+703 = 905 variables de todos los bloques. Se seleccionaron los primeros k componentes principales que explicaban al menos el 95% de la varianza. Resultando en 285 componentes principales.
 
-En total, se generaron 285 variables por serie. Estas features se usaron como entrada en los modelos de clasificación. Sin embargo, al aplicar PCA para reducir la dimensionalidad, no se evaluó directamente la importancia de cada variable, ya que los modelos utilizaron las combinaciones de componentes principales.
+En total, se generaron 285 variables por serie. Estas características se usaron como entrada en los modelos de clasificación. Sin embargo, al aplicar PCA para reducir la dimensionalidad, no se evaluó directamente la importancia de cada variable, ya que los modelos utilizaron las combinaciones de componentes principales.
 
 \newpage
 
@@ -500,7 +501,7 @@ Cabe destacar que, al dividir la serie en chunks, cada uno recibe una predicció
 
 Por otro lado, para la división de la serie temporal en 100 segmentos ("chunks"), el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de 0.767521, accuracy global de 0.51405 y un accuracy promedio por paciente de 0.528926.
 
-Otra análisis que se realizó fue aplicar ingeniería de variables a la serie dividida por chunks, en esta parte únicamente se tomó la partición de 100 chunks debido a que la ingeniería de variables no era posible únicamente con 5 valores de la serie.
+Otro análisis que se realizó fue aplicar ingeniería de variables a la serie dividida por chunks, en esta parte únicamente se tomó la partición de 100 chunks debido a que la ingeniería de variables no era posible únicamente con 5 valores de la serie.
 
 Para la división de la serie temporal en 100 segmentos ("chunks") utilizando ingeniería de variables, el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de 0.824416, accuracy global de 0.573444 y un accuracy promedio por paciente de 0.593361. Dando el mejor desempeño de los modelos probados, superando a todos los modelos tanto en ROC AUC como en accuracy.
 
@@ -576,21 +577,23 @@ En conclusión, este proyecto permitió desarrollar habilidades avanzadas para a
 
 # 8. Bibliografía
 
-Wagner, P., Strodthoff, N., Bousseljot, R.-D., Kreiseler, D., Lunze, F. I., Samek, W., … Schaeffter, T. (2020). PTB‑XL, a large publicly available electrocardiography dataset. Scientific Data, 7, 154. https://doi.org/10.1038/s41597-020-0495-6 
+* Wagner, P., Strodthoff, N., Bousseljot, R.-D., Kreiseler, D., Lunze, F. I., Samek, W., … Schaeffter, T. (2020). PTB‑XL, a large publicly available electrocardiography dataset. Scientific Data, 7, 154. https://doi.org/10.1038/s41597-020-0495-6 
 
-Dubin, D. (2003). Electrocardiografía práctica: Lesionales, trazado e interpretación (3.ª ed.). McGraw-Hill Interamericana.
+* Dubin, D. (2003). Electrocardiografía práctica: Lesionales, trazado e interpretación (3.ª ed.). McGraw-Hill Interamericana.
 
-Guerrero, V. M. (1993). Análisis estadístico de series de tiempo económicas. Limusa.
+* Guerrero, V. M. (1993). Análisis estadístico de series de tiempo económicas. Limusa.
 
-Box, G. E. P., Jenkins, G. M., Reinsel, G. C., & Ljung, G. M. (2015). Time series analysis: Forecasting and control (5th ed.). Wiley.
+* Box, G. E. P., Jenkins, G. M., Reinsel, G. C., & Ljung, G. M. (2015). Time series analysis: Forecasting and control (5th ed.). Wiley.
 
-Hastie, T., Tibshirani, R., & Friedman, J. (2009). The elements of statistical learning: Data mining, inference, and prediction (2nd ed.). Springer.
+* Hastie, T., Tibshirani, R., & Friedman, J. (2009). The elements of statistical learning: Data mining, inference, and prediction (2nd ed.). Springer.
 
-Medical Exam Prep. (2020, 10 de septiembre). Understanding acute coronary syndromes. Recuperado de https://www.medicalexamprep.co.uk/understanding-acute-coronary-syndromes/
+* Medical Exam Prep. (2020, 10 de septiembre). Understanding acute coronary syndromes. Recuperado de https://www.medicalexamprep.co.uk/understanding-acute-coronary-syndromes/
 
-Auffarth, B. (2021). Machine learning for time-series with Python: Forecast, predict, and detect anomalies with state-of-the-art machine learning methods. Packt Publishing.
+* Auffarth, B. (2021). Machine learning for time-series with Python: Forecast, predict, and detect anomalies with state-of-the-art machine learning methods. Packt Publishing.
 
-Guadalajara Boo, J. F. (2012). Cardiología (7.ª ed.). Coyoacán, Ciudad de México: Mendez Editores. 
+* Guadalajara Boo, J. F. (2012). Cardiología (7.ª ed.). Coyoacán, Ciudad de México: Mendez Editores. 
+
+\newpage
 
 # 9. Repositorio
 
