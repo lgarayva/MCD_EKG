@@ -14,7 +14,7 @@ Estancia de Investigación
 
 REPORTE
 
-Clasificación de ECG con Machine Learning: Un Análisis de Series Temporales y Feature Engineering
+Clasificación de EKG con Machine Learning: Un Análisis de Series Temporales y Feature Engineering
 
 PRESENTA  
 
@@ -25,19 +25,19 @@ Clave Única: 148539
 
 # 1. Introducción
 
-Las enfermedades cardiovasculares son la principal causa de muerte a nivel mundial, incluso en países con ingresos altos, donde solo el cáncer las supera. Un diagnóstico temprano y preciso mediante un electrocardiograma (ECG) ayuda a prevenir complicaciones graves como el infarto agudo de miocardio.
+Las enfermedades cardiovasculares son la principal causa de muerte a nivel mundial, incluso en países con ingresos altos, donde solo el cáncer las supera. Un diagnóstico temprano y preciso mediante un electrocardiograma (EKG) ayuda a prevenir complicaciones graves como el infarto agudo de miocardio.
 
 El electrocardiograma es un estudio no invasivo que registra la actividad eléctrica del corazón. Es fundamental para detectar alteraciones en el ritmo cardíaco, conducción eléctrica y morfología cardíaca.
 
-La interpretación de un ECG requiere experiencia clínica y puede variar entre especialistas. Por ello, se ha buscado desarrollar modelos automatizados de interpretación usando machine learning. El dataset PTB-XL, que tiene más de 21,000 registros validados por cardiólogos, permite explorar estas aplicaciones.
+La interpretación de un EKG requiere experiencia clínica y puede variar entre especialistas. Por ello, se ha buscado desarrollar modelos automatizados de interpretación usando machine learning. El dataset PTB-XL, que tiene más de 21,000 registros validados por cardiólogos, permite explorar estas aplicaciones.
 
-Este proyecto busca desarrollar un modelo de clasificación multiclase de ECG para diferenciar distintas patologías cardíacas, usando ingeniería de variables, análisis de series temporales y algoritmos de machine learning, evaluando su desempeño y utilidad clínica.
+Este proyecto busca desarrollar un modelo de clasificación multiclase de EKG para diferenciar distintas patologías cardíacas, usando ingeniería de variables, análisis de series temporales y algoritmos de machine learning, evaluando su desempeño y utilidad clínica.
 
 \newpage
 
 # 2. Datos
 
-Los datos fueron obtenidos de PTB-XL, el cual es el mayor conjunto de datos clínicos de ECG disponible públicamente hasta la fecha. Estos datos fueron desarrollados para generar modelos de aprendizaje de máquina, con el objetivo de generar un sistema de decisiones automatizado para la interpretación de ECG. Este conjunto de datos fue desarrollado con contrarrestar dos grandes obstáculos que se tenían con datos de ECG:
+Los datos fueron obtenidos de PTB-XL, el cual es el mayor conjunto de datos clínicos de EKG disponible públicamente hasta la fecha. Estos datos fueron desarrollados para generar modelos de aprendizaje de máquina, con el objetivo de generar un sistema de decisiones automatizado para la interpretación de EKG. Este conjunto de datos fue desarrollado con contrarrestar dos grandes obstáculos que se tenían con datos de EKG:
 
 * No existía un conjunto de datos público para entrenamiento y validación público que pudiera utilizarse para desarrollar los modelos.
 * La falta de procedimientos definidos para evaluar los algoritmos.
@@ -50,20 +50,20 @@ El conjunto de datos tiene las siguientes características:
 * Está balanceado respecto al género: 52% hombres y 48% mujeres. 
 * Presenta un amplio rango de edades, desde 0 hasta 95 años, con una mediana de 62 y un rango intercuartílico de 22.
 * Los electrocardiogramas fueron validados por hasta 2 cardiólogos.
-* Los registros incluyen información sobre ritmo, forma y diagnóstico del ECG.
+* Los registros incluyen información sobre ritmo, forma y diagnóstico del EKG.
 * Los diagnósticos se clasificaron en formato de múltiples etiquetas, organizados en 5 súperclases y 24 subclases.
 
 Para la clasificación de los electrocardiogramas, los diagnósticos se agruparon en cinco súperclases principales, las cuales se describen en la Tabla 1.
 
 | Súperclase | Descripción                 |
 |:-----------|:----------------------------|
-| NORM       | ECG normal                  |
+| NORM       | EKG normal                  |
 | CD         | Trastorno de la conducción  |
 | MI         | Infarto de miocardio        |
 | HYP        | Hipertrofia                 |
 | STTC       | Cambios en ST/T             |
 
-**Tabla 1** Categorías de súperclases para la clasificación de ECG. 
+**Tabla 1** Categorías de súperclases para la clasificación de EKG. 
 
 De la Tabla 1 se puede observar que existen cinco súperclases. Para este proyecto, se realizó una modificación en la agrupación de las subclases. La modificación consistió en contemplar las clases MI, STTC, STTC & MI y otros. El objetivo de esta reclasificación fue detectar infartos en los que existe algún cambio en el segmento ST y diferenciarlos de aquellos que no presentan alteraciones.
 
@@ -73,7 +73,7 @@ Los datos fueron adquiridos y procesados mediante el procedimiento que se detall
 
 1. Las señales se recortaron en segmentos de 10 segundos y se guardaron en un formato comprimido de 400 Hz. Para todas las señales, se usó el estándar de las 12 caras (I, II, III, aVL, aVR, aVF, V1, V2, V3, V4, V5 y V6) con referencia al brazo derecho.
 2. Una enfermera registró la información en la base de datos.
-3. Cada registro fue interpretado en un 67.13% de manera manual por un cardiólogo, 31.2% de manera automática por un dispositivo de ECG con validaciones posteriores por un cardiólogo y un 1.67% sin reporte inicial.
+3. Cada registro fue interpretado en un 67.13% de manera manual por un cardiólogo, 31.2% de manera automática por un dispositivo de EKG con validaciones posteriores por un cardiólogo y un 1.67% sin reporte inicial.
 4. Finalmente, todos los reportes fueron nuevamente anotados de manera manual por un experto basado principalmente en características cuantitativas de las señales.
 
 
@@ -85,7 +85,7 @@ Las señales fueron convertidas del formato original a un formato binario con 16
 
 # 3. Análisis exploratorio y procesamiento
 
-El análisis exploratorio de datos tuvo como objetivo identificar patrones temporales y relaciones entre señales del ECG que pudieran ser útiles para la clasificación de patologías cardíacas, así como evaluar la estacionariedad de las señales y su estructura de autocorrelación.
+El análisis exploratorio de datos tuvo como objetivo identificar patrones temporales y relaciones entre señales del EKG que pudieran ser útiles para la clasificación de patologías cardíacas, así como evaluar la estacionariedad de las señales y su estructura de autocorrelación.
 
 Como primer análisis, se estudiaron las autocorrelaciones (ACF) y autocorrelaciones parciales (PACF) de las series originales. Se calculó la ACF de cada serie individual y del agregado por clase y señal. Posteriormente, se obtuvieron las PACF correspondientes, dividiendo los resultados por clase y por señal para su comparación.
 
@@ -101,7 +101,7 @@ El sexto análisis que se realizó fue similar al cuatro, a diferencia que para 
 
 Es importante mencionar que, en este apartado se analizarán únicamente la señal II y la clase MI (infarto de miocardio), ya que las derivaciones de la cara inferior (como II, III y aVF) son las más utilizadas para identificar infartos en la región inferior del corazón.
 
-En la Figura 1 se presenta la organización de las derivaciones del ECG según las distintas caras cardíacas (anterior, lateral, inferior y septal), que serán empleadas en los análisis de correlación cruzada entre señales.
+En la Figura 1 se presenta la organización de las derivaciones del EKG según las distintas caras cardíacas (anterior, lateral, inferior y septal), que serán empleadas en los análisis de correlación cruzada entre señales.
 
 ![Figura 1. Representación de las caras del corazón (lateral, inferior, septal, anterior) y sus derivaciones correspondientes del electrocardiograma.](/Users/leongaray/Desktop/MCD_EKG/img/general/CEKG.png){ width=50% }
 
@@ -266,7 +266,7 @@ En la Figura 16 y en la Figura 17 podemos notar que aplicar un suavizamiento par
 
 ## 3.5 Análisis de serie con intervalos de desviación estándar
 
-El objetivo de este análisis fue evaluar si existían patrones característicos en las series del ECG al calcular su promedio con intervalos de desviación estándar y aplicar distintos suavizados, con el fin de identificar diferencias entre clases que pudieran ser útiles para la clasificación.
+El objetivo de este análisis fue evaluar si existían patrones característicos en las series del EKG al calcular su promedio con intervalos de desviación estándar y aplicar distintos suavizados, con el fin de identificar diferencias entre clases que pudieran ser útiles para la clasificación.
 
 ### 3.5.1 Promedio de series con intervalos de desviación estándar.
 
@@ -314,7 +314,7 @@ En resumen, aunque los distintos métodos de suavizado redujeron la variabilidad
 
 # 4 Ingeniería de variables
 
-La ingeniería de variables tuvo como objetivo generar variables que capturaran la estructura temporal, la variabilidad y la relación entre señales del ECG, con el fin de generar un modelo de clasificación multiclase. Se generaron variables basadas en autocorrelaciones, estadística descriptiva y correlaciones cruzadas. Además, se aplicó un análisis de componentes principales para reducir dimensionalidad en los datos.
+La ingeniería de variables tuvo como objetivo generar variables que capturaran la estructura temporal, la variabilidad y la relación entre señales del EKG, con el fin de generar un modelo de clasificación multiclase. Se generaron variables basadas en autocorrelaciones, estadística descriptiva y correlaciones cruzadas. Además, se aplicó un análisis de componentes principales para reducir dimensionalidad en los datos.
 
 ## 4.1 Variables de autocorrelaciones
 
@@ -558,19 +558,19 @@ Otro punto importante son los tiempos de entrenamiento de los modelos. En la Tab
 
 # 7. Conclusiones
 
-El objetivo de este proyecto fue crear un modelo que pudiera clasificar diferentes enfermedades cardíacas usando las señales de ECG del dataset PTB-XL, aplicando ingeniería de variables, separación por segmentos y algoritmos de machine learning.
+El objetivo de este proyecto fue crear un modelo que pudiera clasificar diferentes enfermedades cardíacas usando las señales de EKG del dataset PTB-XL, aplicando ingeniería de variables, separación por segmentos y algoritmos de machine learning.
 
 Para este proyecto se generaron 905 variables por serie, incluyendo estadísticas descriptivas, autocorrelaciones y correlaciones cruzadas. Posteriormente se redujo la dimensionalidad usando componentes principales, quedando 209 variables finales. Se evaluaron varios modelos de clasificación y XGBoost fue el que tuvo mejor desempeño, con un ROC AUC de 0.57, accuracy de 0.50 y F1 macro de 0.47.
 
-Los resultados obtenidos indican que las variables generadas aportan información útil para la clasificación de ECG. Sin embargo, el desempeño de los modelos no alcanza niveles clínicamente aceptables, posiblemente debido a la pérdida de interpretabilidad y varianza explicada al aplicar PCA. Esta reducción en el desempeño sugiere que la selección de variables más relevantes, en lugar de un PCA global, podría mejorar la precisión y facilitar la interpretación médica.
+Los resultados obtenidos indican que las variables generadas aportan información útil para la clasificación de EKG. Sin embargo, el desempeño de los modelos no alcanza niveles clínicamente aceptables, posiblemente debido a la pérdida de interpretabilidad y varianza explicada al aplicar PCA. Esta reducción en el desempeño sugiere que la selección de variables más relevantes, en lugar de un PCA global, podría mejorar la precisión y facilitar la interpretación médica.
 
 También se observó que el modelo de XGBoost con segmentación e ingeniería de variables no solo obtuvo el mejor desempeño, sino que además presentó tiempos de entrenamiento bajos en comparación con otras arquitecturas. Sin embargo, debido a limitaciones computacionales, los modelos se entrenaron utilizando un número reducido de hiperparámetros, lo que podría haber limitado su optimización completa. Este resultado sugiere que XGBoost es una opción eficiente y viable para este problema, aunque se recomienda realizar una búsqueda de hiperparámetros más exhaustiva en futuros trabajos.
 
 Las principales limitaciones de este proyecto fueron la cantidad limitada de recursos y las restricciones computacionales. Debido a esto, se decidió trabajar con una segmentación arbitraria de los registros, sin considerar intervalos fisiológicos como ciclos cardiacos completos, lo que podría afectar la interpretación clínica de los resultados. Además, aunque se redujo la dimensionalidad aplicando PCA, esto limitó la interpretación de los componentes, ya que se pierde la información sobre qué variables originales aportan más a la separación de clases.
 
-Para trabajos futuros se recomienda probar modelos de deep learning con arquitecturas diseñadas para series de tiempo, y también explorar la extracción de características en el dominio de frecuencia y la morfología de las ondas ECG. De forma alternativa crear cuatro modelos distintos, cada uno entrenado para clasificar una clase específica frente a las demás (enfoque one-vs-all).
+Para trabajos futuros se recomienda probar modelos de deep learning con arquitecturas diseñadas para series de tiempo, y también explorar la extracción de características en el dominio de frecuencia y la morfología de las ondas EKG. De forma alternativa crear cuatro modelos distintos, cada uno entrenado para clasificar una clase específica frente a las demás (enfoque one-vs-all).
 
-En conclusión, este proyecto permitió desarrollar habilidades avanzadas para analizar series de tiempo y modelar señales biomédicas. A pesar de que los resultados todavía no se pueden usar en la práctica clínica, son un primer paso hacia la creación de modelos automáticos de diagnóstico por ECG enfocados a apoyar cardiólogos y ayudar a prevenir eventos cardiovasculares graves con diagnósticos más rápidos y precisos.
+En conclusión, este proyecto permitió desarrollar habilidades avanzadas para analizar series de tiempo y modelar señales biomédicas. A pesar de que los resultados todavía no se pueden usar en la práctica clínica, son un primer paso hacia la creación de modelos automáticos de diagnóstico por EKG enfocados a apoyar cardiólogos y ayudar a prevenir eventos cardiovasculares graves con diagnósticos más rápidos y precisos.
 
 \newpage
 
