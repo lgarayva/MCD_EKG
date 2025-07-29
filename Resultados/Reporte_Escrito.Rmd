@@ -39,7 +39,7 @@ Este proyecto busca desarrollar un modelo de clasificación multiclase de EKG pa
 
 # 2. Datos
 
-Los datos fueron obtenidos de PTB-XL, el cual es el mayor conjunto de datos clínicos de EKG disponible públicamente hasta la fecha. Estos datos fueron desarrollados para generar modelos de aprendizaje de máquina, con el objetivo de generar un sistema de decisiones automatizado para la interpretación de EKG. Este conjunto de datos fue desarrollado con contrarrestar dos grandes obstáculos que se tenían con datos de EKG:
+Los datos fueron obtenidos de PTB-XL, el cual es el mayor conjunto de datos clínicos de EKG disponible públicamente hasta la fecha. Estos datos fueron desarrollados para generar modelos de aprendizaje de máquina, con el objetivo de generar un sistema de decisiones automatizado para la interpretación de EKG. Este conjunto de datos fue desarrollado para contrarrestar dos grandes obstáculos que se tenían con datos de EKG:
 
 * No existía un conjunto de datos público para entrenamiento y validación público que pudiera utilizarse para desarrollar los modelos.
 * La falta de procedimientos definidos para evaluar los algoritmos.
@@ -65,7 +65,7 @@ Para la clasificación de los electrocardiogramas, los diagnósticos se agruparo
 | HYP        | Hipertrofia                 |
 | STTC       | Cambios en ST/T             |
 
-**Tabla 1** Categorías de súperclases para la clasificación de EKG. 
+**Tabla 1.** Categorías de súperclases para la clasificación de EKG. 
 
 De la Tabla 1 se puede observar que existen cinco súperclases. Para este proyecto, se realizó una modificación en la agrupación de las subclases. La modificación consistió en contemplar las clases MI, STTC, STTC & MI y otros. El objetivo de esta reclasificación fue detectar infartos en los que existe algún cambio en el segmento ST y diferenciarlos de aquellos que no presentan alteraciones.
 
@@ -73,7 +73,7 @@ Los datos fueron adquiridos y procesados mediante el procedimiento que se detall
 
 ### 2.1 Adquisición de datos
 
-1. Las señales se recortaron en segmentos de 10 segundos y se guardaron en un formato comprimido de 400 Hz. Para todas las señales, se usó el estándar de las 12 caras (I, II, III, aVL, aVR, aVF, V1, V2, V3, V4, V5 y V6) con referencia al brazo derecho.
+1. Las señales se recortaron en segmentos de 10 segundos y se guardaron en un formato comprimido de 400 Hz. Para todas las señales, se usó el estándar de las 12 derivaciones (I, II, III, aVL, aVR, aVF, V1, V2, V3, V4, V5 y V6) con referencia al brazo derecho.
 2. Una enfermera registró la información en la base de datos.
 3. Cada registro fue interpretado en un 67.13% de manera manual por un cardiólogo, 31.2% de manera automática por un dispositivo de EKG con validaciones posteriores por un cardiólogo y un 1.67% sin reporte inicial.
 4. Finalmente, todos los reportes fueron nuevamente anotados de manera manual por un experto basado principalmente en características cuantitativas de las señales.
@@ -87,7 +87,7 @@ Las señales fueron convertidas del formato original a un formato binario con 16
 
 # 3. Análisis exploratorio y procesamiento
 
-El análisis exploratorio de datos tuvo como objetivo identificar patrones temporales y relaciones entre señales del EKG que pudieran ser útiles para la clasificación de patologías cardíacas, así como evaluar la estacionariedad de las señales y su estructura de autocorrelación.
+El análisis exploratorio de datos tuvo como objetivo identificar patrones temporales y relaciones entre señales del EKG que pudieran ser útiles para la clasificación de patologías cardíacas, así como evaluar la periodicidad de las señales y su estructura de autocorrelación.
 
 Como primer análisis, se estudiaron las autocorrelaciones (ACF) y autocorrelaciones parciales (PACF) de las series originales. Se calculó la ACF de cada serie individual y del agregado por clase y señal. Posteriormente, se obtuvieron las PACF correspondientes, dividiendo los resultados por clase y por señal para su comparación.
 
@@ -136,7 +136,7 @@ Realizando la prueba de Dickey-Fuller por señal y por clase obtenemos los sigui
 | AVF   | 0.79 |   0.84  | 0.73 |  0.73 |
 | I     | 0.89 |   0.90  | 0.89 |  0.91 |
 
-**Tabla 2.** Prueba de Dickey-Fuller para raíces unitarias.
+**Tabla 2.** Porcentaje de series por señal y clase que presentan raíces unitarias, según la prueba de Dickey-Fuller.
 
 De la Tabla 2 podemos observar que aunque no todas las series presentan raíz unitaria, existe no estacionaridad en la serie lo que afecta en la confiabilidad de las autocorrelaciones y en los supuestos de series de tiempo, por lo que es necesario aplicar una diferencia para volver estacionaria la serie.
 
@@ -157,7 +157,7 @@ De la Tabla 2 podemos observar que aunque no todas las series presentan raíz un
 | I     | 0.998  | 1.000   | 1.000  | 1.000 |
 
 
-**Tabla 3.** Prueba de Dickey-Fuller para raíces unitarias después de aplicar una diferenciación.
+**Tabla 3.** Porcentaje de series por señal y clase que presentan raíces unitarias después de una diferenciación, según la prueba de Dickey-Fuller.
 
 De la Tabla 3 se observa que, al realizar una segunda prueba para determinar si era necesario aplicar una diferencia adicional, menos del 1% de las series presentó raíz unitaria. Por lo tanto, se concluye que únicamente es necesario aplicar solo una diferencia.
 
@@ -200,9 +200,9 @@ Para el análisis de correlación cruzada analizamos distintas variantes de esta
 * Correlación cruzada de las series originales.
 * Correlación cruzada de las series originales con intervalos de desviación estándar.
 * Correlación cruzada promedio de las series originales con intervalos de desviación estándar.
-* Cross-correlation del promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
-* Cross-correlation window particular.
-* Cross-correlation con ventana (window) promedio
+* Correlación cruzada del promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
+* Correlación cruzada window particular.
+* Correlación cruzada con ventana (window) promedio
 
 Para este estudio realizamos un análisis de las señales de la misma cara con sus respectivas combinaciones.
 
@@ -219,7 +219,7 @@ En las Figuras 6 y 7 se observa que existen correlaciones cruzadas notables en l
 
 ### 3.4.2 de correlación cruzada de las series originales con intervalos de desviación estándar.
 
-En este segundo análisis estudiamos como se comporta el promedio de las correlaciones cruzadas en conjunto con la desviación estándar. 
+En este segundo análisis estudiamos cómo se comporta el promedio de las correlaciones cruzadas en conjunto con la desviación estándar. 
 
 ![Figura 8. Gráficas de correlaciones cruzadas entre la señal II y la señal III con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd.png){ width=50% }
 
@@ -235,7 +235,7 @@ En las Figuras 8 y 9 se observa que, en promedio, la correlación cruzada alcanz
 
 En relación con el análisis anterior, en las Figuras 10 y 11 se observa que, en promedio, la correlación cruzada alcanza su máximo en el retraso 0. Sin embargo, en los demás retrasos no se identifica una correlación cruzada significativa.
 
-### 3.4.4 Análisis de cross-correlation del promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
+### 3.4.4 Análisis de correlación cruzada del promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
 
 Otro análisis realizado fue el análisis de correlación cruzada del promedio de la serie suavizada con una ventana arbitraria de 50 periodos. El objetivo de utilizar un suavizamiento fue eliminar ruido y evaluar patrones generales.
 
@@ -245,7 +245,7 @@ Otro análisis realizado fue el análisis de correlación cruzada del promedio d
 
 En las Figuras 12 y 13 se observa que las gráficas presentan picos similares a los del análisis original, sin que se identifique una diferenciación clara entre clases. Por lo tanto, este suavizado no aporta mejoras visuales evidentes.
 
-### 3.4.5 Análisis de cross-correlation window particular.
+### 3.4.5 Análisis de correlación cruzada con suavizamiento particular.
 
 Otro análisis realizado fue el análisis de correlación cruzada utilizando como suavizamiento ventanas con periodos obtenidos en la descomposición de la serie. Este suavizamiento se hizo con los valores particulares de cada señal, al igual que el análisis anterior el objetivo fue eliminar ruido y evaluar patrones generales.
 
@@ -255,7 +255,7 @@ Otro análisis realizado fue el análisis de correlación cruzada utilizando com
 
 En la Figura 14 y en la Figura 15 podemos observar que al utilizar una ventana de suavizamiento particular se obtiene una gráfica de correlación cruzada más suave, y se pueden notar picos en otros puntos además del retraso cero. Sin embargo, en ambos casos tampoco existe una relación clara que permita separar las clases de las señales.
 
-### 3.4.6 Análisis de cross-correlation con ventana (window) promedio
+### 3.4.6 Análisis de correlación cruzada con suavizamiento promedio.
 
 El último análisis de suavizamiento que se realizó con las correlaciones cruzadas fue analizar si el promedio de los saltos que encontramos en la descomposición de la serie de todas las clases.
 
@@ -327,7 +327,7 @@ Para las variables de estadísticas de la serie se tomó en cuenta variables com
 
 ## 4.3 Variables de correlación cruzada 
 
-Para las variables de la CCF se tomaron en cuenta: el número de cruces por cero; el promedio, máximo, mínimo y desviación estándar de la CCF; el lag correspondiente al máximo y al mínimo de la CCF; la curtosis de la CCF; la media recortada de la CCF; y la norma de la matriz de la CCF. Dando un total de 78*9+1 = 703 variables del bloque de correlación cruzada.
+Para las variables de la CCF se tomaron en cuenta: el número de cruces por cero; el promedio, máximo, mínimo y desviación estándar de la CCF; el retrazo correspondiente al máximo y al mínimo de la CCF; la curtosis de la CCF; la media recortada de la CCF; y la norma de la matriz de la CCF. Dando un total de 78*9+1 = 703 variables del bloque de correlación cruzada.
 
 En donde el número de combinaciones posibles fue de: 
 
@@ -402,10 +402,10 @@ XGB Classifier
 ```
 
 
-Es importante mencionar que por costos computacionales no todos las pruebas se evaluaron con el mismo conjunto de hiperparámetros, en algunos casos se redujo esta búsqueda.
+Es importante mencionar que por costos computacionales no todas las pruebas se evaluaron con el mismo conjunto de hiperparámetros, en algunos casos se redujo esta búsqueda.
 
 
-Para la evaluación de modelos tomamos en consideración las métricas de accuracy, recall_weighted, f1_weighted y roc_auc_ovr. Con base en estas métricas se evaluó que modelo que desempeñó de mejor manera. Para los modelos que se dividieron en chunks adicional de estas métricas, tomamos en consideración la moda de las predicciones de los chunks y así obtuvimos las métricas de accuracy, precision_weighted, recall_weighted y f1_weighted.
+Para la evaluación de modelos tomamos en consideración las métricas de accuracy, recall weighted, F1-score weighted y ROC AUC. Con base en estas métricas se evaluó que modelo que desempeñó de mejor manera. Para los modelos que se dividieron en chunks adicional de estas métricas, tomamos en consideración la moda de las predicciones de los chunks y así obtuvimos las métricas de accuracy, precisión weighted, recall weighted y F1-score weighted.
 
 Las tablas siguientes presentan las métricas obtenidas de los distintos modelos evaluados, con el fin de comparar su desempeño. El análisis detallado de estos resultados se realiza en la sección de Resultados.
 
@@ -415,13 +415,13 @@ Las tablas siguientes presentan las métricas obtenidas de los distintos modelos
 |:------------------:|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
 | Accuracy           |               0.53  |                    0.48  |                        0.50  |        0.34 |           0.51 |
 | Precision weighted |               0.53  |                    0.48  |                        0.50  |        0.37 |           0.52 |
-| F1 weighted        |               0.53  |                    0.48  |                        0.50  |        0.29 |           0.52 |
+| F1-score weighted  |               0.53  |                    0.48  |                        0.50  |        0.29 |           0.52 |
 | ROC AUC            |               0.79  |                    0.75  |                        0.75  |        0.62 |           0.76 |
 
 
 **Tabla 6.** Resultados del modelo utilizando ingeniería de variables.
 
-La Tabla 6 muestra los resultados del modelo utilizando ingeniería de variables. Una de las complicaciones que se tenía en esta primera serie de modelos es la cantidad de datos. Esta primera serie de modelos se utilizó un set de entrenamiento del 30% para train, 20% para test y 10% para validación. Sin embargo, nos quedábamos con muy pocos registros ya que la base original es únicamente de 2,400 y 285 resultantes del PCA lo que llevaría a modelos con sobreajuste y modelos inestables. Por estas complicaciones se planteó la idea de realizar los modelos fragmentando la series originales. 
+La Tabla 6 muestra los resultados del modelo utilizando ingeniería de variables. Una de las complicaciones que se tenía en esta primera serie de modelos es la cantidad de datos. Esta primera serie de modelos se utilizó un set de entrenamiento del 30% para train, 20% para test y 10% para validación. Sin embargo, nos quedábamos con muy pocos registros ya que la base original es únicamente de 2,400 y 285 variables resultantes del PCA lo que llevaría a modelos con sobreajuste y modelos inestables. Por estas complicaciones se planteó la idea de realizar los modelos fragmentando las series originales. 
 
 Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes, en fragmentos de 100 registros y en fragmentos de 5 registros. Estos fragmentos se eligieron en 100 por ser el número de registros que contemplaba un segundo en la serie y fragmentos de 5 por el análisis de autocorrelaciones, en este análisis observamos que las primeras 5 autocorrelaciones eran significativas.
 
@@ -431,11 +431,11 @@ Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes,
 |:-----------------------:|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
 | Accuracy                |               0.26  |                    0.49  |                        0.50  |        0.33 |           0.51 |
 | Precision weighted      |               0.26  |                    0.48  |                        0.51  |        0.33 |           0.52 |
-| F1 weighted             |               0.26  |                    0.48  |                        0.50  |        0.28 |           0.52 |
+| F1-score weighted       |               0.26  |                    0.48  |                        0.50  |        0.28 |           0.52 |
 | ROC AUC                 |               0.50  |                    0.73  |                        0.75  |        0.59 |           0.77 |
 | Accuracy mode           |               0.33  |                    0.57  |                        0.53  |        0.31 |           0.53 |
 | Precision weighted mode |               0.34  |                    0.57  |                        0.56  |        0.30 |           0.54 |
-| F1 weighted mode        |               0.34  |                    0.56  |                        0.54  |        0.24 |           0.53 |
+| F1-score weighted mode  |               0.34  |                    0.56  |                        0.54  |        0.24 |           0.53 |
 
 
 **Tabla 7.** Resultados del modelo utilizando segmentación en chunks de 100.
@@ -446,26 +446,26 @@ Los modelos fragmentando las series en chunks se decidieron utilizar dos cortes,
 |:-----------------------:|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
 | Accuracy                |               0.26  |                    0.49  |                        0.47  |        0.33 |           0.51 |
 | Precision weighted      |               0.26  |                    0.48  |                        0.49  |        0.33 |           0.52 |
-| F1 weighted             |               0.26  |                    0.48  |                        0.48  |        0.28 |           0.52 |
+| F1-score weighted       |               0.26  |                    0.48  |                        0.48  |        0.28 |           0.52 |
 | ROC AUC                 |               0.50  |                    0.73  |                        0.73  |        0.59 |           0.77 |
 | Accuracy mode           |               0.33  |                    0.57  |                        0.51  |        0.31 |           0.53 |
 | Precision weighted mode |               0.34  |                    0.57  |                        0.54  |        0.30 |           0.54 |
-| F1 weighted mode        |               0.34  |                    0.56  |                        0.52  |        0.24 |           0.53 |
+| F1-score weighted mode  |               0.34  |                    0.56  |                        0.52  |        0.24 |           0.53 |
 
 
 **Tabla 8.** Resultados del modelo utilizando segmentación en chunks de 5.
 
 ## 5.4 Modelado utilizando ingeniería de variables divida las series en chunks de 100
 
-| Metric                  | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
-|:-----------------------:|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
-| Accuracy                |               0.52  |                    0.53  |                        0.53  |        0.36 |           0.57 |
-| Precision weighted      |               0.53  |                    0.54  |                        0.54  |        0.38 |           0.57 |
-| F1 weighted             |               0.52  |                    0.53  |                        0.53  |        0.34 |           0.57 |
-| ROC AUC                 |               0.78  |                    0.78  |                        0.79  |        0.65 |           0.82 |
-| Accuracy mode           |               0.55  |                    0.55  |                        0.55  |        0.38 |           0.59 |
-| Precision weighted mode |               0.56  |                    0.56  |                        0.57  |        0.42 |           0.59 |
-| F1 weighted mode        |               0.56  |                    0.55  |                        0.56  |        0.36 |           0.59 |
+| Metric                   | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
+|--------------------------|---------------------|---------------------------|-------------------------------|-------------|-------------|
+| Accuracy                 | 0.52                | 0.53                      | 0.53                          | 0.36        | 0.57           |
+| Precision weighted       | 0.53                | 0.54                      | 0.54                          | 0.38        | 0.57           |
+| F1-score weighted        | 0.52                | 0.53                      | 0.53                          | 0.34        | 0.57           |
+| ROC AUC                  | 0.78                | 0.78                      | 0.79                          | 0.65        | 0.82           |
+| Accuracy mode            | 0.55                | 0.55                      | 0.55                          | 0.38        | 0.59           |
+| Precision weighted mode  | 0.56                | 0.56                      | 0.57                          | 0.42        | 0.59           |
+| F1-score weighted mode   | 0.56                | 0.55                      | 0.56                          | 0.36        | 0.59           |
 
 
 **Tabla 9.** Resultados del modelo utilizando ingeniería de variables y segmentación en chunks de 100 registros.
@@ -487,35 +487,36 @@ La Tabla 10 muestra los tiempos de ejecución de los modelos, los cuales se repo
 
 # 6. Resultados
 
-En esta sección se presentan los resultados de los modelos de clasificación multiclase desarrollados, comparando su desempeño con diferentes combinaciones de features, chunks de series y arquitecturas de modelos. Se reportan las métricas de accuracy, f1-score y ROC AUC.
+En esta sección se presentan los resultados de los modelos de clasificación multiclase desarrollados, comparando su desempeño con diferentes combinaciones de características, chunks de series y arquitecturas de modelos. Se reportan las métricas de accuracy, F1-score y ROC AUC.
 
 El modelo de regresión logística obtuvo un ROC AUC de 0.79 y un accuracy de 0.52. Considerando que el accuracy esperado por azar en un problema multiclase de cuatro categorías balanceadas es de 0.25, este resultado indica que el modelo logró duplicar el desempeño del azar, mostrando que las variables generadas contienen información relevante para la clasificación. Sin embargo, un accuracy de 0.52 es insuficiente para aplicaciones clínicas, donde se requiere una precisión mayor para apoyar decisiones diagnósticas. Una posible causa de esta mejora en el desempeño fue el número limitado de registros y las numerosas variables con las que se entrenó el modelo.
 
 Buscando soluciones a tener una cantidad limitada de registros se optó por dividir el datasets en chunks, es decir, cada serie se dividía en pedazos para poder tener una mayor cantidad de registros. Para esta parte se tomaron dos particiones. La primera partición se tomó el número de retrasos obtenidos en la función de autocorrelación, cinco retrasos, y la segunda partición fue arbitraria de 100 registros, es decir, tomando cada registro como un segundo de la serie.
 
-Para la división de la serie temporal en 5 segmentos ("chunks"), el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de 0.767521, accuracy global de 0.51405 y un accuracy promedio por paciente de 0.528926.
+Para la división de la serie temporal en 5 chunks, el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de 0.767521, accuracy global de 0.51405 y un accuracy promedio por paciente de 0.528926.
 
 Aunque el ROC AUC es ligeramente inferior al obtenido con la regresión logística, el accuracy por paciente es ligeramente superior.
 
 Cabe destacar que, al dividir la serie en chunks, cada uno recibe una predicción individual. Para calcular el accuracy por paciente, se tomó la moda de las predicciones de los chunks correspondientes a cada serie y se comparó con la etiqueta real de dicha serie.
 
-Por otro lado, para la división de la serie temporal en 100 segmentos ("chunks"), el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de 0.767521, accuracy global de 0.51405 y un accuracy promedio por paciente de 0.528926.
+Por otro lado, para la división de la serie temporal en 100 chunks, el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de 0.767521, accuracy global de 0.51405 y un accuracy promedio por paciente de 0.528926.
 
 Otro análisis que se realizó fue aplicar ingeniería de variables a la serie dividida por chunks, en esta parte únicamente se tomó la partición de 100 chunks debido a que la ingeniería de variables no era posible únicamente con 5 valores de la serie.
 
-Para la división de la serie temporal en 100 segmentos ("chunks") utilizando ingeniería de variables, el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de 0.824416, accuracy global de 0.573444 y un accuracy promedio por paciente de 0.593361. Dando el mejor desempeño de los modelos probados, superando a todos los modelos tanto en ROC AUC como en accuracy.
+Para la división de la serie temporal en 100 chunks utilizando ingeniería de variables, el modelo que mostró el mejor desempeño fue el XGB Classifier, con un valor de ROC AUC de 0.824416, accuracy global de 0.573444 y un accuracy promedio por paciente de 0.593361. Dando el mejor desempeño de los modelos probados, superando a todos los modelos tanto en ROC AUC como en accuracy.
 
-| Métrica                    | Ing. variables (LogReg) | 100 chunks (XGB) | 5 chunks (XGB) | 100 chunks + ing. variables (XGB) |
-|----------------------------|-------------------------|------------------|---------------|------------------------------------|
-| Accuracy                   | 0.53                    | 0.51             | 0.41          | 0.57                               |
-| Precision Weighted         | 0.53                    | 0.52             | 0.40          | 0.57                               |
-| Recall Weighted            | 0.53                    | 0.51             | 0.41          | 0.57                               |
-| F1 Weighted                | 0.53                    | 0.52             | 0.40          | 0.57                               |
-| ROC AUC OVR                | 0.79                    | 0.77             | 0.67          | 0.82                               |
-| Accuracy (mode)            | -                       | 0.53             | 0.51          | 0.59                               |
-| Precision Weighted (mode)  | -                       | 0.54             | 0.51          | 0.59                               |
-| Recall Weighted (mode)     | -                       | 0.53             | 0.51          | 0.59                               |
-| F1 Weighted (mode)         | -                       | 0.53             | 0.47          | 0.59                               |
+| Métrica                        | Ing. variables (LogReg) | 100 chunks (XGB) | 5 chunks (XGB) | 100 chunks + ing. variables (XGB) |
+|-------------------------------|--------------------------|------------------|----------------|--------------------------------|
+| Accuracy                      | 0.53                     | 0.51             | 0.41           | 0.57                              |
+| Precision Weighted            | 0.53                     | 0.52             | 0.40           | 0.57                              |
+| Recall Weighted               | 0.53                     | 0.51             | 0.41           | 0.57                              |
+| F1-score Weighted             | 0.53                     | 0.52             | 0.40           | 0.57                              |
+| ROC AUC OVR                   | 0.79                     | 0.77             | 0.67           | 0.82                              |
+| Accuracy (mode)               | -                        | 0.53             | 0.51           | 0.59                              |
+| Precision Weighted (mode)     | -                        | 0.54             | 0.51           | 0.59                              |
+| Recall Weighted (mode)        | -                        | 0.53             | 0.51           | 0.59                              |
+| F1-score Weighted (mode)      | -                        | 0.53             | 0.47           | 0.59                              |
+                                |
 
 
 **Tabla 11.** Métricas modelos ganadores.
@@ -551,7 +552,7 @@ Es importante mencionar que la clase STTC & MI combina las clases STTC y MI, por
 
 **Tabla 13.** Sensibilidad y especificidad por clase en el modelo ganador. La sensibilidad indica la proporción de casos correctamente identificados por clase, mientras que la especificidad representa la proporción de no casos correctamente clasificados. Estas métricas son relevantes para evaluar el desempeño diagnóstico de cada categoría en aplicaciones clínicas.
 
-En la Tabla 13 se muestran las métricas de sensibilidad y especificidad por clase para el modelo ganador. La clase OTHER tuvo la mayor sensibilidad (68.2%) y especificidad (89.8%), indicando que el modelo identifica correctamente a los registros normales o con patologías distintas. La clase MI es la que presentó la menor sensibilidad (52.3%) y especificidad (83.7%). Las clases STTC y STTC & MI mostrron sensibilidades (53.6%-55.3%) y especificidad (84.2%-85.4%) similares. Estos resultados sugieren que el modelo logra un desempeño aceptable en la clasificación general; sin embargo, es necesario optimizar la sensibilidad en las clases de mayor relevancia clínica, como la clase MI, para su aplicación como herramienta de apoyo diagnóstico.
+En la Tabla 13 se muestran las métricas de sensibilidad y especificidad por clase para el modelo ganador. La clase OTHER tuvo la mayor sensibilidad (68.2%) y especificidad (89.8%), indicando que el modelo identifica correctamente a los registros normales o con patologías distintas. La clase MI es la que presentó la menor sensibilidad (52.3%) y especificidad (83.7%). Las clases STTC y STTC & MI mostraron sensibilidades (53.6%-55.3%) y especificidad (84.2%-85.4%) similares. Estos resultados sugieren que el modelo logra un desempeño aceptable en la clasificación general; sin embargo, es necesario optimizar la sensibilidad en las clases de mayor relevancia clínica, como la clase MI, para su aplicación como herramienta de apoyo diagnóstico.
 
 Otro punto importante son los tiempos de entrenamiento de los modelos. En la Tabla 10 se ve que los primeros modelos que usaban solo ingeniería de variables tuvieron tiempos de entrenamiento más bajos en arquitecturas avanzadas, aunque tenían menos datos. También destaca que los modelos XGB con segmentación tuvieron el mejor rendimiento y menor tiempo de entrenamiento frente a otras arquitecturas, aunque solo se entrenaron con una selección de hiperparámetros.
 
@@ -561,7 +562,7 @@ Otro punto importante son los tiempos de entrenamiento de los modelos. En la Tab
 
 El objetivo de este proyecto fue crear un modelo que pudiera clasificar diferentes enfermedades cardíacas usando las señales de EKG del dataset PTB-XL, aplicando ingeniería de variables, separación por segmentos y algoritmos de machine learning.
 
-Para este proyecto se generaron 905 variables por serie, incluyendo estadísticas descriptivas, autocorrelaciones y correlaciones cruzadas. Posteriormente se redujo la dimensionalidad usando componentes principales, quedando 209 variables finales. Se evaluaron varios modelos de clasificación y XGBoost fue el que tuvo mejor desempeño, con un ROC AUC de 0.57, accuracy de 0.50 y F1 macro de 0.47.
+Para este proyecto se generaron 905 variables por serie, incluyendo estadísticas descriptivas, autocorrelaciones y correlaciones cruzadas. Posteriormente se redujo la dimensionalidad usando componentes principales, quedando 209 variables finales. Se evaluaron varios modelos de clasificación y XGBoost fue el que tuvo mejor desempeño, con un ROC AUC de 0.57, accuracy de 0.50 y F1-score macro de 0.47.
 
 Los resultados obtenidos indican que las variables generadas aportan información útil para la clasificación de EKG. Sin embargo, el desempeño de los modelos no alcanza niveles clínicamente aceptables, posiblemente debido a la pérdida de interpretabilidad y varianza explicada al aplicar PCA. Esta reducción en el desempeño sugiere que la selección de variables más relevantes, en lugar de un PCA global, podría mejorar la precisión y facilitar la interpretación médica.
 
