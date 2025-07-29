@@ -99,15 +99,20 @@ El quinto análisis fue el promedio de las series con intervalos de desviación 
 
 El sexto análisis que se realizó fue similar al cuatro, a diferencia que para este análisis utilizamos un suavizamiento de las series.
 
-Es importante mencionar que en este apartado analizaremos únicamente la señal II y clase MI ,Infarto de Miocardio, ya que sirve computacionalmente para analizar infarto inferior.
+Es importante mencionar que, en este apartado se analizarán únicamente la señal II y la clase MI (infarto de miocardio), ya que las derivaciones de la cara inferior (como II, III y aVF) son las más utilizadas para identificar infartos en la región inferior del corazón.
+
+En la Figura 1 se presenta la organización de las derivaciones del ECG según las distintas caras cardíacas (anterior, lateral, inferior y septal), que serán empleadas en los análisis de correlación cruzada entre señales.
+
+![Figura 1. Representación de las caras del corazón (lateral, inferior, septal, anterior) y sus derivaciones correspondientes del electrocardiograma.](/Users/leongaray/Desktop/MCD_EKG/img/general/CEKG.png){ width=50% }
+
 
 ## 3.1 Análisis de ACF y PACF
 
-![Figura 1. Gráficas de autocorrelación y autocorrelación parcial de la señal II](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II.png){ width=50% }
+![Figura 2. Gráficas de autocorrelación y autocorrelación parcial de la señal II](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II.png){ width=50% }
 
-![Figura 2. Gráficas de autocorrelación y autocorrelación parcial de la señal II (30 lags)](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_2.png){ width=50% }
+![Figura 3. Gráficas de autocorrelación y autocorrelación parcial de la señal II (30 lags)](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_2.png){ width=50% }
 
-De las gráficas de autocorrelación y autocorrelación parcial presentadas en la Figura 1 y la Figura 2, podemos notar que estas no descienden a cero, mientras que las gráficas de autocorrelación parciales sí tienden a decrecer a cero conforme aumentan los retrasos. Este comportamiento indica que existe no estacionariedad en la serie o incluso que existe una raíz unitaria. Que la PACF tienda a cero podría indicar que existe un componente autorregresivo, es decir, la serie podría analizarse con un modelo AR.
+De las gráficas de autocorrelación y autocorrelación parcial presentadas en la Figura 2 y la Figura 3, podemos notar que estas no descienden a cero, mientras que las gráficas de autocorrelación parciales sí tienden a decrecer a cero conforme aumentan los retrasos. Este comportamiento indica que existe no estacionariedad en la serie o incluso que existe una raíz unitaria. Que la PACF tienda a cero podría indicar que existe un componente autorregresivo, es decir, la serie podría analizarse con un modelo AR.
 
 Para analizar más a fondo, estudiaremos la existencia de raíces unitarias y de no estacionariedad aplicando diferencias a la serie y aplicando la prueba de Dickey-Fuller.
 
@@ -155,9 +160,9 @@ De la Tabla 2 podemos observar que aunque no todas las series presentan raíz un
 
 De la Tabla 3 se observa que, al realizar una segunda prueba para determinar si era necesario aplicar una diferencia adicional, menos del 1% de las series presentó raíz unitaria. Por lo tanto, se concluye que únicamente es necesario aplicar solo una diferencia.
 
-![Figura 3. Gráficas de autocorrelación y autocorrelación parcial de la señal II después de aplicar diferencias](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_diff_MI.png){ width=50% }
+![Figura 4. Gráficas de autocorrelación y autocorrelación parcial de la señal II después de aplicar diferencias](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/acf_pacf_II_diff_MI.png){ width=50% }
 
-En la Figura 3, donde se muestra la ACF y PACF después de aplicar una diferencia a la serie, se observa que únicamente las primeras cinco autocorrelaciones de la ACF son significativamente distintas de cero, mientras que la PACF mantiene su comportamiento decreciente hacia cero. Este resultado confirma que la suposición inicial sobre la no estacionariedad de las series y la presencia de un componente autorregresivo era correcta.
+En la Figura 4, donde se muestra la ACF y PACF después de aplicar una diferencia a la serie, se observa que únicamente las primeras cinco autocorrelaciones de la ACF son significativamente distintas de cero, mientras que la PACF mantiene su comportamiento decreciente hacia cero. Este resultado confirma que la suposición inicial sobre la no estacionariedad de las series y la presencia de un componente autorregresivo era correcta.
 
 ## 3.3 Descomposición de la serie
 
@@ -181,9 +186,9 @@ En el análisis de descomposición de la serie, nos enfocamos únicamente en el 
 
 **Tabla 4.** Número de saltos en el componente estacional.
 
-![Figura 4. Gráficas de las tendencias estacionales de la señal II](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/seasonal_trend_II.png){ width=50% }
+![Figura 5. Gráficas de las tendencias estacionales de la señal II](/Users/leongaray/Desktop/MCD_EKG/img/acf_pacf/seasonal_trend_II.png){ width=50% }
 
-En la Figura 4, donde se muestran las gráficas del componente estacional, se observa que las señales correspondientes a MI presentan menor variabilidad o desviación en comparación con las demás. Además, se identifican tendencias de picos más marcadas en estas señales.
+En la Figura 5, donde se muestran las gráficas del componente estacional, se observa que las señales correspondientes a MI presentan menor variabilidad o desviación en comparación con las demás. Además, se identifican tendencias de picos más marcadas en estas señales.
 
 La presencia de estos picos en el componente estacional sugiere que las señales presentan periodicidades asociadas al ritmo cardíaco, lo cual puede reflejar patologías. Esta información se utilizó en la ingeniería de variables para contemplar la periodicidad de cada señal.
 
@@ -205,59 +210,59 @@ Para este estudio realizamos un análisis de las señales de la misma cara con s
 
 En este primer análisis buscábamos encontrar relaciones entre las señales con respecto a las clases, como ejemplo utilizaremos la cara interior la cual contiene la señal II.
 
-![Figura 5. Gráficas de correlaciones cruzadas entre la señal II y la señal III](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III.png){ width=50% }
+![Figura 6. Gráficas de correlaciones cruzadas entre la señal II y la señal III](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III.png){ width=50% }
 
-![Figura 6. Gráficas de correlaciones cruzadas entre la señal II y la señal AVF](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF.png){ width=50% }
+![Figura 7. Gráficas de correlaciones cruzadas entre la señal II y la señal AVF](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF.png){ width=50% }
 
-En las Figuras 5 y 6 se observa que existen correlaciones cruzadas notables en los retrasos -75, 0, 75 y unos picos menores dentro de ese intervalo. Sin embargo, no se identificaron diferencias visuales clara entre las clases.
+En las Figuras 6 y 7 se observa que existen correlaciones cruzadas notables en los retrasos -75, 0, 75 y unos picos menores dentro de ese intervalo. Sin embargo, no se identificaron diferencias visuales clara entre las clases.
 
 ### 3.4.2 de correlación cruzada de las series originales con intervalos de desviación estándar.
 
 En este segundo análisis estudiamos como se comporta el promedio de las correlaciones cruzadas en conjunto con la desviación estándar. 
 
-![Figura 7. Gráficas de correlaciones cruzadas entre la señal II y la señal III con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd.png){ width=50% }
+![Figura 8. Gráficas de correlaciones cruzadas entre la señal II y la señal III con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd.png){ width=50% }
 
-![Figura 8. Gráficas de correlaciones cruzadas entre la señal II y la señal AVF con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd.png){ width=50% }
+![Figura 9. Gráficas de correlaciones cruzadas entre la señal II y la señal AVF con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd.png){ width=50% }
 
-En las Figuras 7 y 8 se observa que, en promedio, la correlación cruzada alcanza su máximo en el retraso 0. Sin embargo, en los demás retrasos no se evidencia una correlación cruzada significativa.
+En las Figuras 8 y 9 se observa que, en promedio, la correlación cruzada alcanza su máximo en el retraso 0. Sin embargo, en los demás retrasos no se evidencia una correlación cruzada significativa.
 
 ### 3.4.3 Análisis de correlación cruzada promedio de las series originales con intervalos de desviación estándar.
 
-![Figura 9. Promedio de las correlaciones cruzadas entre la señal II y la señal III con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_mean_II_III_sd.png){ width=50% }
+![Figura 10. Promedio de las correlaciones cruzadas entre la señal II y la señal III con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_mean_II_III_sd.png){ width=50% }
 
-![Figura 10. Promedio de las correlaciones cruzadas entre la señal II y la señal AVF con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_mean_II_AVF_sd.png){ width=50% }
+![Figura 12. Promedio de las correlaciones cruzadas entre la señal II y la señal AVF con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_mean_II_AVF_sd.png){ width=50% }
 
-En relación con el análisis anterior, en las Figuras 9 y 10 se observa que, en promedio, la correlación cruzada alcanza su máximo en el retraso 0. Sin embargo, en los demás retrasos no se identifica una correlación cruzada significativa.
+En relación con el análisis anterior, en las Figuras 10 y 11 se observa que, en promedio, la correlación cruzada alcanza su máximo en el retraso 0. Sin embargo, en los demás retrasos no se identifica una correlación cruzada significativa.
 
 ### 3.4.4 Análisis de cross-correlation del promedio de series con suavizamiento (window 50) e intervalos de desviación estándar.
 
 Otro análisis realizado fue el análisis de correlación cruzada del promedio de la serie suavizada con una ventana arbitraria de 50 periodos. El objetivo de utilizar un suavizamiento fue eliminar ruido y evaluar patrones generales.
 
-![Figura 11. Promedio de las correlaciones cruzadas entre la señal II y la señal III con suavizado (ventana 50) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd_smooth_50.png){ width=50% }
+![Figura 12. Promedio de las correlaciones cruzadas entre la señal II y la señal III con suavizado (ventana 50) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd_smooth_50.png){ width=50% }
 
-![Figura 12. Promedio de las correlaciones cruzadas entre la señal II y la señal AVF con suavizado (ventana 50) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd_smooth_50.png){ width=50% }
+![Figura 13. Promedio de las correlaciones cruzadas entre la señal II y la señal AVF con suavizado (ventana 50) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd_smooth_50.png){ width=50% }
 
-En las Figuras 11 y 12 se observa que las gráficas presentan picos similares a los del análisis original, sin que se identifique una diferenciación clara entre clases. Por lo tanto, este suavizado no aporta mejoras visuales evidentes.
+En las Figuras 12 y 13 se observa que las gráficas presentan picos similares a los del análisis original, sin que se identifique una diferenciación clara entre clases. Por lo tanto, este suavizado no aporta mejoras visuales evidentes.
 
 ### 3.4.5 Análisis de cross-correlation window particular.
 
 Otro análisis realizado fue el análisis de correlación cruzada utilizando como suavizamiento ventanas con periodos obtenidos en la descomposición de la serie. Este suavizamiento se hizo con los valores particulares de cada señal, al igual que el análisis anterior el objetivo fue eliminar ruido y evaluar patrones generales.
 
-![Figura 13. Promedio de las correlaciones cruzadas entre la señal II y la señal III con suavizado (ventana particular) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd_smooth_part.png){ width=50% }
+![Figura 14. Promedio de las correlaciones cruzadas entre la señal II y la señal III con suavizado (ventana particular) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd_smooth_part.png){ width=50% }
 
-![Figura 14. Promedio de las correlaciones cruzadas entre la señal II y la señal AVF con suavizado (ventana particular) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd_smooth_part.png){ width=50% }
+![Figura 15. Promedio de las correlaciones cruzadas entre la señal II y la señal AVF con suavizado (ventana particular) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd_smooth_part.png){ width=50% }
 
-En la Figura 13 y en la Figura 14 podemos observar que al utilizar una ventana de suavizamiento particular se obtiene una gráfica de correlación cruzada más suave, y se pueden notar picos en otros puntos además del retraso cero. Sin embargo, en ambos casos tampoco existe una relación clara que permita separar las clases de las señales.
+En la Figura 14 y en la Figura 15 podemos observar que al utilizar una ventana de suavizamiento particular se obtiene una gráfica de correlación cruzada más suave, y se pueden notar picos en otros puntos además del retraso cero. Sin embargo, en ambos casos tampoco existe una relación clara que permita separar las clases de las señales.
 
 ### 3.4.6 Análisis de cross-correlation con ventana (window) promedio
 
 El último análisis de suavizamiento que se realizó con las correlaciones cruzadas fue analizar si el promedio de los saltos que encontramos en la descomposición de la serie de todas las clases.
 
-![Figura 15. Promedio de las correlaciones cruzadas entre la señal II y la señal III con suavizado (ventana promedio) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd_smooth_mean.png){ width=50% }
+![Figura 16. Promedio de las correlaciones cruzadas entre la señal II y la señal III con suavizado (ventana promedio) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_III_sd_smooth_mean.png){ width=50% }
 
-![Figura 16. Promedio de las correlaciones cruzadas entre la señal II y la señal AVF con suavizado (ventana promedio) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd_smooth_mean.png){ width=50% }
+![Figura 17. Promedio de las correlaciones cruzadas entre la señal II y la señal AVF con suavizado (ventana promedio) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/ccf_II_AVF_sd_smooth_mean.png){ width=50% }
 
-En la Figura 15 y en la Figura 16 podemos notar que aplicar un suavizamiento particular o un promedio nos ayuda a encontrar picos en la gráfica de correlación cruzada que no eran fáciles de ver en la gráfica del promedio de las series. Sin embargo, en ambos casos no encontramos una relación clara que permita separar las clases de las señales.
+En la Figura 16 y en la Figura 17 podemos notar que aplicar un suavizamiento particular o un promedio nos ayuda a encontrar picos en la gráfica de correlación cruzada que no eran fáciles de ver en la gráfica del promedio de las series. Sin embargo, en ambos casos no encontramos una relación clara que permita separar las clases de las señales.
 
 ## 3.5 Análisis de serie con intervalos de desviación estándar
 
@@ -267,9 +272,9 @@ El objetivo de este análisis fue evaluar si existían patrones característicos
 
 Se analizó el promedio de las series junto con sus intervalos de desviación estándar, para evaluar si existían diferencias visuales entre clases. Sin embargo, visualmente no se encontraron relaciones claras para separar las clases.
 
-![Figura 17. Gráficas del promedio de la señal II con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean.png){ width=50% }
+![Figura 18. Gráficas del promedio de la señal II con bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean.png){ width=50% }
 
-Como se observa en la Figura 17, las señales presentan alta variabilidad y no se logra identificar patrones claros que permitan diferenciar las clases.
+Como se observa en la Figura 18, las señales presentan alta variabilidad y no se logra identificar patrones claros que permitan diferenciar las clases.
 
 ## 3.5.2 Análisis de serie con intervalos de desviación estándar con suavizamiento de series
 
@@ -283,25 +288,25 @@ Para este análisis se utilizaron las distintas ventanas de suavizamiento:
 
 Se analizó el promedio de las series suavizadas con una ventana de 50 periodos junto con sus intervalos de desviación estándar, para evaluar si existían diferencias visuales entre clases. Sin embargo, visualmente no se encontraron relaciones claras para separar las clases.
 
-![Figura 18. Gráficas del promedio de la señal II con suavizado (ventana 50) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth.png){ width=50% }
+![Figura 19. Gráficas del promedio de la señal II con suavizado (ventana 50) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth.png){ width=50% }
 
-En la Figura 18 se puede observar que con este suavizamiento se elimina parte de la variabilidad de las gráficas. Sin embargo, visualmente no se pueden identificar diferencias claras entre las clases.
+En la Figura 19 se puede observar que con este suavizamiento se elimina parte de la variabilidad de las gráficas. Sin embargo, visualmente no se pueden identificar diferencias claras entre las clases.
 
 ### 3.5.2.2 Promedio de series con suavizamiento particular e intervalos de desviación estándar.
 
 Se analizó el promedio de las series suavizadas utilizando una ventana particular para cada señal y clase, con intervalos de desviación estándar, para evaluar si existían diferencias visuales entre clases. Sin embargo, visualmente no se encontraron patrones claros para separar las clases.
 
-![Figura 19. Gráficas del promedio de la señal II con suavizado (ventana particular) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth_part.png){ width=50% }
+![Figura 20. Gráficas del promedio de la señal II con suavizado (ventana particular) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth_part.png){ width=50% }
 
-En la Figura 19 se puede observar que con este suavizamiento se elimina parte de la variabilidad de las gráficas. Sin embargo, visualmente no se identificaron relaciones claras entre las clases.
+En la Figura 20 se puede observar que con este suavizamiento se elimina parte de la variabilidad de las gráficas. Sin embargo, visualmente no se identificaron relaciones claras entre las clases.
 
 ### 3.5.2.3 Promedio de series con suavizamiento promedio e intervalos de desviación estándar.
 
 El último análisis realizado fue el promedio de las series suavizadas con una ventana promedio para cada señal con intervalos de desviación estándar, para evaluar si existían diferencias visuales entre clases. Sin embargo, visualmente no se encontraron relaciones directas para separar las clases.
 
-![Figura 20. Gráficas del promedio de la señal II con suavizado (ventana promedio) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth_mean.png){ width=50% }
+![Figura 21. Gráficas del promedio de la señal II con suavizado (ventana promedio) y bandas de desviación estándar](/Users/leongaray/Desktop/MCD_EKG/img/ccf/signal_II_mean_smooth_mean.png){ width=50% }
 
-En la Figura 20 se puede observar que con este suavizamiento se elimina parte de la variabilidad de las gráficas. Sin embargo, visualmente no se encontraron patrones que permitan separar las clases.
+En la Figura 21 se puede observar que con este suavizamiento se elimina parte de la variabilidad de las gráficas. Sin embargo, visualmente no se encontraron patrones que permitan separar las clases.
 
 En resumen, aunque los distintos métodos de suavizado redujeron la variabilidad de las señales, no se encontraron diferencias visuales claras entre clases. Esto sugiere que estos promedios suavizados no contienen información suficiente para separarlos, aunque sus estadísticas se considerarán como posibles variables en el modelo.
 
@@ -388,7 +393,7 @@ Naive Bayes
 
 XGB Classifier
         {
-        'learning_rate': [0.1],  # si quisieras probar más, agrega aquí
+        'learning_rate': [0.1],
         'n_estimators': [5000, 4000, 10000],
         'eval_metric': ['merror', 'auc'],
         'objective': ['multi:softprob'],
@@ -396,7 +401,7 @@ XGB Classifier
 ```
 
 
-Es importante mencionar que por costos computacionales no todos las pruebas se evaluaron con el mismo conjunto de datos, en algunos casos se redujo esta búsqueda.
+Es importante mencionar que por costos computacionales no todos las pruebas se evaluaron con el mismo conjunto de hiperparámetros, en algunos casos se redujo esta búsqueda.
 
 
 Para la evaluación de modelos tomamos en consideración las métricas de accuracy, recall_weighted, f1_weighted y roc_auc_ovr. Con base en estas métricas se evaluó que modelo que desempeñó de mejor manera. Para los modelos que se dividieron en chunks adicional de estas métricas, tomamos en consideración la moda de las predicciones de los chunks y así obtuvimos las métricas de accuracy, precision_weighted, recall_weighted y f1_weighted.
@@ -573,9 +578,19 @@ En conclusión, este proyecto permitió desarrollar habilidades avanzadas para a
 
 Wagner, P., Strodthoff, N., Bousseljot, R.-D., Kreiseler, D., Lunze, F. I., Samek, W., … Schaeffter, T. (2020). PTB‑XL, a large publicly available electrocardiography dataset. Scientific Data, 7, 154. https://doi.org/10.1038/s41597-020-0495-6 
 
+Dubin, D. (2003). Electrocardiografía práctica: Lesionales, trazado e interpretación (3.ª ed.). McGraw-Hill Interamericana.
 
+Guerrero, V. M. (1993). Análisis estadístico de series de tiempo económicas. Limusa.
 
-\newpage
+Box, G. E. P., Jenkins, G. M., Reinsel, G. C., & Ljung, G. M. (2015). Time series analysis: Forecasting and control (5th ed.). Wiley.
+
+Hastie, T., Tibshirani, R., & Friedman, J. (2009). The elements of statistical learning: Data mining, inference, and prediction (2nd ed.). Springer.
+
+Medical Exam Prep. (2020, 10 de septiembre). Understanding acute coronary syndromes. Recuperado de https://www.medicalexamprep.co.uk/understanding-acute-coronary-syndromes/
+
+Auffarth, B. (2021). Machine learning for time-series with Python: Forecast, predict, and detect anomalies with state-of-the-art machine learning methods. Packt Publishing.
+
+Guadalajara Boo, J. F. (2012). Cardiología (7.ª ed.). Coyoacán, Ciudad de México: Mendez Editores. 
 
 # 9. Repositorio
 
