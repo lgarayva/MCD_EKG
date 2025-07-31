@@ -364,13 +364,18 @@ Para los modelos evaluados (excepto *XGB Classifier*), se realizó una búsqueda
 
 Se emplearon distintos diccionarios de hiperparámetros para cada modelo durante la fase de entrenamiento. A continuación se muestran las configuraciones evaluadas:
 
+### Búsqueda de Hiperparámetros
+
+Se emplearon distintos diccionarios de hiperparámetros para cada modelo durante la fase de entrenamiento. A continuación se muestran las configuraciones evaluadas:
+
 | Modelo                  | Hiperparámetros buscados |
 |-------------------------|---------------------------|
-| **Logistic Regression** | `penalty`: `['l2']`<br>`C`: `[1e-5, 1e-4, 1e-3, 0.01, 0.1, 1, 10]` |
-| **Random Forest**       | `n_estimators`: `[100, 350, 500]`<br>`max_features`: `['log2', 'sqrt']`<br>`max_depth`: `[5, 10, 20]`<br>`min_samples_split`: `[2, 10, 30]`<br>`min_samples_leaf`: `[2, 10, 30]` |
-| **Gradient Boosting**   | `n_estimators`: `[1, 10, 100]`<br>`learning_rate`: `[0.01, 0.05, 0.1]`<br>`subsample`: `[0.1, 0.5, 1.0]`<br>`max_depth`: `[5, 10, 20]`<br>`min_samples_split`: `[2, 10, 30]`<br>`min_samples_leaf`: `[2, 10, 30]`<br>`max_features`: `['log2', 'sqrt']` |
-| **Naive Bayes**         | `var_smoothing`: `[1e-9, 1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3]` |
-| **XGBoost**             | `learning_rate`: `[0.1]`<br>`n_estimators`: `[4000, 5000, 10000]`<br>`eval_metric`: `['merror', 'auc']`<br>`objective`: `['multi:softprob']`<br>`early_stopping_rounds`: `[500, 1000]` |
+| **Logistic Regression** | *penalty*: ['l2']<br>*C*: [1e-5, 1e-4, 1e-3, 0.01, 0.1, 1, 10] |
+| **Random Forest**       | *n_estimators*: [100, 350, 500]<br>*max_features*: ['log2', 'sqrt']<br>*max_depth*: [5, 10, 20]<br>*min_samples_split*: [2, 10, 30]<br>*min_samples_leaf*: [2, 10, 30] |
+| **Gradient Boosting**   | *n_estimators*: [1, 10, 100]<br>*learning_rate*: [0.01, 0.05, 0.1]<br>*subsample*: [0.1, 0.5, 1.0]<br>*max_depth*: [5, 10, 20]<br>*min_samples_split*: [2, 10, 30]<br>*min_samples_leaf*: [2, 10, 30]<br>*max_features*: ['log2', 'sqrt'] |
+| **Naive Bayes**         | *var_smoothing*: [1e-9, 1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3] |
+| **XGBoost**             | *learning_rate*: [0.1]<br>*n_estimators*: [4000, 5000, 10000]<br>*eval_metric*: ['merror', 'auc']<br>*objective*: ['multi:softprob']<br>*early_stopping_rounds*: [500, 1000] |
+
 
 Tabla 5. Diccionarios de hiperparámetros utilizados en la búsqueda de *grid search* para cada modelo de clasificación. No todos los modelos se entrenaron con el conjunto completo de combinaciones debido a limitaciones computacionales.
 
