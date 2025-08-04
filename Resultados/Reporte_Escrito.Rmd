@@ -33,7 +33,7 @@ El electrocardiograma es un estudio no invasivo que registra la actividad eléct
 
 La interpretación de un EKG requiere experiencia clínica y puede variar entre especialistas. Por ello, se ha buscado desarrollar modelos automatizados de interpretación usando *machine learning*. El *dataset* PTB-XL, que tiene más de 21,000 registros validados por cardiólogos, permite explorar estas aplicaciones.
 
-Este proyecto busca desarrollar un modelo de clasificación multiclase de EKG para diferenciar distintas patologías cardíacas, usando ingeniería de variables, análisis de series temporales y algoritmos de *machine learning*, evaluando su desempeño y utilidad clínica.
+Este proyecto busca desarrollar un modelo de clasificación multiclase de EKG para diferenciar distintas patologías cardíacas, usando ingeniería de características, análisis de series temporales y algoritmos de *machine learning*, evaluando su desempeño y utilidad clínica.
 
 \newpage
 
@@ -191,7 +191,7 @@ En el análisis de descomposición de la serie, nos enfocamos únicamente en el 
 
 En la Figura 5, donde se muestran las gráficas del componente estacional, se observa que las señales correspondientes a MI presentan menor variabilidad o desviación en comparación con las demás. Además, se identifican tendencias de picos más marcadas en estas señales.
 
-La presencia de estos picos en el componente estacional sugiere que las señales presentan periodicidades asociadas al ritmo cardíaco, lo cual puede reflejar patologías. Esta información se utilizó en la ingeniería de variables para contemplar la periodicidad de cada señal.
+La presencia de estos picos en el componente estacional sugiere que las señales presentan periodicidades asociadas al ritmo cardíaco, lo cual puede reflejar patologías. Esta información se utilizó en la ingeniería de características para contemplar la periodicidad de cada señal.
 
 ## 3.4 Análisis de correlación cruzada
 
@@ -313,9 +313,9 @@ En resumen, aunque los distintos métodos de suavizado redujeron la variabilidad
 
 \newpage
 
-# 4. Ingeniería de variables
+# 4. Ingeniería de características
 
-La ingeniería de variables tuvo como objetivo generar variables que capturaran la estructura temporal, la variabilidad y la relación entre señales del EKG, con el fin de generar un modelo de clasificación multiclase. Se generaron variables basadas en autocorrelaciones, estadística descriptiva y correlaciones cruzadas. Además, se aplicó un análisis de componentes principales para reducir dimensionalidad en los datos.
+La ingeniería de características tuvo como objetivo generar variables que capturaran la estructura temporal, la variabilidad y la relación entre señales del EKG, con el fin de generar un modelo de clasificación multiclase. Se generaron variables basadas en autocorrelaciones, estadística descriptiva y correlaciones cruzadas. Además, se aplicó un análisis de componentes principales para reducir dimensionalidad en los datos.
 
 ## 4.1 Variables de autocorrelaciones
 
@@ -338,9 +338,9 @@ $$\binom{12 + 2 - 1}{2} = 78$$
 ## 4.4 Análisis de Componentes Principales
 
 
-Se aplicó Análisis de Componentes Principales (PCA) sobre el conjunto de variables generadas para reducir la dimensionalidad y evitar la multicolinealidad. Inicialmente se tenían 120+72+703 = 905 variables de todos los bloques. Se seleccionaron los primeros k componentes principales que explicaban al menos el 95% de la varianza. Resultando en 285 componentes principales.
+Se aplicó Análisis de Componentes Principales (PCA) sobre el conjunto de variables generadas para reducir la dimensionalidad y evitar la multicolinealidad. Inicialmente se tenían 120+72+703 = 905 variables de todos los bloques. Se seleccionaron los primeros k componentes principales que explicaban al menos el 95 % de la varianza, lo que resultó en 285 componentes principales para la serie original y 209 para la serie segmentada en *chunks*.
 
-En total, se generaron 285 variables por serie. Estas características se usaron como entrada en los modelos de clasificación. Sin embargo, al aplicar PCA para reducir la dimensionalidad, no se evaluó directamente la importancia de cada variable, ya que los modelos utilizaron las combinaciones de componentes principales.
+En total, se generaron 285 componentes principales por serie para los datos originales y 209 para las series segmentadas en chunks. Sin embargo, al aplicar PCA para reducir la dimensionalidad, no se evaluó directamente la importancia de cada variable, ya que los modelos utilizaron las combinaciones de componentes principales.
 
 \newpage
 
@@ -348,9 +348,9 @@ En total, se generaron 285 variables por serie. Estas características se usaron
 
 Para el modelado se utilizaron distintas arquitecturas de modelos de aprendizaje de máquina. En el modelado realizamos 3 pruebas: 
 
-* Modelado utilizando ingeniería de variables
+* Modelado utilizando ingeniería de características
 * Modelado utilizando los valores de las series dividido en partes la serie (*chunks*).
-* Modelado utilizando ingeniería de variables dividiendo la serie en partes (*chunks*). 
+* Modelado utilizando ingeniería de características dividiendo la serie en partes (*chunks*). 
 
 Los modelos que se utilizaron en estas pruebas fueron los siguientes:
 
@@ -386,7 +386,7 @@ Para la evaluación de modelos tomamos en consideración las métricas de *accur
 
 Las tablas siguientes presentan las métricas obtenidas de los distintos modelos evaluados, con el fin de comparar su desempeño. El análisis detallado de estos resultados se realiza en la sección de Resultados.
 
-## 5.1 Modelado utilizando ingeniería de variables
+## 5.1 Modelado utilizando ingeniería de características
 
 | *Metric*             | *Logistic Regression* | *Random Forest Classifier* | *Gradient Boosting Classifier* | *Naive Bayes* | *XGB Classifier* |
 |:------------------:|--------------------:|-------------------------:|-----------------------------:|------------:|---------------:|
@@ -396,9 +396,9 @@ Las tablas siguientes presentan las métricas obtenidas de los distintos modelos
 | *ROC AUC*            |               0.79  |                    0.75  |                        0.75  |        0.62 |           0.76 |
 
 
-**Tabla 6.** Resultados del modelo utilizando ingeniería de variables.
+**Tabla 6.** Resultados del modelo utilizando ingeniería de características.
 
-La Tabla 6 muestra los resultados del modelo utilizando ingeniería de variables. Una de las complicaciones que se tenía en esta primera serie de modelos es la cantidad de datos. Esta primera serie de modelos se utilizó un set de entrenamiento del 30% para *train*, 20% para *test* y 10% para validación. Sin embargo, nos quedábamos con muy pocos registros, ya que la base original es únicamente de 2,400 y 285 variables resultantes del PCA lo que llevaría a modelos con sobreajuste y modelos inestables. Por estas complicaciones se planteó la idea de realizar los modelos fragmentando las series originales. 
+La Tabla 6 muestra los resultados del modelo utilizando ingeniería de características. Una de las complicaciones que se tenía en esta primera serie de modelos es la cantidad de datos. Esta primera serie de modelos se utilizó un set de entrenamiento del 30% para *train*, 20% para *test* y 10% para validación. Sin embargo, nos quedábamos con muy pocos registros, ya que la base original es únicamente de 2,400 y 285 variables resultantes del PCA lo que llevaría a modelos con sobreajuste y modelos inestables. Por estas complicaciones se planteó la idea de realizar los modelos fragmentando las series originales. 
 
 Los modelos fragmentando las series en *chunks* se decidió utilizar dos cortes, en fragmentos de 100 registros y en fragmentos de 5 registros. Estos fragmentos se eligieron en 100 por ser el número de registros que contemplaba un segundo en la serie y fragmentos de 5 por el análisis de autocorrelaciones, en este análisis observamos que las primeras 5 autocorrelaciones eran significativas.
 
@@ -432,7 +432,7 @@ Los modelos fragmentando las series en *chunks* se decidió utilizar dos cortes,
 
 **Tabla 8.** Resultados del modelo utilizando segmentación en *chunks* de 5.
 
-## 5.4 Modelado utilizando ingeniería de variables divida las series en *chunks* de 100
+## 5.4 Modelado utilizando ingeniería de características divida las series en *chunks* de 100
 
 | *Metric*                   | *Logistic Regression* | *Random Forest Classifier* | *Gradient Boosting Classifier* | *Naive Bayes* | *XGB Classifier* |
 |--------------------------|---------------------|---------------------------|-------------------------------|-------------|-------------|
@@ -445,7 +445,7 @@ Los modelos fragmentando las series en *chunks* se decidió utilizar dos cortes,
 | *F1-score weighted mode*   | 0.56                | 0.55                      | 0.56                          | 0.36        | 0.59           |
 
 
-**Tabla 9.** Resultados del modelo utilizando ingeniería de variables y segmentación en *chunks* de 100 registros.
+**Tabla 9.** Resultados del modelo utilizando ingeniería de características y segmentación en *chunks* de 100 registros.
 
 ## 5.5 Tiempos de ejecución
 
@@ -478,9 +478,9 @@ Cabe destacar que, al dividir la serie en *chunks*, cada uno recibe una predicci
 
 Por otro lado, para la división de la serie temporal en 100 *chunks*, el modelo que mostró el mejor desempeño fue el *XGB Classifier*, con un valor de *ROC AUC* de 0.767521, *accuracy* global de 0.51405 y un *accuracy* promedio por paciente de 0.528926.
 
-Otro análisis que se realizó fue aplicar ingeniería de variables a la serie dividida por *chunks*, en esta parte únicamente se tomó la partición de 100 *chunks* debido a que la ingeniería de variables no era posible únicamente con 5 valores de la serie.
+Otro análisis que se realizó fue aplicar ingeniería de características a la serie dividida por *chunks*, en esta parte únicamente se tomó la partición de 100 *chunks* debido a que la ingeniería de características no era posible únicamente con 5 valores de la serie.
 
-Para la división de la serie temporal en 100 *chunks* utilizando ingeniería de variables, el modelo que mostró el mejor desempeño fue el *XGB Classifier*, con un valor de *ROC AUC* de 0.824416, *accuracy* global de 0.573444 y un *accuracy* promedio por paciente de 0.593361. Dando el mejor desempeño de los modelos probados, superando a todos los modelos tanto en *ROC AUC* como en *accuracy*.
+Para la división de la serie temporal en 100 *chunks* utilizando ingeniería de características, el modelo que mostró el mejor desempeño fue el *XGB Classifier*, con un valor de *ROC AUC* de 0.824416, *accuracy* global de 0.573444 y un *accuracy* promedio por paciente de 0.593361. Dando el mejor desempeño de los modelos probados, superando a todos los modelos tanto en *ROC AUC* como en *accuracy*.
 
 | Métrica                        | Ing. variables (*LogReg*) | 100 *chunks* (*XGB*) | 5 *chunks* (*XGB*) | 100 *chunks* + ing. variables (*XGB*) |
 |-------------------------------|--------------------------|------------------|----------------|--------------------------------|
@@ -497,7 +497,7 @@ Para la división de la serie temporal en 100 *chunks* utilizando ingeniería de
 
 **Tabla 11.** Métricas modelos ganadores.
 
-En la Tabla 11 se comparan los cuatro *pipelines* previamente descritos: ingeniería de variables, 100 *chunks*, 5 *chunks* y 100 *chunks* con ingeniería de variables. Se observa que el modelo con mejor desempeño fue *XGBoost* con el enfoque de 100 *chunks* combinado con ingeniería de variables, obteniendo un *accuracy* de 0.57 y un *ROC AUC* de 0.82.
+En la Tabla 11 se comparan los cuatro *pipelines* previamente descritos: ingeniería de características, 100 *chunks*, 5 *chunks* y 100 *chunks* con ingeniería de características. Se observa que el modelo con mejor desempeño fue *XGBoost* con el enfoque de 100 *chunks* combinado con ingeniería de características, obteniendo un *accuracy* de 0.57 y un *ROC AUC* de 0.82.
 
 La siguiente tabla muestra la matriz de confusión del modelo ganador. Se puede observar cuántas veces el modelo acertó en cada clase y en cuáles se equivocó más.
 
@@ -530,19 +530,19 @@ Es importante mencionar que la clase STTC & MI combina las clases STTC y MI, por
 
 En la Tabla 13 se muestran las métricas de sensibilidad y especificidad por clase para el modelo ganador. La clase OTHER tuvo la mayor sensibilidad (68.2%) y especificidad (89.8%), indicando que el modelo identifica correctamente a los registros normales o con patologías distintas. La clase MI es la que presentó la menor sensibilidad (52.3%) y especificidad (83.7%). Las clases STTC y STTC & MI mostraron sensibilidades (53.6%-55.3%) y especificidad (84.2%-85.4%) similares. Estos resultados sugieren que el modelo logra un desempeño aceptable en la clasificación general; sin embargo, es necesario optimizar la sensibilidad en las clases de mayor relevancia clínica, como la clase MI, para su aplicación como herramienta de apoyo diagnóstico.
 
-Otro punto importante son los tiempos de entrenamiento de los modelos. En la Tabla 10 se ve que los primeros modelos que usaban solo ingeniería de variables tuvieron tiempos de entrenamiento más bajos en arquitecturas avanzadas, aunque tenían menos datos. También destaca que los modelos *XGB* con segmentación tuvieron el mejor rendimiento y menor tiempo de entrenamiento frente a otras arquitecturas, aunque solo se entrenaron con una selección de hiperparámetros.
+Otro punto importante son los tiempos de entrenamiento de los modelos. En la Tabla 10 se ve que los primeros modelos que usaban solo ingeniería de características tuvieron tiempos de entrenamiento más bajos en arquitecturas avanzadas, aunque tenían menos datos. También destaca que los modelos *XGB* con segmentación tuvieron el mejor rendimiento y menor tiempo de entrenamiento frente a otras arquitecturas, aunque solo se entrenaron con una selección de hiperparámetros.
 
 \newpage
 
 # 7. Conclusiones
 
-El objetivo de este proyecto fue crear un modelo que pudiera clasificar diferentes enfermedades cardíacas usando las señales de EKG del *dataset* PTB-XL, aplicando ingeniería de variables, separación por segmentos y algoritmos de *machine learning*.
+El objetivo de este proyecto fue crear un modelo que pudiera clasificar diferentes enfermedades cardíacas usando las señales de EKG del *dataset* PTB-XL, aplicando ingeniería de características, separación por segmentos y algoritmos de *machine learning*.
 
 Para este proyecto se generaron 905 variables por serie, incluyendo estadísticas descriptivas, autocorrelaciones y correlaciones cruzadas. Posteriormente se redujo la dimensionalidad usando componentes principales, quedando 209 variables finales. Se evaluaron varios modelos de clasificación y *XGBoost* fue el que tuvo mejor desempeño, con un *ROC AUC* de 0.57, *accuracy* de 0.50 y *F1-score macro* de 0.47.
 
 Los resultados obtenidos indican que las variables generadas aportan información útil para la clasificación de EKG. Sin embargo, el desempeño de los modelos no alcanza niveles clínicamente aceptables, posiblemente debido a la pérdida de interpretabilidad y varianza explicada al aplicar PCA. Esta reducción en el desempeño sugiere que la selección de variables más relevantes, en lugar de un PCA global, podría mejorar la precisión y facilitar la interpretación médica.
 
-También se observó que el modelo de *XGBoost* con segmentación e ingeniería de variables no solo obtuvo el mejor desempeño, sino que además presentó tiempos de entrenamiento bajos en comparación con otras arquitecturas. Sin embargo, debido a limitaciones computacionales, los modelos se entrenaron utilizando un número reducido de hiperparámetros, lo que podría haber limitado su optimización completa. Este resultado sugiere que *XGBoost* es una opción eficiente y viable para este problema, aunque se recomienda realizar una búsqueda de hiperparámetros más exhaustiva en futuros trabajos.
+También se observó que el modelo de *XGBoost* con segmentación e ingeniería de características no solo obtuvo el mejor desempeño, sino que además presentó tiempos de entrenamiento bajos en comparación con otras arquitecturas. Sin embargo, debido a limitaciones computacionales, los modelos se entrenaron utilizando un número reducido de hiperparámetros, lo que podría haber limitado su optimización completa. Este resultado sugiere que *XGBoost* es una opción eficiente y viable para este problema, aunque se recomienda realizar una búsqueda de hiperparámetros más exhaustiva en futuros trabajos.
 
 Las principales limitaciones de este proyecto fueron la cantidad limitada de recursos y las restricciones computacionales. Debido a esto, se decidió trabajar con una segmentación arbitraria de los registros, sin considerar intervalos fisiológicos como ciclos cardiacos completos, lo que podría afectar la interpretación clínica de los resultados. Además, aunque se redujo la dimensionalidad aplicando PCA, esto limitó la interpretación de los componentes, ya que se pierde la información sobre qué variables originales aportan más a la separación de clases.
 
@@ -552,7 +552,62 @@ En conclusión, este proyecto permitió desarrollar habilidades avanzadas para a
 
 \newpage
 
-# 8. Bibliografía
+## 8. Descripción del producto de datos
+
+El producto de datos generado en este trabajo es un modelo de clasificación multiclase de electrocardiogramas (EKG), basado en señales del *dataset* PTB-XL. Este modelo permite identificar cuatro clases clínicas relevantes: infarto de miocardio (MI), cambios en el segmento ST/T (STTC), combinación STTC & MI, y otras alteraciones (OTHER). El modelo fue entrenado con una arquitectura *XGBoost Classifier*, utilizando variables derivadas del análisis de series de tiempo e ingeniería de características.
+
+Junto con el modelo predictivo, se construyó un conjunto estructurado de características que captura información estadística, autocorrelaciones, patrones estacionales y relaciones cruzadas entre señales. En total, se generaron 905 variables por serie, las cuales fueron posteriormente reducidas mediante análisis de componentes principales (PCA), conservando 209 componentes que explican el 95 % de la varianza. Este conjunto de variables constituye un producto reutilizable, apto para entrenar nuevos modelos o como base para estudios clínicos y análisis automatizados.
+
+Además, se desarrolló un *pipeline* completo de procesamiento, que incluye:
+
+- Carga y preprocesamiento de señales EKG.
+- Cálculo de métricas de autocorrelación, descomposición estacional y correlaciones cruzadas.
+- Generación de variables y reducción de dimensionalidad.
+- Segmentación en *chunks* de las señales para aumentar el tamaño del conjunto de datos.
+- Entrenamiento, evaluación y validación de distintos modelos de clasificación.
+
+Todo este flujo fue implementado en *Python* y está disponible públicamente en el siguiente repositorio:
+
+[https://github.com/lgarayva/MCD_EKG](https://github.com/lgarayva/MCD_EKG)
+
+Este repositorio contiene el código, notebooks, documentación e instrucciones para recrear el ambiente de desarrollo y ejecutar el modelo sobre nuevos datos. De este modo, el proyecto entrega no solo un modelo predictivo, sino también una herramienta técnica replicable que puede integrarse en sistemas clínicos o utilizarse como base para investigaciones futuras en el análisis automatizado de señales biomédicas.
+
+\newpage
+
+# 8. Herramientas computacionales utilizadas
+
+Durante el desarrollo del proyecto se utilizaron diversas bibliotecas de código abierto en el lenguaje de programación **Python 3.12.7**. A continuación se describen las principales herramientas empleadas, organizadas por función:
+
+#### Análisis de series temporales
+- **Statsmodels**: Para el cálculo de funciones de autocorrelación (*ACF*, *PACF*), pruebas de raíz unitaria (Dickey-Fuller), descomposición estacional.
+- **Scipy**: Para el cálculo de estadísticos como *kurtosis*, *trimmed mean* y detección de picos (`find_peaks`).
+
+#### Visualización
+- **Matplotlib** y **Seaborn**: Para la generación de gráficos de autocorrelación, series temporales, componentes estacionales y visualizaciones generales del análisis exploratorio.
+
+#### Preprocesamiento de datos
+- **Pandas** y **NumPy**: Para manipulación de datos tabulares y operaciones numéricas.
+- **Scikit-learn**:
+  - `StandardScaler`, `SimpleImputer`, `Pipeline`: Para normalización, imputación y organización del flujo de datos.
+  - `PCA`: Para reducción de dimensionalidad.
+  - `train_test_split`: Para partición de conjuntos de entrenamiento y prueba.
+
+#### Modelado predictivo
+- **Scikit-learn**:
+  - Modelos: `LogisticRegression`, `RandomForestClassifier`, `GradientBoostingClassifier`, `GaussianNB`, `MultinomialNB`.
+  - Evaluación: `GridSearchCV`, `make_scorer`.
+  - Métricas: `accuracy_score`, `precision_score`, `recall_score`, `f1_score`, `roc_auc_score`, `log_loss`, `confusion_matrix`, `classification_report`.
+- **XGBoost**:
+  - `XGBClassifier`: Para clasificación multiclase basada en *gradient boosting*, incluyendo el uso de parámetros como *early stopping* y métricas como *AUC* y *merror*.
+
+#### Ejecución
+- **Joblib**: Para almacenamiento y recuperación eficiente de modelos entrenados.
+- **Time**: Para medición de tiempos de ejecución de modelos y procesos.
+
+
+\newpage
+
+# 9. Bibliografía
 
 * Wagner, P., Strodthoff, N., Bousseljot, R.-D., Kreiseler, D., Lunze, F. I., Samek, W., … Schaeffter, T. (2020). PTB‑XL, a large publicly available electrocardiography dataset. Scientific Data, 7, 154. https://doi.org/10.1038/s41597-020-0495-6 
 
@@ -572,7 +627,7 @@ En conclusión, este proyecto permitió desarrollar habilidades avanzadas para a
 
 \newpage
 
-# 9. Repositorio
+# 10. Repositorio
 
 Todo el código desarrollado para este proyecto se encuentra disponible en el repositorio de GitHub:
 
@@ -583,7 +638,7 @@ En este repositorio se documenta detalladamente el uso de cada archivo, el orden
 <!--
 # 8. Anexo resultados modelos
 
-## 8.1 Modelado utilizando ingeniería de variables
+## 8.1 Modelado utilizando ingeniería de características
 
 | metric              | Logistic Regression | Random Forest Classifier | Gradient Boosting Classifier | Naive Bayes | XGB Classifier |
 |---------------------|---------------------:|--------------------------:|-----------------------------:|------------:|---------------:|
@@ -1285,7 +1340,7 @@ En este repositorio se documenta detalladamente el uso de cada archivo, el orden
 | f1_weighted        | 0.472916 |
 
 
-## 8.4 Modelado utilizando ingeniería de variables divida las series en *chunks* de 100
+## 8.4 Modelado utilizando ingeniería de características divida las series en *chunks* de 100
 
 ### 8.4.1 Logistic Regression
 
