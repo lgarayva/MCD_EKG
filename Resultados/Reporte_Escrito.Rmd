@@ -2,9 +2,9 @@
 title: "null"
 author: "null"
 output:
-  word_document: default
   html_document:
     df_print: paged
+  word_document: default
 ---
 
 Maestría en Ciencia de Datos
@@ -574,7 +574,7 @@ Este repositorio contiene el código, notebooks, documentación e instrucciones 
 
 \newpage
 
-# 8. Herramientas computacionales utilizadas
+# 9. Herramientas computacionales utilizadas
 
 Durante el desarrollo del proyecto se utilizaron diversas bibliotecas de código abierto en el lenguaje de programación **Python 3.12.7**. A continuación se describen las principales herramientas empleadas, organizadas por función:
 
@@ -607,7 +607,7 @@ Durante el desarrollo del proyecto se utilizaron diversas bibliotecas de código
 
 \newpage
 
-# 9. Bibliografía
+# 10. Bibliografía
 
 * Wagner, P., Strodthoff, N., Bousseljot, R.-D., Kreiseler, D., Lunze, F. I., Samek, W., … Schaeffter, T. (2020). PTB‑XL, a large publicly available electrocardiography dataset. Scientific Data, 7, 154. https://doi.org/10.1038/s41597-020-0495-6 
 
@@ -627,7 +627,7 @@ Durante el desarrollo del proyecto se utilizaron diversas bibliotecas de código
 
 \newpage
 
-# 10. Repositorio
+# 11. Repositorio
 
 Todo el código desarrollado para este proyecto se encuentra disponible en el repositorio de GitHub:
 
