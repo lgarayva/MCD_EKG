@@ -552,7 +552,7 @@ En conclusión, este proyecto permitió desarrollar habilidades avanzadas para a
 
 \newpage
 
-## 8. Descripción del producto de datos
+# 8. Descripción del producto de datos
 
 El producto de datos generado en este trabajo es un modelo de clasificación multiclase de electrocardiogramas (EKG), basado en señales del *dataset* PTB-XL. Este modelo permite identificar cuatro clases clínicas relevantes: infarto de miocardio (MI), cambios en el segmento ST/T (STTC), combinación STTC & MI, y otras alteraciones (OTHER). El modelo fue entrenado con una arquitectura *XGBoost Classifier*, utilizando variables derivadas del análisis de series de tiempo e ingeniería de características.
 
