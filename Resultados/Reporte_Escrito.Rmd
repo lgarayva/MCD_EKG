@@ -550,6 +550,8 @@ Para trabajos futuros se recomienda probar modelos de *deep learning* con arquit
 
 En conclusión, este proyecto permitió desarrollar habilidades avanzadas para analizar series de tiempo y modelar señales biomédicas. A pesar de que los resultados todavía no se pueden usar en la práctica clínica, son un primer paso hacia la creación de modelos automáticos de diagnóstico por EKG enfocados a apoyar cardiólogos y ayudar a prevenir eventos cardiovasculares graves con diagnósticos más rápidos y precisos.
 
+Aunque el desempeño alcanzado no fue suficiente para una aplicación clínica inmediata, este proyecto ofreció aportaciones valiosas tanto en el ámbito metodológico como en el exploratorio del análisis de señales biomédicas. Se demostró que era posible integrar técnicas de análisis de series de tiempo, ingeniería de características y modelado estadístico para extraer patrones relevantes a partir de señales complejas como los electrocardiogramas. Además, el *pipeline* desarrollado y las herramientas implementadas constituyeron una base sólida, replicable y extensible para futuras investigaciones enfocadas en el diagnóstico automatizado mediante *machine learning.*
+
 \newpage
 
 # 8. Descripción del producto de datos
